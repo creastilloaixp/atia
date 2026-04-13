@@ -1,0 +1,93 @@
+{
+  "name": "Posicionamiento de Marca",
+  "industry": "servicios",
+  "duration_days": 30,
+  "content_mix": {
+    "educativo": 40,
+    "promocional": 25,
+    "social_proof": 25,
+    "behind_scenes": 10
+  },
+  "optimal_times_cst": {
+    "weekdays": ["09:00", "13:00", "19:00"],
+    "saturday": ["10:00"],
+    "sunday": []
+  },
+  "phases": [
+    {
+      "name": "Fase 1: Autoridad",
+      "days": "1-5",
+      "focus": "Posicionar como experto en la industria",
+      "posts": [
+        {"day": 1, "type": "educativo", "theme": "Quienes somos y que hacemos diferente al resto"},
+        {"day": 2, "type": "educativo", "theme": "El problema #1 que resolvemos en la industria"},
+        {"day": 3, "type": "social_proof", "theme": "Caso de exito #1: cliente + resultados con numeros"},
+        {"day": 4, "type": "educativo", "theme": "Tip gratuito de alto valor para tu audiencia"},
+        {"day": 5, "type": "behind_scenes", "theme": "Conoce al fundador: historia, vision, motivacion"}
+      ]
+    },
+    {
+      "name": "Fase 2: Educacion",
+      "days": "6-10",
+      "focus": "Demostrar expertise con contenido educativo",
+      "posts": [
+        {"day": 6, "type": "educativo", "theme": "Desmintiendo un mito comun de la industria"},
+        {"day": 7, "type": "promocional", "theme": "Nuestro servicio estrella: que incluye y resultados"},
+        {"day": 8, "type": "social_proof", "theme": "Testimonial detallado de cliente satisfecho"},
+        {"day": 9, "type": "educativo", "theme": "Mini tutorial: como hacer X por tu cuenta"},
+        {"day": 10, "type": "educativo", "theme": "10 estadisticas de la industria que debes conocer"}
+      ]
+    },
+    {
+      "name": "Fase 3: Confianza",
+      "days": "11-15",
+      "focus": "Behind scenes, casos, tips, precios",
+      "posts": [
+        {"day": 11, "type": "behind_scenes", "theme": "Un dia tipico en nuestra oficina/empresa"},
+        {"day": 12, "type": "social_proof", "theme": "Caso de exito #2 con metricas de impacto"},
+        {"day": 13, "type": "educativo", "theme": "Tip gratuito #2: accionable e inmediato"},
+        {"day": 14, "type": "promocional", "theme": "Nuestros paquetes: que incluye cada uno"},
+        {"day": 15, "type": "educativo", "theme": "5 errores comunes que cometen las empresas"}
+      ]
+    },
+    {
+      "name": "Fase 4: Social Proof",
+      "days": "16-20",
+      "focus": "Numeros, herramientas, cultura, consulta gratis",
+      "posts": [
+        {"day": 16, "type": "social_proof", "theme": "Nuestros numeros: X clientes, Y anos, Z proyectos"},
+        {"day": 17, "type": "educativo", "theme": "Herramienta gratuita que recomendamos para tu negocio"},
+        {"day": 18, "type": "behind_scenes", "theme": "Nuestra cultura y valores como empresa"},
+        {"day": 19, "type": "promocional", "theme": "Consulta GRATIS de 30 min — agenda por WhatsApp"},
+        {"day": 20, "type": "educativo", "theme": "Tendencias de la industria para 2026 y como prepararte"}
+      ]
+    },
+    {
+      "name": "Fase 5: Engagement",
+      "days": "21-25",
+      "focus": "Testimoniales, tips avanzados, tech stack",
+      "posts": [
+        {"day": 21, "type": "social_proof", "theme": "Testimonial #2: resultado transformador"},
+        {"day": 22, "type": "educativo", "theme": "Tip avanzado #3 para profesionales"},
+        {"day": 23, "type": "behind_scenes", "theme": "Las herramientas y tecnologia que usamos"},
+        {"day": 24, "type": "social_proof", "theme": "Caso de exito #3: el mas impactante de todos"},
+        {"day": 25, "type": "educativo", "theme": "Recurso descargable gratuito (checklist, guia, template)"}
+      ]
+    },
+    {
+      "name": "Fase 6: Conversion",
+      "days": "26-30",
+      "focus": "Diferenciacion, predicciones, celebracion, CTA final",
+      "posts": [
+        {"day": 26, "type": "promocional", "theme": "Por que elegirnos: 5 diferenciadores clave"},
+        {"day": 27, "type": "educativo", "theme": "Nuestra prediccion para la industria en los proximos 5 anos"},
+        {"day": 28, "type": "behind_scenes", "theme": "Celebrando un logro reciente del equipo"},
+        {"day": 29, "type": "social_proof", "theme": "Compilacion: los mejores testimoniales del mes"},
+        {"day": 30, "type": "promocional", "theme": "Agenda tu consulta GRATIS: wa.me/526671326265"}
+      ]
+    }
+  ],
+  "default_hashtags": ["negocio", "emprendimiento", "estrategia", "marketing", "consultoria", "agencia", "servicios", "pymes"],
+  "cta_whatsapp": "wa.me/526671326265",
+  "image_style_guidelines": "Professional corporate imagery. Team photos, office shots, meeting scenes. Clean and modern design. Use brand colors. Infographics for data/tips posts."
+}

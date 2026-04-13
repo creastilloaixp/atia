@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CF Seguros — Protección de Alta Gama</title>
+<meta name="description" content="Seguro premium para autos y motos. Pólizas emitidas al instante, sin papeleo. Protección de alta gama para lo que más valoras.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700;800;900&family=Lato:wght@300;400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<!-- Scroll Progress Bar -->
+<div class="scroll-progress" id="scrollProgress"></div>
+
+<!-- Navigation -->
+<nav class="nav" id="nav">
+  <a href="#hero" class="nav-logo">CF<span>Seguros</span></a>
+  <ul class="nav-links">
+    <li><a href="#hero" data-section="hero" class="active">Inicio</a></li>
+    <li><a href="#about" data-section="about">Nosotros</a></li>
+    <li><a href="#services" data-section="services">Servicios</a></li>
+    <li><a href="#process" data-section="process">Proceso</a></li>
+    <li><a href="#stats" data-section="stats">Resultados</a></li>
+    <li><a href="#contact" data-section="contact" class="nav-cta">Cotizar</a></li>
+  </ul>
+  <div class="nav-hamburger" id="hamburger">
+    <span></span><span></span><span></span>
+  </div>
+</nav>
+
+<!-- Mobile Menu -->
+<div class="mobile-menu" id="mobileMenu">
+  <a href="#hero" onclick="closeMobile()">Inicio</a>
+  <a href="#about" onclick="closeMobile()">Nosotros</a>
+  <a href="#services" onclick="closeMobile()">Servicios</a>
+  <a href="#process" onclick="closeMobile()">Proceso</a>
+  <a href="#stats" onclick="closeMobile()">Resultados</a>
+  <a href="#contact" onclick="closeMobile()" class="mobile-cta">Cotizar Ahora</a>
+</div>
+
+<!-- ============================================ -->
+<!-- HERO: Scroll-Driven Video Frame Player       -->
+<!-- ============================================ -->
+<section class="hero" id="hero">
+  <canvas id="heroCanvas"></canvas>
+  <div class="hero-overlay">
+    <div class="hero-badge">Protección de Alta Gama</div>
+    <h1 class="hero-title">
+      <span class="reveal-line" data-reveal data-delay="0"><span>Tu Legado.</span></span>
+      <span class="reveal-line" data-reveal data-delay="150"><span>Protegido.</span></span>
+      <span class="reveal-line" data-reveal data-delay="300"><span class="accent">Al Instante.</span></span>
+    </h1>
+    <p class="hero-sub" data-reveal data-delay="500">
+      Seguro premium para autos y motos, emitido al instante.<br>
+      Sin papeleo. Sin filas. Solo protección.
+    </p>
+    <div class="hero-actions" data-reveal data-delay="700">
+      <a href="#contact" class="btn-primary">Cotizar Ahora</a>
+      <a href="#about" class="btn-ghost">Conocer Más</a>
+    </div>
+  </div>
+  <div class="hero-scroll-hint" id="scrollHint">
+    <span>Scroll</span>
+    <svg width="20" height="30" viewBox="0 0 20 30" fill="none">
+      <rect x="1" y="1" width="18" height="28" rx="9" stroke="rgba(255,255,255,0.4)" stroke-width="2"/>
+      <circle cx="10" cy="10" r="3" fill="rgba(255,255,255,0.6)" class="scroll-dot"/>
+    </svg>
+  </div>
+</section>
+
+<!-- ============================================ -->
+<!-- ABOUT: Reveal Text + Brand Story             -->
+<!-- ============================================ -->
+<section class="section section-about" id="about">
+  <div class="container">
+    <div class="section-label" data-reveal>Nuestra Historia</div>
+    <div class="about-grid">
+      <div class="about-text">
+        <div class="reveal-heading">
+          <div class="reveal-line" data-reveal data-delay="0"><span>Redefinimos lo que</span></div>
+          <div class="reveal-line" data-reveal data-delay="100"><span>significa estar</span></div>
+          <div class="reveal-line" data-reveal data-delay="200"><span class="accent">protegido.</span></div>
+        </div>
+        <div class="reveal-fade" data-reveal data-delay="400">
+          <p>En CF Seguros eliminamos el papeleo y las filas. Ofrecemos protección personalizada e inmediata para autos y motos, con la calidad y atención que mereces.</p>
+          <p>Cada póliza es diseñada para brindarte tranquilidad total, respaldada por expertos que entienden el valor de lo que proteges.</p>
+        </div>
+      </div>
+      <div class="about-visual" data-reveal data-delay="300">
+        <div class="about-image-wrapper">
+          <img src="frames/frame-0030.jpg" alt="CF Seguros Premium Protection" loading="lazy">
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================ -->
+<!-- SERVICES: Accordion Slider                   -->
+<!-- ============================================ -->
+<section class="section section-services" id="services">
+  <div class="container">
+    <div class="section-label" data-reveal>Nuestros Servicios</div>
+    <div class="reveal-heading center">
+      <div class="reveal-line" data-reveal data-delay="0"><span>Cobertura Premium</span></div>
+      <div class="reveal-line" data-reveal data-delay="100"><span>Para Cada <span class="accent">Necesidad</span></span></div>
+    </div>
+
+    <div class="accordion-slider" data-reveal data-delay="300">
+      <div class="accordion-panel active">
+        <div class="panel-bg" style="background-image: url('scene-1-cf-seguros-1775096116354.png');"></div>
+        <div class="panel-icon">
+          <svg viewBox="0 0 64 64" fill="none" stroke="#FFD700" stroke-width="1.5">
+            <rect x="8" y="24" width="48" height="24" rx="4"/>
+            <circle cx="20" cy="48" r="6"/><circle cx="44" cy="48" r="6"/>
+            <path d="M8 32h48M20 24V16h12l8 8"/>
+          </svg>
+        </div>
+        <span class="panel-number">01</span>
+        <div class="panel-overlay">
+          <h3>Protección Automotiva</h3>
+          <p>Tu vehículo es más que un transporte, es un activo. Ofrecemos blindaje total contra imprevistos con la respuesta más rápida del mercado mexicano.</p>
+        </div>
+      </div>
+      <div class="accordion-panel">
+        <div class="panel-bg" style="background-image: url('scene-3-cf-seguros-1775096133801.png');"></div>
+        <div class="panel-icon">
+          <svg viewBox="0 0 64 64" fill="none" stroke="#FFD700" stroke-width="1.5">
+            <path d="M32 8C20 8 12 20 12 28v12l8 8v8h24v-8l8-8V28c0-8-8-20-20-20z"/>
+            <circle cx="32" cy="32" r="8"/>
+            <path d="M24 56h16"/>
+          </svg>
+        </div>
+        <span class="panel-number">02</span>
+        <div class="panel-overlay">
+          <h3>Seguro de Motos</h3>
+          <p>Libertad sin límites. Protegemos tu pasión por la velocidad con coberturas precisas diseñadas para el motociclista moderno.</p>
+        </div>
+      </div>
+      <div class="accordion-panel">
+        <div class="panel-bg" style="background-image: url('scene-2-cf-seguros-1775096125132.png');"></div>
+        <div class="panel-icon">
+          <svg viewBox="0 0 64 64" fill="none" stroke="#FFD700" stroke-width="1.5">
+            <path d="M32 4L56 16v16c0 16-12 24-24 28C20 56 8 48 8 32V16L32 4z"/>
+            <path d="M22 32l8 8 14-14" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"/>
+          </svg>
+        </div>
+        <span class="panel-number">03</span>
+        <div class="panel-overlay">
+          <h3>Estabilidad Patrimonial</h3>
+          <p>Defensa legal y financiera absoluta. Protegemos tu futuro ante cualquier imprevisto de responsabilidad civil con respaldo jurídico certificado.</p>
+        </div>
+      </div>
+      <div class="accordion-panel">
+        <div class="panel-bg" style="background-image: url('scene-1-cf-seguros-1775095814524.png');"></div>
+        <div class="panel-icon">
+          <svg viewBox="0 0 64 64" fill="none" stroke="#FFD700" stroke-width="1.5">
+            <rect x="8" y="12" width="48" height="40" rx="4"/>
+            <path d="M8 24h48M20 36h8M20 44h16"/>
+            <circle cx="46" cy="20" r="0" fill="#FFD700"><animate attributeName="r" values="0;3;0" dur="2s" repeatCount="indefinite"/></circle>
+          </svg>
+        </div>
+        <span class="panel-number">04</span>
+        <div class="panel-overlay">
+          <h3>Protección Familiar</h3>
+          <p>Garantiza el bienestar de los que más quieres. Seguros de vida y accidentes personales para que tu legado esté siempre a salvo.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================ -->
+<!-- PROCESS: Flip Cards — How It Works           -->
+<!-- ============================================ -->
+<section class="section section-process" id="process">
+  <div class="container">
+    <div class="section-label" data-reveal>Cómo Funciona</div>
+    <div class="reveal-heading center">
+      <div class="reveal-line" data-reveal><span>Tu Póliza en <span class="accent">3 Pasos</span></span></div>
+    </div>
+
+    <div class="process-grid">
+      <div class="flip-card" data-reveal data-delay="0">
+        <div class="flip-inner">
+          <div class="flip-front">
+            <div class="step-number">01</div>
+            <div class="step-icon">
+              <svg viewBox="0 0 48 48" fill="none" stroke="#FFD700" stroke-width="1.5" stroke-linecap="round">
+                <circle cx="24" cy="24" r="20"/><path d="M24 14v20M14 24h20"/>
+              </svg>
+            </div>
+            <h3>Cotiza</h3>
+            <p>Ingresa los datos de tu vehículo y recibe una cotización personalizada en segundos.</p>
+          </div>
+          <div class="flip-back">
+            <div class="flip-back-icon">⚡</div>
+            <h3>Cotización Instantánea</h3>
+            <p>Nuestro sistema analiza tu perfil y genera la mejor opción de cobertura en tiempo real. Sin esperas, sin intermediarios.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="flip-card" data-reveal data-delay="150">
+        <div class="flip-inner">
+          <div class="flip-front">
+            <div class="step-number">02</div>
+            <div class="step-icon">
+              <svg viewBox="0 0 48 48" fill="none" stroke="#FFD700" stroke-width="1.5" stroke-linecap="round">
+                <path d="M12 24l8 8 16-16"/><rect x="4" y="4" width="40" height="40" rx="8"/>
+              </svg>
+            </div>
+            <h3>Personaliza</h3>
+            <p>Elige las coberturas que necesitas y ajusta tu plan a la medida.</p>
+          </div>
+          <div class="flip-back">
+            <div class="flip-back-icon">🎯</div>
+            <h3>Hecho a Tu Medida</h3>
+            <p>Cada conductor es diferente. Selecciona desde cobertura básica hasta protección total con asistencia premium 24/7.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="flip-card" data-reveal data-delay="300">
+        <div class="flip-inner">
+          <div class="flip-front">
+            <div class="step-number">03</div>
+            <div class="step-icon">
+              <svg viewBox="0 0 48 48" fill="none" stroke="#FFD700" stroke-width="1.5" stroke-linecap="round">
+                <path d="M8 16l16-8 16 8v12c0 8-6 14-16 18-10-4-16-10-16-18V16z"/>
+                <path d="M18 26l6 6 10-10" stroke-width="2.5"/>
+              </svg>
+            </div>
+            <h3>Protégete</h3>
+            <p>Recibe tu póliza al instante y disfruta de protección inmediata.</p>
+          </div>
+          <div class="flip-back">
+            <div class="flip-back-icon">🛡️</div>
+            <h3>Protección Inmediata</h3>
+            <p>Tu póliza se emite en segundos. Desde ese momento, tú y tu vehículo están completamente protegidos.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================ -->
+<!-- STATS: Kinetic Text Counters                 -->
+<!-- ============================================ -->
+<section class="section section-stats" id="stats">
+  <div class="container">
+    <div class="stats-grid">
+      <div class="stat-item" data-reveal data-delay="0">
+        <div class="stat-number" data-count-to="15000" data-prefix="" data-suffix="+">0</div>
+        <div class="stat-label">Pólizas Emitidas</div>
+      </div>
+      <div class="stat-divider" data-reveal data-delay="100"></div>
+      <div class="stat-item" data-reveal data-delay="200">
+        <div class="stat-number" data-count-to="98" data-suffix="%">0</div>
+        <div class="stat-label">Satisfacción del Cliente</div>
+      </div>
+      <div class="stat-divider" data-reveal data-delay="300"></div>
+      <div class="stat-item" data-reveal data-delay="400">
+        <div class="stat-number" data-count-to="30" data-suffix="seg">0</div>
+        <div class="stat-label">Tiempo de Emisión</div>
+      </div>
+      <div class="stat-divider" data-reveal data-delay="500"></div>
+      <div class="stat-item" data-reveal data-delay="600">
+        <div class="stat-number" data-count-to="24" data-suffix="/7">0</div>
+        <div class="stat-label">Asistencia Disponible</div>
+      </div>
+    </div>
+
+    <div class="stats-quote" data-reveal data-delay="400">
+      <div class="kinetic-text" data-kinetic="chars" data-accent-words="protección,premium,confianza">
+        La protección premium que genera confianza absoluta
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================ -->
+<!-- CONTACT: CTA Section                         -->
+<!-- ============================================ -->
+<section class="section section-contact" id="contact">
+  <div class="container">
+    <div class="contact-card">
+      <div class="contact-content">
+        <div class="section-label" data-reveal>Comienza Ahora</div>
+        <div class="reveal-heading">
+          <div class="reveal-line" data-reveal><span>Obtén Tu Póliza</span></div>
+          <div class="reveal-line" data-reveal data-delay="100"><span class="accent">En Segundos</span></div>
+        </div>
+        <p class="contact-desc" data-reveal data-delay="200">
+          Sin papeleo, sin filas. Protección de alta gama para tu auto o moto, emitida al instante.
+        </p>
+        <div class="contact-actions" data-reveal data-delay="300">
+          <a href="https://cf-seguros-landing.vercel.app/" class="btn-primary btn-large" target="_blank">Cotizar Mi Seguro</a>
+        </div>
+        <div class="contact-trust" data-reveal data-delay="400">
+          <div class="trust-item">
+            <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M10 2l2.5 5 5.5.8-4 3.9.9 5.3L10 14.5 5.1 17l.9-5.3-4-3.9L7.5 7z" fill="#FFD700"/></svg>
+            <span>4.9/5 Rating</span>
+          </div>
+          <div class="trust-item">
+            <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M10 1L17 5v5c0 5-3 9-7 11-4-2-7-6-7-11V5l7-4z" fill="none" stroke="#FFD700" stroke-width="1.5"/><path d="M7 10l2.5 2.5L13 8" stroke="#FFD700" stroke-width="2" stroke-linecap="round"/></svg>
+            <span>100% Seguro</span>
+          </div>
+          <div class="trust-item">
+            <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><circle cx="10" cy="10" r="8" stroke="#FFD700" stroke-width="1.5"/><path d="M10 6v4l3 3" stroke="#FFD700" stroke-width="1.5" stroke-linecap="round"/></svg>
+            <span>Emisión Inmediata</span>
+          </div>
+        </div>
+      </div>
+      <div class="contact-visual">
+        <div class="shield-draw">
+          <svg viewBox="0 0 200 240" fill="none" class="svg-draw" data-draw>
+            <path d="M100 10 L180 50 L180 130 Q180 200 100 230 Q20 200 20 130 L20 50 Z" stroke="#FFD700" stroke-width="2" style="--path-length:700"/>
+            <path d="M70 120 L90 140 L135 95" stroke="#C0C0C0" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" style="--path-length:120"/>
+          </svg>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Footer -->
+<footer class="footer">
+  <div class="container">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <div class="footer-logo">CF<span>Seguros</span></div>
+        <p>Protección de Alta Gama</p>
+      </div>
+      <div class="footer-links">
+        <h4>Servicios</h4>
+        <a href="#services">Seguro de Autos</a>
+        <a href="#services">Seguro de Motos</a>
+        <a href="#services">Responsabilidad Civil</a>
+        <a href="#services">Fianzas</a>
+      </div>
+      <div class="footer-links">
+        <h4>Empresa</h4>
+        <a href="#about">Nosotros</a>
+        <a href="#process">Cómo Funciona</a>
+        <a href="#contact">Contacto</a>
+        <a href="#">Aviso de Privacidad</a>
+      </div>
+      <div class="footer-links">
+        <h4>Contacto</h4>
+        <a href="tel:+529999417198">Tel: (999) 941.71.98</a>
+        <a href="mailto:cfseguros@despachocfseguros.com">cfseguros@despachocfseguros.com</a>
+        <p class="footer-address">Calle 39 No. 164, Col. Benito Juárez Norte, Mérida</p>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>&copy; 2026 CF Seguros. Todos los derechos reservados.</p>
+    </div>
+  </div>
+</footer>
+
+<a href="https://wa.me/526673442996?text=Hola%20CF%20Seguros,%20quisiera%20cotizar%20un%20seguro%20premium." class="whatsapp-widget" target="_blank" aria-label="Contactar por WhatsApp">
+  <svg viewBox="0 0 448 512" fill="currentColor">
+    <path d="M380.9 97.1C339 55.1 283.2 32 223.9 32c-122.4 0-222 99.6-222 222 0 39.1 10.2 77.3 29.6 111L0 480l117.7-30.9c32.7 17.8 69.4 27.2 106.1 27.2 122.4 0 222-99.6 222-222 0-59.3-23-115.1-64.9-157.1zM223.9 446.6c-33.2 0-65.7-8.9-94-25.7l-6.7-4-69.8 18.3 18.7-68.1-4.4-7c-18.5-29.4-28.2-63.3-28.2-98.2 0-101.7 82.8-184.5 184.5-184.5 49.3 0 95.6 19.2 130.4 54.1 34.8 34.9 54 81.2 54 130.5 0 101.7-82.8 184.5-184.5 184.5zm101.2-138.2c-5.5-2.8-32.8-16.2-37.9-18-5.1-1.9-8.8-2.8-12.5 2.8-3.7 5.6-14.3 18-17.6 21.8-3.2 3.7-6.5 4.2-12 1.4-5.6-2.8-23.5-8.6-44.8-27.6-16.6-14.8-27.8-33.1-31-38.6-3.2-5.6-.3-8.6 2.5-11.4 2.5-2.5 5.6-6.5 8.3-9.7 2.8-3.2 3.7-5.5 5.6-9.2 1.9-3.7.9-6.9-.5-9.7-1.4-2.8-12.5-30.1-17.1-41.2-4.5-10.8-9.1-9.3-12.5-9.5-3.2-.2-6.9-.2-10.6-.2-3.7 0-9.7 1.4-14.8 6.9-5.1 5.6-19.4 19-19.4 46.3 0 27.3 19.9 53.7 22.6 57.4 2.8 3.7 39.1 59.7 94.8 83.8 13.2 5.8 23.5 9.2 31.6 11.8 13.3 4.2 25.4 3.6 35 2.2 10.7-1.6 32.8-13.4 37.4-26.4 4.6-13 4.6-24.1 3.2-26.4-1.3-2.5-5-3.9-10.5-6.6z"/>
+  </svg>
+</a>
+
+<script src="script.js"></script>
+</body>
+</html>

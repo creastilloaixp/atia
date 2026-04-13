@@ -1,0 +1,249 @@
+{
+  "name": "Casto Lead Capture - Evolution API",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "casto-lead",
+        "responseMode": "lastNode",
+        "options": {}
+      },
+      "id": "a150723f-b8da-4c73-aa72-64330a290aa2",
+      "name": "Webhook - Lead Landing",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [0, 304],
+      "webhookId": "e0ece7eb-a875-41ba-9463-d37fea889ed1"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Validar campos requeridos del lead\nconst body = $input.first().json.body || {};\nconst contact = body.contact || {};\nconst details = body.lead_details || {};\n\nconst phone = (contact.phone || '').toString().trim();\nconst name = (contact.name || '').toString().trim();\n\n// Validar teléfono\nif (!phone || phone.replace(/[^0-9]/g, '').length < 7) {\n  return [{\n    json: {\n      valid: false,\n      error: 'Teléfono inválido o vacío (mín 7 dígitos)'\n    }\n  }];\n}\n\n// Validar nombre\nif (!name || name.length < 2) {\n  return [{\n    json: {\n      valid: false,\n      error: 'Nombre requerido (mín 2 caracteres)'\n    }\n  }];\n}\n\n// Normalizar teléfono MX: asegurar formato 52XXXXXXXXXX\nlet cleanPhone = phone.replace(/[^0-9]/g, '');\nif (!cleanPhone.startsWith('52') && cleanPhone.length === 10) {\n  cleanPhone = '52' + cleanPhone;\n} else if (cleanPhone.startsWith('1') && cleanPhone.length === 11) {\n  cleanPhone = '52' + cleanPhone.slice(1);\n}\n\nreturn [{\n  json: {\n    valid: true,\n    name: name,\n    phone: cleanPhone,\n    phone_display: '+' + cleanPhone,\n    intent: details.intent || 'general',\n    property_value: details.property_value || 'no_especificado',\n    source: body.source || 'Landing Casto',\n    campaign: body.campaign || 'general',\n    timestamp: body.timestamp || new Date().toISOString()\n  }\n}];"
+      },
+      "id": "code-validate",
+      "name": "Validar y Normalizar",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [304, 304]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 1
+          },
+          "conditions": [
+            {
+              "id": "check-valid",
+              "leftValue": "={{ $json.valid }}",
+              "rightValue": true,
+              "operator": {
+                "type": "boolean",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "if-valid",
+      "name": "Datos Validos",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [560, 304]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://TU-DOMINIO.kommo.com/api/v4/leads",
+        "authentication": "predefinedCredentialType",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"name\": \"Lead Casto: {{ $json.name }} - {{ $json.intent }}\",\n  \"custom_fields_values\": [\n    {\n      \"field_id\": \"ID_CAMPO_TELEFONO\",\n      \"values\": [{ \"value\": \"{{ $json.phone_display }}\" }]\n    }\n  ]\n}",
+        "options": {}
+      },
+      "id": "kommo-lead",
+      "name": "Kommo - Crear Lead",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [848, 208]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.zadarma.com/v1/request/callback/",
+        "authentication": "predefinedCredentialType",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "from",
+              "value": "TU_NUMERO_ZADARMA"
+            },
+            {
+              "name": "to",
+              "value": "={{ $json.phone }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "zadarma-call",
+      "name": "Zadarma - Callback",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [1104, 208]
+    },
+    {
+      "id": "evolution-api-welcome",
+      "name": "Evolution API: Enviar Bienvenida",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [1360, 208],
+      "parameters": {
+        "method": "POST",
+        "url": "https://n8n-evolution-api.yxmkwr.easypanel.host/message/sendText/Gen-IA",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "apikey",
+              "value": "8F7D4621EE43-45ED-B33E-1D84EA69E4A5"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"number\": \"{{ $('Validar y Normalizar').item.json.phone }}\",\n  \"text\": \"¡Hola {{ $('Validar y Normalizar').item.json.name }}! 👋 Soy Adriana, asesora virtual de CompramosTuCasa.mx. He recibido tu solicitud de diagnóstico gratuito. ¿Hay algún detalle específico o urgencia sobre la propiedad que te gustaría comentarme antes de que te asigne a uno de nuestros expertos?\"\n}",
+        "options": {}
+      }
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ JSON.stringify({ status: 'success', message: 'Lead recibido correctamente' }) }}",
+        "options": {
+          "responseCode": 200,
+          "responseHeaders": {
+            "entries": [
+              {
+                "name": "Access-Control-Allow-Origin",
+                "value": "*"
+              }
+            ]
+          }
+        }
+      },
+      "id": "respond-success",
+      "name": "Respuesta Exitosa",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.1,
+      "position": [1616, 208]
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ JSON.stringify({ status: 'error', message: $json.error || 'Datos incompletos o inválidos' }) }}",
+        "options": {
+          "responseCode": 400,
+          "responseHeaders": {
+            "entries": [
+              {
+                "name": "Access-Control-Allow-Origin",
+                "value": "*"
+              }
+            ]
+          }
+        }
+      },
+      "id": "respond-error",
+      "name": "Respuesta Error",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.1,
+      "position": [848, 512]
+    }
+  ],
+  "connections": {
+    "Webhook - Lead Landing": {
+      "main": [
+        [
+          {
+            "node": "Validar y Normalizar",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Validar y Normalizar": {
+      "main": [
+        [
+          {
+            "node": "Datos Validos",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Datos Validos": {
+      "main": [
+        [
+          {
+            "node": "Kommo - Crear Lead",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Respuesta Error",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Kommo - Crear Lead": {
+      "main": [
+        [
+          {
+            "node": "Zadarma - Callback",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Zadarma - Callback": {
+      "main": [
+        [
+          {
+            "node": "Evolution API: Enviar Bienvenida",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Evolution API: Enviar Bienvenida": {
+      "main": [
+        [
+          {
+            "node": "Respuesta Exitosa",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {}
+}

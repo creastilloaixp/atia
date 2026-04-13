@@ -1,0 +1,5 @@
+﻿
+> vite-app@0.0.0 build
+> tsc -b && vite build
+
+src/components/SellerDiagnostic.tsx(4,31): error TS6133: 'Heart' is declared but its value is never read.

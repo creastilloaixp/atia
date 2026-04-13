@@ -1,0 +1,619 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Requerimientos de Integración — CASTO Lead Capture</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'Inter', -apple-system, sans-serif;
+      color: #1a1a2e;
+      line-height: 1.6;
+      background: #fff;
+      padding: 0;
+    }
+
+    @media print {
+      body { padding: 0; }
+      .page-break { page-break-before: always; }
+      .no-print { display: none; }
+    }
+
+    .container {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 40px 50px;
+    }
+
+    /* Header */
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      border-bottom: 3px solid #f59e0b;
+      padding-bottom: 24px;
+      margin-bottom: 32px;
+    }
+    .header-left h1 {
+      font-size: 28px;
+      font-weight: 700;
+      letter-spacing: -0.5px;
+      color: #0a0a0a;
+    }
+    .header-left p {
+      font-size: 13px;
+      color: #6b7280;
+      margin-top: 4px;
+    }
+    .header-right {
+      text-align: right;
+      font-size: 12px;
+      color: #9ca3af;
+    }
+    .header-right .brand {
+      font-size: 22px;
+      font-weight: 700;
+      color: #0a0a0a;
+      letter-spacing: 2px;
+    }
+
+    /* Intro */
+    .intro {
+      background: #fffbeb;
+      border: 1px solid #fde68a;
+      border-radius: 12px;
+      padding: 20px 24px;
+      margin-bottom: 32px;
+    }
+    .intro h2 {
+      font-size: 15px;
+      font-weight: 600;
+      color: #92400e;
+      margin-bottom: 8px;
+    }
+    .intro p {
+      font-size: 13px;
+      color: #78350f;
+      line-height: 1.7;
+    }
+
+    /* Sections */
+    .section {
+      margin-bottom: 36px;
+    }
+    .section-header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 16px;
+    }
+    .section-number {
+      width: 32px;
+      height: 32px;
+      background: #f59e0b;
+      color: #fff;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 14px;
+      flex-shrink: 0;
+    }
+    .section-title {
+      font-size: 18px;
+      font-weight: 600;
+      color: #0a0a0a;
+    }
+
+    .section-desc {
+      font-size: 13px;
+      color: #6b7280;
+      margin-bottom: 16px;
+      padding-left: 42px;
+    }
+
+    /* Table */
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13px;
+      margin-bottom: 12px;
+    }
+    thead th {
+      background: #f9fafb;
+      text-align: left;
+      padding: 10px 14px;
+      font-weight: 600;
+      color: #374151;
+      border-bottom: 2px solid #e5e7eb;
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    tbody td {
+      padding: 12px 14px;
+      border-bottom: 1px solid #f3f4f6;
+      vertical-align: top;
+    }
+    tbody tr:hover { background: #fefce8; }
+
+    .field-name {
+      font-weight: 600;
+      color: #1f2937;
+    }
+    .field-example {
+      font-family: 'Courier New', monospace;
+      font-size: 12px;
+      background: #f3f4f6;
+      padding: 2px 6px;
+      border-radius: 4px;
+      color: #4b5563;
+    }
+    .required {
+      display: inline-block;
+      background: #fef2f2;
+      color: #dc2626;
+      font-size: 10px;
+      font-weight: 700;
+      padding: 2px 6px;
+      border-radius: 4px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .optional {
+      display: inline-block;
+      background: #f0fdf4;
+      color: #16a34a;
+      font-size: 10px;
+      font-weight: 700;
+      padding: 2px 6px;
+      border-radius: 4px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    /* Instructions box */
+    .instructions {
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 10px;
+      padding: 16px 20px;
+      margin-top: 8px;
+      margin-bottom: 12px;
+    }
+    .instructions h4 {
+      font-size: 12px;
+      font-weight: 600;
+      color: #475569;
+      margin-bottom: 8px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .instructions ol, .instructions ul {
+      padding-left: 20px;
+      font-size: 12px;
+      color: #64748b;
+    }
+    .instructions li {
+      margin-bottom: 4px;
+    }
+
+    /* Diagram */
+    .diagram {
+      background: #0f172a;
+      color: #e2e8f0;
+      border-radius: 12px;
+      padding: 24px;
+      font-family: 'Courier New', monospace;
+      font-size: 13px;
+      line-height: 1.8;
+      margin: 16px 0;
+      overflow-x: auto;
+    }
+    .diagram .node { color: #38bdf8; font-weight: 600; }
+    .diagram .arrow { color: #64748b; }
+    .diagram .label { color: #94a3b8; font-style: italic; }
+    .diagram .success { color: #4ade80; }
+    .diagram .error { color: #f87171; }
+
+    /* Footer */
+    .footer {
+      border-top: 1px solid #e5e7eb;
+      padding-top: 20px;
+      margin-top: 40px;
+      display: flex;
+      justify-content: space-between;
+      font-size: 11px;
+      color: #9ca3af;
+    }
+
+    /* Checklist */
+    .checklist {
+      list-style: none;
+      padding: 0;
+    }
+    .checklist li {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      padding: 8px 0;
+      border-bottom: 1px solid #f3f4f6;
+      font-size: 13px;
+    }
+    .checklist li:last-child { border-bottom: none; }
+    .checkbox {
+      width: 18px;
+      height: 18px;
+      border: 2px solid #d1d5db;
+      border-radius: 4px;
+      flex-shrink: 0;
+      margin-top: 2px;
+    }
+
+    /* Print button */
+    .print-btn {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      background: #f59e0b;
+      color: #fff;
+      border: none;
+      padding: 12px 24px;
+      border-radius: 8px;
+      font-weight: 600;
+      font-size: 14px;
+      cursor: pointer;
+      box-shadow: 0 4px 12px rgba(245,158,11,0.3);
+    }
+    .print-btn:hover { background: #d97706; }
+  </style>
+</head>
+<body>
+  <div class="container">
+
+    <!-- Header -->
+    <div class="header">
+      <div class="header-left">
+        <h1>Requerimientos de Integración</h1>
+        <p>Workflow: Lead Capture — Landing Page CASTO</p>
+      </div>
+      <div class="header-right">
+        <div class="brand">CASTO</div>
+        <div>Fecha: 16 de Marzo, 2026</div>
+        <div>Versión: 1.0</div>
+      </div>
+    </div>
+
+    <!-- Intro -->
+    <div class="intro">
+      <h2>Objetivo de este documento</h2>
+      <p>
+        Para activar el flujo automatizado de captura de leads en la landing page de CASTO,
+        necesitamos que el cliente proporcione las credenciales y datos de configuración listados a continuación.
+        <strong>Sin estos datos, el workflow no podrá crear leads en el CRM ni disparar llamadas automáticas.</strong>
+      </p>
+    </div>
+
+    <!-- Architecture Diagram -->
+    <div class="section">
+      <div class="section-header">
+        <div class="section-number">0</div>
+        <div class="section-title">Arquitectura del Flujo</div>
+      </div>
+      <div class="diagram">
+        <span class="label">Landing Page CASTO</span><br>
+        &nbsp;&nbsp;&nbsp;&nbsp;│<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;▼<br>
+        <span class="node">[Webhook]</span> <span class="arrow">→</span> <span class="node">[Validar & Normalizar]</span> <span class="arrow">→</span> <span class="node">[¿Datos Válidos?]</span><br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;┌───┴───┐<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="success">SÍ</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="error">NO</span><br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;▼&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;▼<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="node">[Kommo CRM]</span>&nbsp;&nbsp;<span class="error">[Error 400]</span><br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;▼<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="node">[Zadarma Call]</span><br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;▼<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="success">[Respuesta 200]</span>
+      </div>
+    </div>
+
+    <!-- Section 1: Kommo CRM -->
+    <div class="section">
+      <div class="section-header">
+        <div class="section-number">1</div>
+        <div class="section-title">Kommo CRM (antes amoCRM)</div>
+      </div>
+      <p class="section-desc">
+        Necesitamos acceso a la cuenta de Kommo para crear leads automáticamente cuando un vendedor completa el formulario en la landing.
+      </p>
+
+      <table>
+        <thead>
+          <tr>
+            <th>Dato Requerido</th>
+            <th>Ejemplo</th>
+            <th>Estado</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="field-name">Subdominio de Kommo</td>
+            <td><span class="field-example">casto.kommo.com</span></td>
+            <td><span class="required">Requerido</span></td>
+          </tr>
+          <tr>
+            <td class="field-name">API Token (Long-lived)</td>
+            <td><span class="field-example">eyJhbGciOi...xxxxx</span></td>
+            <td><span class="required">Requerido</span></td>
+          </tr>
+          <tr>
+            <td class="field-name">ID del campo "Teléfono"</td>
+            <td><span class="field-example">123456</span> (numérico)</td>
+            <td><span class="required">Requerido</span></td>
+          </tr>
+          <tr>
+            <td class="field-name">Pipeline ID (embudo de ventas)</td>
+            <td><span class="field-example">7890123</span></td>
+            <td><span class="optional">Opcional</span></td>
+          </tr>
+          <tr>
+            <td class="field-name">ID del responsable (usuario)</td>
+            <td><span class="field-example">456789</span></td>
+            <td><span class="optional">Opcional</span></td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="instructions">
+        <h4>Cómo obtener estos datos</h4>
+        <ol>
+          <li>Iniciar sesión en <strong>https://[subdominio].kommo.com</strong></li>
+          <li>Ir a <strong>Configuración → Integraciones → API</strong></li>
+          <li>Crear una nueva integración o usar un token existente (Long-lived token)</li>
+          <li>Para el ID del campo teléfono: <strong>Configuración → Campos → Contactos</strong> → buscar "Teléfono" y anotar el ID numérico</li>
+          <li>Para el Pipeline ID: <strong>Configuración → Embudos de venta</strong> → copiar el ID del embudo deseado</li>
+        </ol>
+      </div>
+    </div>
+
+    <!-- Section 2: Zadarma -->
+    <div class="section">
+      <div class="section-header">
+        <div class="section-number">2</div>
+        <div class="section-title">Zadarma (Telefonía VoIP)</div>
+      </div>
+      <p class="section-desc">
+        Zadarma permite realizar una llamada automática al vendedor segundos después de que completa el formulario. Se genera un callback: el sistema llama primero al asesor de CASTO y luego conecta al vendedor.
+      </p>
+
+      <table>
+        <thead>
+          <tr>
+            <th>Dato Requerido</th>
+            <th>Ejemplo</th>
+            <th>Estado</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="field-name">API Key de Zadarma</td>
+            <td><span class="field-example">abc123def456...</span></td>
+            <td><span class="required">Requerido</span></td>
+          </tr>
+          <tr>
+            <td class="field-name">API Secret de Zadarma</td>
+            <td><span class="field-example">xyz789ghi012...</span></td>
+            <td><span class="required">Requerido</span></td>
+          </tr>
+          <tr>
+            <td class="field-name">Número de origen (PBX/SIP)</td>
+            <td><span class="field-example">100</span> ó <span class="field-example">5512345678</span></td>
+            <td><span class="required">Requerido</span></td>
+          </tr>
+          <tr>
+            <td class="field-name">Extensión del asesor de ventas</td>
+            <td><span class="field-example">101</span></td>
+            <td><span class="optional">Opcional</span></td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="instructions">
+        <h4>Cómo obtener estos datos</h4>
+        <ol>
+          <li>Iniciar sesión en <strong>https://my.zadarma.com</strong></li>
+          <li>Ir a <strong>Configuración → API → Claves de acceso</strong></li>
+          <li>Copiar el <strong>API Key</strong> y el <strong>API Secret</strong></li>
+          <li>Para el número de origen: ir a <strong>Mi PBX → Extensiones</strong> y copiar el número/extensión que recibirá las llamadas primero (el asesor de CASTO)</li>
+          <li>Asegurarse de que la IP del servidor n8n (<span class="field-example">n8n-n8n.yxmkwr.easypanel.host</span>) esté en la lista blanca de IPs permitidas de Zadarma</li>
+        </ol>
+      </div>
+    </div>
+
+    <!-- Section 3: Webhook URL -->
+    <div class="section">
+      <div class="section-header">
+        <div class="section-number">3</div>
+        <div class="section-title">Confirmación de URL del Webhook</div>
+      </div>
+      <p class="section-desc">
+        Una vez configuradas las credenciales y activado el workflow, la landing page enviará los leads a esta URL:
+      </p>
+
+      <table>
+        <thead>
+          <tr>
+            <th>Entorno</th>
+            <th>URL</th>
+            <th>Estado</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="field-name">Test (desarrollo)</td>
+            <td><span class="field-example" style="font-size:11px">https://n8n-n8n.yxmkwr.easypanel.host/webhook-test/casto-lead</span></td>
+            <td><span class="optional">Activo</span></td>
+          </tr>
+          <tr>
+            <td class="field-name">Producción</td>
+            <td><span class="field-example" style="font-size:11px">https://n8n-n8n.yxmkwr.easypanel.host/webhook/casto-lead</span></td>
+            <td><span class="required">Pendiente</span></td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="instructions">
+        <h4>Nota importante</h4>
+        <ul>
+          <li>La URL de <strong>producción</strong> solo funciona cuando el workflow está <strong>activado</strong> en n8n.</li>
+          <li>La URL de <strong>test</strong> solo funciona cuando el workflow está en modo <strong>"Listening for test events"</strong> en la UI de n8n.</li>
+          <li>Al momento de deploy final, se cambiará la landing para apuntar a la URL de producción.</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="page-break"></div>
+
+    <!-- Section 4: Data Payload -->
+    <div class="section">
+      <div class="section-header">
+        <div class="section-number">4</div>
+        <div class="section-title">Estructura de Datos del Lead</div>
+      </div>
+      <p class="section-desc">
+        Este es el formato JSON que la landing envía al webhook. El nodo "Validar y Normalizar" procesa estos datos antes de enviarlos a Kommo.
+      </p>
+
+      <div class="diagram" style="font-size: 12px;">
+{<br>
+&nbsp;&nbsp;<span class="label">"source"</span>: <span class="success">"Landing Casto"</span>,<br>
+&nbsp;&nbsp;<span class="label">"campaign"</span>: <span class="success">"deuda"</span>,<br>
+&nbsp;&nbsp;<span class="label">"contact"</span>: {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="label">"name"</span>: <span class="success">"Roberto Sánchez"</span>,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="label">"phone"</span>: <span class="success">"55 1234 5678"</span><br>
+&nbsp;&nbsp;},<br>
+&nbsp;&nbsp;<span class="label">"lead_details"</span>: {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="label">"intent"</span>: <span class="success">"deuda"</span>,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="label">"property_value"</span>: <span class="success">"1m-3m"</span><br>
+&nbsp;&nbsp;},<br>
+&nbsp;&nbsp;<span class="label">"timestamp"</span>: <span class="success">"2026-03-16T14:30:00Z"</span><br>
+}
+      </div>
+
+      <p class="section-desc" style="padding-left: 0; margin-top: 12px;">
+        <strong>Validaciones automáticas:</strong> El sistema normaliza teléfonos al formato <span class="field-example">52XXXXXXXXXX</span>,
+        valida que el nombre tenga mín. 2 caracteres y el teléfono mín. 7 dígitos. Los leads inválidos reciben respuesta HTTP 400 y no se envían al CRM.
+      </p>
+    </div>
+
+    <!-- Section 5: Checklist -->
+    <div class="section">
+      <div class="section-header">
+        <div class="section-number">5</div>
+        <div class="section-title">Checklist de Entrega</div>
+      </div>
+      <p class="section-desc">
+        Marque cada punto al tener la información lista. Una vez completados todos los puntos requeridos, procedemos a la activación.
+      </p>
+
+      <ul class="checklist">
+        <li>
+          <div class="checkbox"></div>
+          <div>
+            <strong>Subdominio de Kommo</strong><br>
+            <span style="color: #6b7280; font-size: 12px;">Ej: casto.kommo.com</span>
+          </div>
+        </li>
+        <li>
+          <div class="checkbox"></div>
+          <div>
+            <strong>API Token de Kommo (Long-lived)</strong><br>
+            <span style="color: #6b7280; font-size: 12px;">Se obtiene en Configuración → Integraciones → API</span>
+          </div>
+        </li>
+        <li>
+          <div class="checkbox"></div>
+          <div>
+            <strong>ID del campo "Teléfono" en Kommo</strong><br>
+            <span style="color: #6b7280; font-size: 12px;">Número identificador del custom field de teléfono en contactos</span>
+          </div>
+        </li>
+        <li>
+          <div class="checkbox"></div>
+          <div>
+            <strong>API Key de Zadarma</strong><br>
+            <span style="color: #6b7280; font-size: 12px;">Se obtiene en my.zadarma.com → Configuración → API</span>
+          </div>
+        </li>
+        <li>
+          <div class="checkbox"></div>
+          <div>
+            <strong>API Secret de Zadarma</strong><br>
+            <span style="color: #6b7280; font-size: 12px;">Se entrega junto con el API Key</span>
+          </div>
+        </li>
+        <li>
+          <div class="checkbox"></div>
+          <div>
+            <strong>Número de origen Zadarma (PBX/SIP)</strong><br>
+            <span style="color: #6b7280; font-size: 12px;">Extensión o número que recibirá la llamada primero (asesor de ventas)</span>
+          </div>
+        </li>
+        <li>
+          <div class="checkbox"></div>
+          <div>
+            <strong>IP del servidor n8n en whitelist de Zadarma</strong><br>
+            <span style="color: #6b7280; font-size: 12px;">Confirmar que Zadarma permite llamadas desde nuestra IP</span>
+          </div>
+        </li>
+        <li>
+          <div class="checkbox"></div>
+          <div>
+            <strong>(Opcional) Pipeline ID de Kommo</strong><br>
+            <span style="color: #6b7280; font-size: 12px;">Embudo de ventas donde se crearán los leads</span>
+          </div>
+        </li>
+      </ul>
+    </div>
+
+    <!-- Section 6: Contact -->
+    <div class="section">
+      <div class="section-header">
+        <div class="section-number">6</div>
+        <div class="section-title">Contacto para Entrega</div>
+      </div>
+      <div class="instructions">
+        <p style="font-size: 13px; color: #475569;">
+          Enviar las credenciales de forma segura (NO por email sin cifrar). Opciones recomendadas:
+        </p>
+        <ul style="margin-top: 8px;">
+          <li><strong>1Password / LastPass</strong> — Compartir vault o nota segura</li>
+          <li><strong>Mensaje directo</strong> — WhatsApp o Telegram con mensajes que se autodestruyen</li>
+          <li><strong>En persona</strong> — Durante una reunión o llamada</li>
+        </ul>
+        <p style="font-size: 12px; color: #94a3b8; margin-top: 12px;">
+          ⚠️ Nunca enviar API Keys o Secrets por correo electrónico no cifrado.
+        </p>
+      </div>
+    </div>
+
+    <!-- Footer -->
+    <div class="footer">
+      <div>CASTO — Requerimientos de Integración v1.0</div>
+      <div>Documento generado el 16 de Marzo, 2026</div>
+    </div>
+  </div>
+
+  <!-- Print Button -->
+  <button class="print-btn no-print" onclick="window.print()">
+    📄 Guardar como PDF
+  </button>
+</body>
+</html>

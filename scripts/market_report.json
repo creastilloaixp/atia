@@ -1,0 +1,51 @@
+{
+    "timestamp": "2026-04-10T05:22:15.171396",
+    "total_properties": 10,
+    "sectors": {
+        "Col. Las Quintas": {
+            "avg_price": 5000000.0,
+            "count": 2,
+            "gems_found": 0
+        },
+        "Col. Privada Del Real": {
+            "avg_price": 30000000.0,
+            "count": 1,
+            "gems_found": 0
+        },
+        "Col. Colinas de San Miguel": {
+            "avg_price": 7500000.0,
+            "count": 1,
+            "gems_found": 0
+        },
+        "Col. Tierra Blanca": {
+            "avg_price": 4900000.0,
+            "count": 1,
+            "gems_found": 0
+        },
+        "Col. Valle Alto": {
+            "avg_price": 3157740.0,
+            "count": 1,
+            "gems_found": 0
+        },
+        "Col. Chapultepec": {
+            "avg_price": 11400000.0,
+            "count": 1,
+            "gems_found": 0
+        },
+        "Col. Las Moras": {
+            "avg_price": 9050000.0,
+            "count": 1,
+            "gems_found": 0
+        },
+        "Col. La Primavera": {
+            "avg_price": 3205000.0,
+            "count": 1,
+            "gems_found": 0
+        },
+        "Col. Centro Sinaloa": {
+            "avg_price": 4250000.0,
+            "count": 1,
+            "gems_found": 0
+        }
+    }
+}

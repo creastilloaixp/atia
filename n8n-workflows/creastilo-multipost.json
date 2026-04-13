@@ -1,0 +1,212 @@
+{
+  "name": "creastilo-multipost",
+  "nodes": [
+    {
+      "parameters": {
+        "path": "multipost",
+        "httpMethod": "POST",
+        "responseMode": "lastNode",
+        "options": {}
+      },
+      "id": "webhook-1",
+      "name": "Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [250, 300],
+      "webhookId": "multipost"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": { "caseSensitive": false },
+          "conditions": [
+            {
+              "id": "validate-caption",
+              "leftValue": "={{ $json.body.caption }}",
+              "rightValue": "",
+              "operator": { "type": "string", "operation": "isNotEmpty" }
+            }
+          ]
+        }
+      },
+      "id": "validate-1",
+      "name": "Validate Input",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [470, 300]
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ JSON.stringify({ error: 'caption es requerido', status: 'error' }) }}",
+        "options": { "responseCode": 400 }
+      },
+      "id": "error-response-1",
+      "name": "Error Response",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1,
+      "position": [690, 460]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Adaptar caption por plataforma\nconst input = $input.first().json.body;\nconst caption = input.caption;\nconst imagePrompt = input.image_prompt || null;\nconst platforms = input.platforms || ['facebook', 'instagram', 'x', 'linkedin'];\nconst hashtags = input.hashtags || [];\nconst ctaWhatsapp = input.cta_whatsapp || 'wa.me/526671326265';\n\n// Generar versiones por plataforma\nconst hashtagStr = hashtags.length > 0 ? '\\n\\n' + hashtags.map(h => '#' + h).join(' ') : '';\n\nconst adapted = {\n  original: caption,\n  platforms: platforms,\n  image_prompt: imagePrompt,\n  captions: {\n    facebook: caption + '\\n\\n' + '\\uD83D\\uDCF2 ' + ctaWhatsapp + hashtagStr,\n    instagram: caption + hashtagStr + '\\n\\n\\uD83D\\uDCF2 Link en bio',\n    x: caption.substring(0, 250) + (caption.length > 250 ? '...' : '') + (hashtags.length > 0 ? ' ' + hashtags.slice(0, 2).map(h => '#' + h).join(' ') : ''),\n    linkedin: caption + '\\n\\n' + '\\u27A1\\uFE0F ' + ctaWhatsapp + hashtagStr,\n    tiktok: caption + hashtagStr,\n    threads: caption.substring(0, 500),\n    pinterest: caption.substring(0, 500) + hashtagStr,\n    bluesky: caption.substring(0, 300)\n  }\n};\n\n// Asegurar X no exceda 280 chars\nif (adapted.captions.x.length > 280) {\n  adapted.captions.x = adapted.captions.x.substring(0, 277) + '...';\n}\n\nreturn [{ json: adapted }];"
+      },
+      "id": "adapt-captions-1",
+      "name": "Adapt Captions",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [690, 300]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {},
+          "conditions": [
+            {
+              "id": "check-image",
+              "leftValue": "={{ $json.image_prompt }}",
+              "rightValue": "",
+              "operator": { "type": "string", "operation": "isNotEmpty" }
+            }
+          ]
+        }
+      },
+      "id": "check-image-1",
+      "name": "Has Image Prompt?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [910, 300]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://generativelanguage.googleapis.com/v1beta/models/imagen-3.0-generate-002:predict",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            { "name": "key", "value": "={{ $env.GEMINI_API_KEY }}" }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify({ instances: [{ prompt: $json.image_prompt }], parameters: { sampleCount: 1, aspectRatio: '1:1', personGeneration: 'DONT_ALLOW' } }) }}",
+        "options": {
+          "timeout": 30000
+        }
+      },
+      "id": "gemini-imagen-1",
+      "name": "Gemini Imagen 3",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [1130, 200]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Preparar payload para Blotato API\nconst captions = $('Adapt Captions').first().json.captions;\nconst platforms = $('Adapt Captions').first().json.platforms;\nconst imageData = $json.predictions ? $json.predictions[0].bytesBase64Encoded : null;\n\nconst posts = platforms.map(platform => {\n  return {\n    platform: platform,\n    caption: captions[platform] || captions.facebook,\n    image_base64: imageData,\n    scheduled: false // publicar inmediatamente\n  };\n});\n\nreturn posts.map(p => ({ json: p }));"
+      },
+      "id": "prepare-blotato-1",
+      "name": "Prepare Blotato Posts",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [1350, 200]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Preparar payload sin imagen\nconst captions = $('Adapt Captions').first().json.captions;\nconst platforms = $('Adapt Captions').first().json.platforms;\n\nconst posts = platforms.map(platform => {\n  return {\n    platform: platform,\n    caption: captions[platform] || captions.facebook,\n    image_base64: null,\n    scheduled: false\n  };\n});\n\nreturn posts.map(p => ({ json: p }));"
+      },
+      "id": "prepare-no-image-1",
+      "name": "Prepare Posts (No Image)",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [1350, 420]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.blotato.com/v1/posts",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            { "name": "Authorization", "value": "Bearer {{ $env.BLOTATO_API_KEY }}" },
+            { "name": "Content-Type", "value": "application/json" }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify({ platform: $json.platform, content: $json.caption, media: $json.image_base64 ? [{ type: 'image', data: $json.image_base64 }] : [] }) }}",
+        "options": {
+          "timeout": 15000
+        }
+      },
+      "id": "blotato-post-1",
+      "name": "Blotato Publish",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [1570, 300]
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "INSERT INTO campaign_posts (campaign_id, day_number, post_type, caption, platforms, scheduled_date, scheduled_time, blotato_post_id, status) VALUES ('00000000-0000-0000-0000-000000000000', 0, 'manual', $1, $2, CURRENT_DATE, CURRENT_TIME, $3, 'posted')",
+        "options": {}
+      },
+      "id": "supabase-log-1",
+      "name": "Log to Supabase",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.5,
+      "position": [1790, 300]
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ JSON.stringify({ status: 'success', message: 'Posts publicados en ' + $('Adapt Captions').first().json.platforms.length + ' plataformas', platforms: $('Adapt Captions').first().json.platforms }) }}",
+        "options": { "responseCode": 200 }
+      },
+      "id": "success-response-1",
+      "name": "Success Response",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1,
+      "position": [2010, 300]
+    }
+  ],
+  "connections": {
+    "Webhook": {
+      "main": [[{ "node": "Validate Input", "type": "main", "index": 0 }]]
+    },
+    "Validate Input": {
+      "main": [
+        [{ "node": "Adapt Captions", "type": "main", "index": 0 }],
+        [{ "node": "Error Response", "type": "main", "index": 0 }]
+      ]
+    },
+    "Adapt Captions": {
+      "main": [[{ "node": "Has Image Prompt?", "type": "main", "index": 0 }]]
+    },
+    "Has Image Prompt?": {
+      "main": [
+        [{ "node": "Gemini Imagen 3", "type": "main", "index": 0 }],
+        [{ "node": "Prepare Posts (No Image)", "type": "main", "index": 0 }]
+      ]
+    },
+    "Gemini Imagen 3": {
+      "main": [[{ "node": "Prepare Blotato Posts", "type": "main", "index": 0 }]]
+    },
+    "Prepare Blotato Posts": {
+      "main": [[{ "node": "Blotato Publish", "type": "main", "index": 0 }]]
+    },
+    "Prepare Posts (No Image)": {
+      "main": [[{ "node": "Blotato Publish", "type": "main", "index": 0 }]]
+    },
+    "Blotato Publish": {
+      "main": [[{ "node": "Log to Supabase", "type": "main", "index": 0 }]]
+    },
+    "Log to Supabase": {
+      "main": [[{ "node": "Success Response", "type": "main", "index": 0 }]]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "timezone": "America/Mexico_City"
+  },
+  "tags": [{ "name": "creastilo" }, { "name": "marketing" }, { "name": "social-media" }]
+}

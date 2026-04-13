@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Creastilo AI Xperience — Arquitectos del Futuro Digital</title>
+  <meta name="description" content="Agencia de desarrollo web, automatización e IA en México. Creamos experiencias digitales que establecen nuevos estándares de calidad.">
+  
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+  
+  <!-- Styles -->
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+  <!-- Scroll Progress -->
+  <div class="scroll-progress" id="scrollProgress"></div>
+
+  <!-- Navigation -->
+  <nav class="nav" id="nav">
+    <div class="nav-logo">
+      <span class="logo-text">CREASTILO</span>
+      <span class="logo-accent">AI</span>
+    </div>
+    <div class="nav-links">
+      <a href="#servicios" class="nav-link">Servicios</a>
+      <a href="#proceso" class="nav-link">Proceso</a>
+      <a href="#precios" class="nav-link">Precios</a>
+      <a href="#contacto" class="nav-cta">Conversemos</a>
+    </div>
+    <button class="nav-toggle" id="navToggle" aria-label="Toggle menu">
+      <span></span>
+      <span></span>
+      <span></span>
+    </button>
+  </nav>
+
+  <!-- Hero Section with Scroll-Driven Video -->
+  <section class="hero" id="hero">
+    <div class="hero-canvas">
+      <canvas id="heroCanvas"></canvas>
+    </div>
+    
+    <div class="hero-overlay">
+      <div class="hero-content">
+        <div class="hero-badge">Agencia de IA & Desarrollo</div>
+        <h1 class="hero-title">
+          <span class="title-line">Arquitectos del</span>
+          <span class="title-line gradient-text">Futuro Digital</span>
+        </h1>
+        <p class="hero-subtitle">Creamos experiencias digitales que establecen nuevos estándares de calidad en desarrollo con inteligencia artificial.</p>
+        <div class="hero-cta">
+          <a href="#contacto" class="btn-primary">Ver Proyectos</a>
+          <a href="#servicios" class="btn-secondary">Nuestros Servicios</a>
+        </div>
+      </div>
+    </div>
+    
+    <div class="scroll-indicator">
+      <span class="scroll-text">Explora</span>
+      <div class="scroll-arrow"></div>
+    </div>
+  </section>
+
+  <!-- Features / Services Section -->
+  <section class="services" id="servicios">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-tag">Servicios</span>
+        <h2 class="section-title">Soluciones<span class="gradient-text"> Integrales</span></h2>
+        <p class="section-desc">Todo lo que necesitas para transformar tu negocio con IA en un solo lugar.</p>
+      </div>
+      
+      <div class="services-grid">
+        <div class="service-card" data-index="0">
+          <div class="service-icon">💻</div>
+          <h3>Desarrollo Web & Apps</h3>
+          <p>Landing pages de alto impacto, SaaS, PWAs y aplicaciones móviles diseñadas para convertir.</p>
+          <div class="service-tech">
+            <span>React 19</span>
+            <span>Next.js</span>
+            <span>Supabase</span>
+          </div>
+        </div>
+        
+        <div class="service-card" data-index="1">
+          <div class="service-icon">⚡</div>
+          <h3>Automatización con IA</h3>
+          <p>WhatsApp Business API, CRM automatizado, lead capture y flujos de nurturing inteligentes.</p>
+          <div class="service-tech">
+            <span>WhatsApp API</span>
+            <span>n8n</span>
+            <span>CRM</span>
+          </div>
+        </div>
+        
+        <div class="service-card" data-index="2">
+          <div class="service-icon">🎬</div>
+          <h3>Contenido Multimedia</h3>
+          <p>Videos marketing, voiceovers profesionales e imágenes generadas con IA de última generación.</p>
+          <div class="service-tech">
+            <span>Remotion</span>
+            <span>Veo</span>
+            <span>ElevenLabs</span>
+          </div>
+        </div>
+        
+        <div class="service-card" data-index="3">
+          <div class="service-icon">📈</div>
+          <h3>Marketing Digital</h3>
+          <p>SEO técnico, campañas automatizadas y analytics en tiempo real para maximizar resultados.</p>
+          <div class="service-tech">
+            <span>SEO</span>
+            <span>Analytics</span>
+            <span>A/B Testing</span>
+          </div>
+        </div>
+        
+        <div class="service-card" data-index="4">
+          <div class="service-icon">🧠</div>
+          <h3>Consultoría IA</h3>
+          <p>Auditoría completa de procesos y implementación de agentes IA personalizados para tu negocio.</p>
+          <div class="service-tech">
+            <span>Agentes IA</span>
+            <span>Training</span>
+            <span>Estrategia</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Stats / Social Proof -->
+  <section class="stats">
+    <div class="container">
+      <div class="stats-grid">
+        <div class="stat-item">
+          <div class="stat-number" data-target="150">0</div>
+          <div class="stat-label">Proyectos Entregados</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-number" data-target="98">0</div>
+          <div class="stat-suffix">%</div>
+          <div class="stat-label">Satisfacción del Cliente</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-number" data-target="50">0</div>
+          <div class="stat-suffix">+</div>
+          <div class="stat-label">Empresas Transformadas</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-number" data-target="24">0</div>
+          <div class="stat-suffix">/7</div>
+          <div class="stat-label">Soporte Disponible</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Process Section -->
+  <section class="process" id="proceso">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-tag">Proceso</span>
+        <h2 class="section-title">Cómo<span class="gradient-text"> Trabajamos</span></h2>
+        <p class="section-desc">Una metodología probada que garantiza resultados excepcionales en cada proyecto.</p>
+      </div>
+      
+      <div class="process-timeline">
+        <div class="process-step">
+          <div class="step-number">01</div>
+          <div class="step-content">
+            <h3>Discovery & Strategy</h3>
+            <p>Analizamos tu negocio, objetivos y competencia para crear una estrategia personalizada.</p>
+          </div>
+        </div>
+        
+        <div class="process-step">
+          <div class="step-number">02</div>
+          <div class="step-content">
+            <h3>Design & Architecture</h3>
+            <p>Diseñamos la arquitectura técnica y la experiencia de usuario más efectiva para tu proyecto.</p>
+          </div>
+        </div>
+        
+        <div class="process-step">
+          <div class="step-number">03</div>
+          <div class="step-content">
+            <h3>Development & AI Integration</h3>
+            <p>Construimos con las mejores tecnologías e implementamos soluciones de IA avanzadas.</p>
+          </div>
+        </div>
+        
+        <div class="process-step">
+          <div class="step-number">04</div>
+          <div class="step-content">
+            <h3>Testing & Launch</h3>
+            <p>Garantizamos calidad total y desplegamos tu solución lista para escalar.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Pricing Section -->
+  <section class="pricing" id="precios">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-tag">Precios</span>
+        <h2 class="section-title">Inversión<span class="gradient-text"> Estratégica</span></h2>
+        <p class="section-desc">Planes diseñados para cada etapa de crecimiento de tu negocio.</p>
+      </div>
+      
+      <div class="pricing-grid">
+        <div class="pricing-card">
+          <div class="pricing-header">
+            <h3>Starter</h3>
+            <div class="price">Desde <span class="amount">$15,000</span><span class="currency">MXN</span></div>
+          </div>
+          <ul class="pricing-features">
+            <li>Landing page profesional</li>
+            <li>Diseño premium responsive</li>
+            <li>Integración básica</li>
+            <li>SEO optimizado</li>
+            <li>1 mes de soporte</li>
+          </ul>
+          <a href="#contacto" class="pricing-btn">Comenzar Proyecto</a>
+        </div>
+        
+        <div class="pricing-card featured">
+          <div class="pricing-badge">Más Popular</div>
+          <div class="pricing-header">
+            <h3>Growth</h3>
+            <div class="price">Desde <span class="amount">$45,000</span><span class="currency">MXN</span></div>
+          </div>
+          <ul class="pricing-features">
+            <li>App web completa</li>
+            <li>CRM + WhatsApp</li>
+            <li>Automatizaciones IA</li>
+            <li>Dashboard analytics</li>
+            <li>3 meses de soporte</li>
+          </ul>
+          <a href="#contacto" class="pricing-btn primary">Elegir Growth</a>
+        </div>
+        
+        <div class="pricing-card">
+          <div class="pricing-header">
+            <h3>Enterprise</h3>
+            <div class="price"><span class="amount">Personalizado</span></div>
+          </div>
+          <ul class="pricing-features">
+            <li>SaaS multi-tenant</li>
+            <li>Agentes IA dedicados</li>
+            <li>Integraciones avanzadas</li>
+            <li>Infraestructura escalable</li>
+            <li>Soporte prioritario 24/7</li>
+          </ul>
+          <a href="#contacto" class="pricing-btn">Contactar</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA / Contact Section -->
+  <section class="cta" id="contacto">
+    <div class="container">
+      <div class="cta-content">
+        <h2 class="cta-title">¿Listo para<span class="gradient-text"> Transformar</span> tu Negocio?</h2>
+        <p class="cta-desc">Conversemos sobre tu proyecto y descubramos cómo la IA puede impulsar tu negocio al siguiente nivel.</p>
+        
+        <div class="cta-buttons">
+          <a href="https://wa.me/521" class="btn-whatsapp" target="_blank">
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor">
+              <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.195.194 1.613.073.417-.122.75-.5 1.006-1.048.254-.548.254-1.016.254-1.016.005-.005.005-.006.01-.013-.03-.115-.58-.248-1.076-.445-1.23-.485-1.753-.794-1.986-1.028l-.017-.01c-.103-.074-.264-.15-.42-.271l-.02-.015c-.067-.051-.146-.095-.23-.14-.1-.054-.197-.09-.318-.09l-.25-.01c-.102-.005-.233-.005-.35-.005-.117 0-.234.005-.351.01-.08.003-.16.01-.238.02-.296.04-.597.13-.843.28-.246.15-.475.354-.627.568-.153.213-.27.47-.29.5-.02.028-.067.075-.163.138l-.058.04c-.08.063-.167.123-.27.185-.104.062-.223.119-.35.172-.128.053-.27.093-.42.12-.15.026-.297.042-.45.05-.154.007-.31.01-.467.01h-.007l-.014.002z"/>
+            </svg>
+            Escríbenos WhatsApp
+          </a>
+          <a href="mailto:hola@creastilo-ai-xperience.com" class="btn-email">
+            hola@creastilo-ai-xperience.com
+          </a>
+        </div>
+        
+        <p class="cta-note">✨ Primera consulta sin costo • Respuesta en minutos</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-brand">
+          <div class="footer-logo">
+            <span class="logo-text">CREASTILO</span>
+            <span class="logo-accent">AI</span>
+          </div>
+          <p>Arquitectos del futuro digital en México.</p>
+        </div>
+        
+        <div class="footer-links">
+          <h4>Servicios</h4>
+          <a href="#servicios">Desarrollo Web</a>
+          <a href="#servicios">Automatización</a>
+          <a href="#servicios">Contenido IA</a>
+          <a href="#servicios">Consultoría</a>
+        </div>
+        
+        <div class="footer-links">
+          <h4>Empresa</h4>
+          <a href="#proceso">Proceso</a>
+          <a href="#precios">Precios</a>
+          <a href="#contacto">Contacto</a>
+        </div>
+        
+        <div class="footer-contact">
+          <h4>Contacto</h4>
+          <p>hola@creastilo-ai-xperience.com</p>
+          <p>México</p>
+          <p>WhatsApp: Respuesta inmediata</p>
+        </div>
+      </div>
+      
+      <div class="footer-bottom">
+        <p>&copy; 2026 Creastilo AI Xperience. Todos los derechos reservados.</p>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Mobile Menu -->
+  <div class="mobile-menu" id="mobileMenu">
+    <a href="#servicios">Servicios</a>
+    <a href="#proceso">Proceso</a>
+    <a href="#precios">Precios</a>
+    <a href="#contacto">Contacto</a>
+  </div>
+
+  <!-- Scripts -->
+  <script src="script.js"></script>
+</body>
+</html>

@@ -1,0 +1,40 @@
+{
+  "name": "Casto Inmobiliaria",
+  "tagline": "Sana tu deuda, recupera tu tranquilidad",
+  "description": "Compramos casas con deuda, embargo, herencia o problemas legales. Proceso 100% legal ante notario.",
+  "services": [
+    "Compra de propiedades con deuda hipotecaria",
+    "Liquidación de deudas con Infonavit/Bancos",
+    "Solución de embargos",
+    "Herencias sin testamento",
+    "Procesos de divorcio"
+  ],
+  "process": [
+    "1. Contacto inicial y diagnóstico",
+    "2. Valuación de la propiedad",
+    "3. Oferta en 24 horas",
+    "4. Proceso legal ante notario",
+    "5. Liquidación en 7-15 días"
+  ],
+  "differentiators": [
+    "Sin comisión para el vendedor",
+    "Pagamos todos los gastos legales",
+    "Proceso ante notario público",
+    ">+2,700 familias atendidas",
+    "4.9/5 rating en Google"
+  ],
+  "contact": {
+    "phone": "+526674540164",
+    "whatsapp": "+526674540164",
+    "email": "hola@atia.mx",
+    "website": "castosearch.com",
+    "address": "Rafael Buelna #1142, Las Quintas, Culiacán, Sinaloa"
+  },
+  "areas": [
+    "Culiacán, Sinaloa",
+    "Mazatlán, Sinaloa",
+    "Monterrey, Nuevo León",
+    "Ciudad de México",
+    "Querétaro"
+  ]
+}

@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Scroll-Driven Animation Preview</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    height: 3660vh;
+    background: #000;
+  }
+  .scroll-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+  }
+  #hero-canvas {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  .progress-bar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 3px;
+    background: linear-gradient(90deg, #6366f1, #8b5cf6);
+    z-index: 1000;
+    transition: width 0.05s linear;
+  }
+  .frame-counter {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    color: white;
+    font-family: monospace;
+    font-size: 14px;
+    background: rgba(0,0,0,0.7);
+    padding: 8px 16px;
+    border-radius: 8px;
+    z-index: 1000;
+  }
+  .scroll-hint {
+    position: fixed;
+    bottom: 40px;
+    left: 50%;
+    transform: translateX(-50%);
+    color: rgba(255,255,255,0.6);
+    font-family: system-ui;
+    font-size: 14px;
+    animation: bounce 2s infinite;
+    z-index: 1000;
+  }
+  @keyframes bounce {
+    0%, 100% { transform: translateX(-50%) translateY(0); }
+    50% { transform: translateX(-50%) translateY(-10px); }
+  }
+</style>
+</head>
+<body>
+<div class="progress-bar" id="progress"></div>
+<div class="scroll-container">
+  <canvas id="hero-canvas"></canvas>
+</div>
+<div class="frame-counter" id="counter">Frame: 0 / 61</div>
+<div class="scroll-hint">↓ Scroll to animate ↓</div>
+
+<script>
+const TOTAL_FRAMES = 61;
+const canvas = document.getElementById('hero-canvas');
+const ctx = canvas.getContext('2d');
+const counter = document.getElementById('counter');
+const progress = document.getElementById('progress');
+
+// Preload all frames
+const frames = [];
+let loadedCount = 0;
+
+for (let i = 0; i < TOTAL_FRAMES; i++) {
+  const img = new Image();
+  img.src = 'frames/frame-' + String(i).padStart(4, '0') + '.jpg';
+  img.onload = () => {
+    loadedCount++;
+    if (loadedCount === 1) {
+      canvas.width = img.width;
+      canvas.height = img.height;
+      ctx.drawImage(img, 0, 0);
+    }
+    if (loadedCount === TOTAL_FRAMES) {
+      document.querySelector('.scroll-hint').textContent = '↓ Scroll to animate ↓ (All frames loaded!)';
+    }
+  };
+  frames.push(img);
+}
+
+// Scroll-driven animation
+let currentFrame = 0;
+
+function updateFrame() {
+  const scrollTop = window.scrollY;
+  const maxScroll = document.body.scrollHeight - window.innerHeight;
+  const scrollFraction = Math.min(scrollTop / maxScroll, 1);
+  const frameIndex = Math.min(Math.floor(scrollFraction * TOTAL_FRAMES), TOTAL_FRAMES - 1);
+
+  if (frameIndex !== currentFrame && frames[frameIndex]?.complete) {
+    currentFrame = frameIndex;
+    canvas.width = frames[frameIndex].width;
+    canvas.height = frames[frameIndex].height;
+    ctx.drawImage(frames[frameIndex], 0, 0);
+    counter.textContent = 'Frame: ' + frameIndex + ' / ' + TOTAL_FRAMES;
+    progress.style.width = (scrollFraction * 100) + '%';
+  }
+
+  requestAnimationFrame(updateFrame);
+}
+
+requestAnimationFrame(updateFrame);
+</script>
+</body>
+</html>

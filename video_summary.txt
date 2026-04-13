@@ -1,0 +1,42 @@
+TITLE: La integración que Google NO te enseño 🤯: Antigravity + NotebookLM (MCP)
+===============
+DESCRIPTION: Guía de Instalación:
+https://docs.google.com/document/d/1AEcT3HIW9fMHWK50bPrpJOoPZF2oaXFfUiymo8qhVXw/edit?usp=sharing
+
+¡Hola, qué tal, gente! En este video vamos a dar un salto de nivel en la creación de agentes. 🚀
+
+¿Alguna vez has querido que tus agentes de Antigravity tengan acceso a TODA tu documentación personal de NotebookLM? Hoy te enseño cómo romper esa barrera usando el protocolo MCP.
+
+Pasaremos de tener una IA que "adivina" a una IA que "sabe" con precisión milimétrica gracias a tu biblioteca privada de conocimientos. 🧠✨
+
+En este video aprenderás:
+
+✅ Qué es y para qué sirve el MCP en el ecosistema de agentes.
+
+✅ Cómo configurar NotebookLM como tu base de conocimientos privada.
+
+✅ Paso a paso de la integración con Antigravity.
+
+🚀 ¡Bienvenidos a la Revolución del Desarrollo con IA! 🤖✨
+¡Hola! Es un gusto tenerte aquí. En este canal nos sumergimos en el apasionante mundo del desarrollo de aplicaciones con Inteligencia Artificial. 🌐📱
+
+Aquí no solo ves videos, ¡aprendes a crear! Formamos una comunidad de desarrolladores NoCode/LowCode donde compartimos desde los fundamentos básicos hasta las estrategias más avanzadas para que domines la IA y lleves tus proyectos al siguiente nivel. 💡👨‍💻
+
+🤝 CONÉCTATE Y COLABORA
+No te pierdas ninguna actualización, consejos exclusivos y el detrás de cámaras:
+
+📸 Instagram: https://www.instagram.com/javier_jhl73/ 📲 ¡Únete a nuestra comunidad y no te pierdas nada! 🌈✍️
+
+💎 CONTENIDO EXCLUSIVO (PATREON)
+¿Quieres ir más rápido? Accede a plantillas, videos privados y cursos completos para acelerar tu aprendizaje. 📚🎥 Forma parte de nuestro grupo Premium aquí: https://patreon.com/user?u=121953546
+
+📅 ASESORÍAS PERSONALIZADAS 1-A-1
+¿Tienes un problema específico o quieres optimizar tu app? Mejora tus habilidades con una sesión privada conmigo. 💼 Costo: $35 USD / hora 1️⃣ Paga vía PayPal: https://www.paypal.com/donate?hosted_button_id=E5ZFN6PPBY2M4 2️⃣ Agenda tu cita aquí: https://calendar.app.google/8hASLRgaYNGMCrmx9
+
+💖 APOYA EL CANAL
+Tu apoyo nos permite seguir inspirando y educando de forma gratuita en YouTube. ¡Cualquier contribución es enormemente agradecida! 🫂 ☕ Donaciones vía PayPal: Haz clic aquí
+
+🔔 ¡RECUERDA!
+Si te apasiona la tecnología, ¡SUSCRÍBETE y activa las notificaciones! 🔔 Dale LIKE ♥️ al video para apoyar el contenido y ayúdanos a transformar ideas en proyectos increíbles. 🚀🔧
+
+#IA #DesarrolloDeApps #NoCode #IAntigravity #Programacion #ArtificialIntelligence #Apps #Dart #FlutterFlow #Tutorial #Android #iOS #Tecnologia #LowCode

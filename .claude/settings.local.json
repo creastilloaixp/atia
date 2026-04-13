@@ -1,0 +1,36 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npm install:*)",
+      "Bash(npm run:*)",
+      "Bash(npx tsc:*)",
+      "Bash(npx vite:*)",
+      "Bash(npx eslint:*)",
+      "Bash(node:*)",
+      "Bash(git add:*)",
+      "Bash(git commit:*)",
+      "Bash(git push:*)",
+      "Bash(grep:*)",
+      "WebSearch",
+      "Bash(claude mcp:*)",
+      "Bash(npx -y notebooklm-mcp@latest --auth 2>&1 | head -20)",
+      "Bash(npx -y notebooklm-mcp@latest --auth 2>&1 | head -40)",
+      "WebFetch(domain:compramostucasa.mx)",
+      "WebFetch(domain:tecompramostucasa.mx)",
+      "WebFetch(domain:fliphouse.com.mx)",
+      "WebFetch(domain:carrot.com)",
+      "WebFetch(domain:reimarketingexperts.com)",
+      "mcp__notebooklm__get_health",
+      "mcp__notebooklm__setup_auth",
+      "mcp__notebooklm__list_notebooks",
+      "mcp__notebooklm__select_notebook",
+      "mcp__notebooklm__ask_question",
+      "WebFetch(domain:localhost)",
+      "WebFetch(domain:www.marketinglab.mx)",
+      "WebFetch(domain:raw.githubusercontent.com)",
+      "Bash(sleep 2 && node \"C:/Users/carlo/OneDrive/Escritorio/CastoProject/scripts/browser.cjs\" evaluate \"\n\\(function\\(\\) {\n  // Try all possible transcript segment selectors\n  let segs = document.querySelectorAll\\('ytd-transcript-segment-renderer'\\);\n  if \\(segs.length > 0\\) {\n    let out = '';\n    segs.forEach\\(s => out += s.innerText.trim\\(\\) + '\\\\n'\\);\n    return 'FOUND ' + segs.length + ' segments:\\\\n' + out.substring\\(0, 50000\\);\n  }\n  \n  // Try the panel itself\n  const panels = document.querySelectorAll\\('ytd-engagement-panel-section-list-renderer'\\);\n  let info = 'Panels found: ' + panels.length + '\\\\n';\n  panels.forEach\\(\\(p, i\\) => {\n    info += 'Panel ' + i + ' targetId=' + p.getAttribute\\('target-id'\\) + ' text=' + p.innerText.substring\\(0, 300\\) + '\\\\n---\\\\n';\n  }\\);\n  return info;\n}\\)\\(\\)\n\" 2>/dev/null)",
+      "Bash(python3 -c \":*)",
+      "WebFetch(domain:zadarma.com)"
+    ]
+  }
+}

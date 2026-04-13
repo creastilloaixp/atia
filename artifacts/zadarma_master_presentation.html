@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Voice Bridge Console | Atia Inmobiliaria</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700;900&family=Open+Sans:wght@400;600&family=Space+Mono&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <style>
+        :root {
+            --primary: #FF6600; /* Naranja Atia */
+            --secondary: #22d3ee;
+            --bg: #0f172a;
+            --panel: rgba(15, 23, 42, 0.9);
+            --border: rgba(255, 102, 0, 0.2);
+        }
+
+        body {
+            background-color: var(--bg);
+            color: #f8fafc;
+            font-family: 'Open Sans', sans-serif;
+            margin: 0;
+            display: flex;
+            padding: 40px;
+            box-sizing: border-box;
+            min-height: 100vh;
+            gap: 40px;
+            overflow: hidden;
+            background-image: 
+                radial-gradient(circle at 2px 2px, rgba(255, 102, 0, 0.05) 1px, transparent 0);
+            background-size: 40px 40px;
+        }
+
+        header {
+            position: absolute;
+            top: 40px;
+            left: 40px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            z-index: 10;
+        }
+
+        .brand-logo {
+            height: 40px;
+            filter: drop-shadow(0 0 10px rgba(255,102,0,0.3));
+        }
+
+        /* Sidebar Tech Details */
+        .tech-specs {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .main-stage {
+            flex: 2;
+            background: var(--panel);
+            border: 1px solid var(--border);
+            border-radius: 40px;
+            padding: 60px;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            backdrop-filter: blur(20px);
+        }
+
+        .label {
+            font-family: 'Space Mono', monospace;
+            font-size: 10px;
+            color: var(--secondary);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 20px;
+        }
+
+        h1 {
+            font-size: 56px;
+            line-height: 1;
+            margin: 0 0 20px 0;
+            font-weight: 900;
+        }
+
+        .bridge-container {
+            height: 300px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: relative;
+            margin: 40px 0;
+        }
+
+        .node {
+            width: 120px;
+            height: 140px;
+            background: #1e293b;
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            transition: all 0.5s;
+            position: relative;
+            z-index: 2;
+        }
+
+        .node.active {
+            border-color: var(--primary);
+            box-shadow: 0 0 40px rgba(251, 191, 36, 0.2);
+        }
+
+        .node-icon {
+            width: 40px;
+            height: 40px;
+            background: rgba(255,255,255,0.05);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .node b { font-size: 12px; letter-spacing: 1px; color: #94a3b8; }
+
+        .connection-line {
+            position: absolute;
+            height: 2px;
+            background: var(--border);
+            width: 100%;
+            top: 50%;
+            z-index: 1;
+        }
+
+        .pulse-line {
+            position: absolute;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, var(--primary), transparent);
+            width: 0%;
+            top: 50%;
+            z-index: 1;
+            box-shadow: 0 0 15px var(--primary);
+        }
+
+        /* Live Terminal Styles */
+        .terminal {
+            background: #000;
+            border-radius: 15px;
+            padding: 20px;
+            font-family: 'Space Mono', monospace;
+            font-size: 11px;
+            color: #4ade80;
+            height: 140px;
+            overflow-y: hidden;
+            border: 1px solid rgba(74, 222, 128, 0.1);
+            box-shadow: inset 0 0 20px rgba(0,0,0,1);
+        }
+
+        .code-viewer {
+            margin-top: 20px;
+            background: #0f172a;
+            border-radius: 15px;
+            padding: 20px;
+            border: 1px solid var(--border);
+            font-family: 'Space Mono', monospace;
+            font-size: 10px;
+            color: #94a3b8;
+        }
+
+        .stat-bar-container {
+            margin-top: 30px;
+        }
+
+        .bar-group { margin-bottom: 10px; }
+        .bar-label { font-size: 10px; color: #64748b; margin-bottom: 5px; display: flex; justify-content: space-between; }
+        .bar-outer { background: rgba(255,255,255,0.05); height: 6px; border-radius: 10px; width: 100%; border: 1px solid rgba(255,255,255,0.05); }
+        .bar-inner { background: var(--secondary); height: 100%; border-radius: 10px; width: 0%; }
+        .bar-inner.success { background: var(--primary); }
+    </style>
+</head>
+<body>
+    <header>
+        <img src="https://static.tokkobroker.com/tfw_images/9795_Grupo%20Atia/LOGO_2024-02.png" alt="Atia Logo" class="brand-logo">
+        <div style="font-family: 'Montserrat'; font-weight: 700; letter-spacing: 1px; color: white;">INMOBILIARIA</div>
+    </header>
+
+    <div class="tech-specs" style="margin-top: 60px;">
+        <div class="stat-card">
+            <div class="label">Infrastructure</div>
+            <h3 style="margin:0 0 15px 0; font-family: 'Montserrat';">Atia Voice Cloud</h3>
+            <div class="stack-tag">Zadarma Enterprise</div>
+            <div class="stack-tag">Supabase Bridge</div>
+            
+            <div class="stat-bar-container">
+                <div class="bar-group">
+                    <div class="bar-label">Eficiencia Operativa <span>+35%</span></div>
+                    <div class="bar-outer"><div class="bar-inner" style="width: 85%"></div></div>
+                </div>
+                <div class="bar-group">
+                    <div class="bar-label">Disponibilidad 24/7 <span>99.9%</span></div>
+                    <div class="bar-outer"><div class="bar-inner success" style="width: 100%"></div></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="terminal">
+            <div class="terminal-header">NETWORK_HANDSHAKE :: STATUS_OK</div>
+            <div id="logs-container"></div>
+        </div>
+
+        <div class="code-viewer">
+            <div class="label" style="margin-bottom: 10px;">Implementation Snippet</div>
+            <pre style="margin:0; color: #22d3ee;">
+const client = new ZadarmaRef(KEY, SECRET);
+await client.call('/v1/request/callback/', {
+  from: sip_id, // Advisor 105
+  to: lead_phone // Customer
+});
+            </pre>
+        </div>
+    </div>
+
+    <div class="main-stage">
+        <div class="label">Integrated Communications</div>
+        <h1 style="font-family: 'Montserrat';">Smart Voice Bridge</h1>
+
+        <div class="bridge-container">
+            <div class="connection-line"></div>
+            <div class="pulse-line" id="pulse"></div>
+
+            <div class="node active" id="node1">
+                <div class="node-icon">
+                    <img src="https://www.atiainmobiliaria.com/favicon.ico" style="width: 20px;">
+                </div>
+                <b>SOURCE</b>
+                <span style="font-size: 10px; color: var(--primary);">WEB TRIGGER</span>
+            </div>
+
+            <div class="node" id="node2">
+                <div class="node-icon">
+                    <img src="https://www.atiainmobiliaria.com/favicon.ico" style="width: 20px; filter: grayscale(1) opacity(0.5);">
+                </div>
+                <b>CORE</b>
+                <span style="font-size: 10px;">AUTH BRIDGE</span>
+            </div>
+
+            <div class="node" id="node3">
+                <div class="node-icon">
+                    <img src="https://www.atiainmobiliaria.com/favicon.ico" style="width: 20px; filter: grayscale(1) opacity(0.5);">
+                </div>
+                <b>OUTPUT</b>
+                <span style="font-size: 10px;">SIP LEG A+B</span>
+            </div>
+        </div>
+
+        <div style="display: flex; justify-content: space-between; align-items: flex-end;">
+            <div>
+                <button class="btn-trigger" onclick="runSim()">Ejecutar Simulación</button>
+            </div>
+            <div style="text-align: right; color: #64748b; font-size: 12px; font-family: 'Space Mono';">
+                LATENCY: 420ms<br>
+                UPTIME: 99.9%<br>
+                SDK_VERSION: v1.0.4
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const logs = [
+            "> [IO] Inbound connection from CastoLading...",
+            "> [AUTH] Validating API_KEY Signature...",
+            "> [AUTH] HMAC-SHA1 Verified (Success)",
+            "> [BRIDGE] Initiating Zadarma Callback Service",
+            "> [SIP] Signaling Leg A (Advisor: 105)",
+            "> [SIP] Signaling Leg B (Client: 52...)",
+            "> [VOICE] Bridge Established. Call Active."
+        ];
+
+        function runSim() {
+            const tl = gsap.timeline();
+            const logContainer = document.getElementById("logs-container");
+            logContainer.innerHTML = "";
+            
+            tl.to("#pulse", { width: "100%", duration: 2.5, ease: "none" });
+            
+            logs.forEach((msg, i) => {
+                tl.add(() => {
+                    const line = document.createElement("div");
+                    line.textContent = msg;
+                    logContainer.appendChild(line);
+                    if (i === 2) document.getElementById("node2").classList.add("active");
+                    if (i === 6) document.getElementById("node3").classList.add("active");
+                }, (i * 0.4));
+            });
+
+            tl.to("#pulse", { opacity: 0, duration: 0.5 });
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,242 @@
+{
+  "name": "Casto Lead Follow-up - Sin Cita Agendada",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [{ "field": "hours", "hoursInterval": 4 }]
+        }
+      },
+      "id": "schedule-trigger",
+      "name": "Schedule Every 4h",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [250, 300]
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "SELECT * FROM leads WHERE status = 'nuevo_prospecto' AND tracking_step = 'diagnostico_completado' AND created_at < NOW() - INTERVAL '24 hours' AND (followup_sent IS NULL OR followup_sent = false) LIMIT 50",
+        "options": {}
+      },
+      "id": "fetch-pending-leads",
+      "name": "Fetch Leads Sin Seguimiento",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.5,
+      "position": [470, 300]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {},
+          "conditions": [
+            {
+              "id": "has-leads",
+              "leftValue": "={{ $json.id }}",
+              "rightValue": "",
+              "operator": { "type": "string", "operation": "isNotEmpty" }
+            }
+          ]
+        }
+      },
+      "id": "check-leads",
+      "name": "¿Hay leads pendientes?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [690, 300]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Preparar mensaje de seguimiento personalizado\nconst lead = $input.first().json;\nconst name = lead.name || 'estimado';\nconst firstName = name.split(' ')[0];\nconst intent = lead.interes || 'venta';\n\n// Mensaje de follow-up basado en el intent\nlet mensaje = '';\n\nif (intent === 'deuda' || intent === 'Liquidación/Deuda') {\n  mensaje = `Hola ${firstName}, ¿cómo vas? 👋\n\nTe escribo porque hace un tiempo solicitaste un diagnóstico para salir de tu adeudo. Entiendo que puede ser un tema sensible y por eso quiero ofrecerte:\n\n✅ Análisis legal gratuito de tu situación\n✅ Opciones personalizadas sin compromiso\n✅ Sin presión, solo información\n\n¿Te gustaría que te llame un asesor para resolver tus dudas? Puedes responder aquí o llamar al (667) 454-0164.`;\n} else if (intent === 'inversion' || intent === 'Flip') {\n  mensaje = `Hola ${firstName}, ¿cómo vas? 👋\n\nTe contacté porque mostraste interés en oportunidades de inversión inmobiliaria. Tenemos propiedades disponibles para flip que podrían interesarte.\n\n¿Te gustaría recibir un reporte de las últimas oportunidades? Responde aquí o agenda una llamada con nuestro equipo.`;\n} else {\n  mensaje = `Hola ${firstName}, ¿cómo vas? 👋\n\nHace poco solicitaste información sobre tu propiedad. Quiero asegurarme de que hayas recibido toda la información que necesitas.\n\n¿Hay algo más en lo que pueda ayudarte? Estoy aquí para resolver cualquier duda.`;\n}\n\nreturn [{ json: { ...lead, followup_message: mensaje } }];"
+      },
+      "id": "prepare-message",
+      "name": "Preparar Mensaje Follow-up",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [910, 300]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://n8n-evolution-api.yxmkwr.easypanel.host/message/sendText/Gen-IA",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "apikey",
+              "value": "8F7D4621EE43-45ED-B33E-1D84EA69E4A5"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"number\": \"{{ $json.phone }}\",\n  \"text\": \"{{ $json.followup_message }}\"\n}",
+        "options": {}
+      },
+      "id": "send-whatsapp",
+      "name": "Evolution API - Follow-up",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [1130, 300],
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "table": "leads",
+        "id": "={{ $json.id }}",
+        "columns": {
+          "values": {
+            "columns": {
+              "followup_sent": true,
+              "followup_sent_at": "={{ $now.toISO() }}",
+              "status": "seguimiento_enviado"
+            }
+          }
+        }
+      },
+      "id": "mark-followup-sent",
+      "name": "Marcar Seguimiento Enviado",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.5,
+      "position": [1350, 300]
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "SELECT * FROM leads WHERE status = 'seguimiento_enviado' AND followup_sent_at < NOW() - INTERVAL '48 hours' AND (second_followup_sent IS NULL OR second_followup_sent = false) LIMIT 20",
+        "options": {}
+      },
+      "id": "fetch-second-followup",
+      "name": "Check 2do Seguimiento",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.5,
+      "position": [470, 500]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {},
+          "conditions": [
+            {
+              "id": "has-second",
+              "leftValue": "={{ $json.id }}",
+              "rightValue": "",
+              "operator": { "type": "string", "operation": "isNotEmpty" }
+            }
+          ]
+        }
+      },
+      "id": "check-second",
+      "name": "¿2do Seguimiento?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [690, 500]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://n8n-evolution-api.yxmkwr.easypanel.host/message/sendText/Gen-IA",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "apikey",
+              "value": "8F7D4621EE43-45ED-B33E-1D84EA69E4A5"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"number\": \"{{ $json.phone }}\",\n  \"text\": \"{{ $json.name }}, quiero recordarte que estoy aquí para ayudarte. 🏠\\n\\nSi ya resolviste tu situación, ¡excelente! Si aún te interesa, puedo conectarte con un experto sin compromiso.\\n\\nSolo responde este mensaje o llama al (667) 454-0164. ¡Saludos!\"\n}",
+        "options": {}
+      },
+      "id": "send-second-whatsapp",
+      "name": "2do Follow-up",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [910, 500],
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "table": "leads",
+        "id": "={{ $json.id }}",
+        "columns": {
+          "values": {
+            "columns": {
+              "second_followup_sent": true,
+              "second_followup_sent_at": "={{ $now.toISO() }}"
+            }
+          }
+        }
+      },
+      "id": "mark-second",
+      "name": "Marcar 2do Enviado",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.5,
+      "position": [1130, 500]
+    }
+  ],
+  "connections": {
+    "Schedule Every 4h": {
+      "main": [
+        [{ "node": "Fetch Leads Sin Seguimiento", "type": "main", "index": 0 }],
+        [{ "node": "Check 2do Seguimiento", "type": "main", "index": 0 }]
+      ]
+    },
+    "Fetch Leads Sin Seguimiento": {
+      "main": [
+        [{ "node": "¿Hay leads pendientes?", "type": "main", "index": 0 }]
+      ]
+    },
+    "¿Hay leads pendientes?": {
+      "main": [
+        [{ "node": "Preparar Mensaje Follow-up", "type": "main", "index": 0 }]
+      ]
+    },
+    "Preparar Mensaje Follow-up": {
+      "main": [
+        [{ "node": "Evolution API - Follow-up", "type": "main", "index": 0 }]
+      ]
+    },
+    "Evolution API - Follow-up": {
+      "main": [
+        [{ "node": "Marcar Seguimiento Enviado", "type": "main", "index": 0 }]
+      ]
+    },
+    "Check 2do Seguimiento": {
+      "main": [
+        [{ "node": "¿2do Seguimiento?", "type": "main", "index": 0 }]
+      ]
+    },
+    "¿2do Seguimiento?": {
+      "main": [
+        [{ "node": "2do Follow-up", "type": "main", "index": 0 }]
+      ]
+    },
+    "2do Follow-up": {
+      "main": [
+        [{ "node": "Marcar 2do Enviado", "type": "main", "index": 0 }]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "tags": ["casto", "leads", "followup", "whatsapp"],
+  "meta": {
+    "templateCredsSetupKnown": false,
+    "templateId": null
+  }
+}

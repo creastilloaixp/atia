@@ -1,0 +1,72 @@
+{
+  "name": "ai-automation-workflows",
+  "displayName": "AI Automation Workflows That Sell",
+  "description": "Build and monetize AI automation workflows for businesses based on research of 500+ workflows that actually generate revenue.",
+  "version": "1.0.0",
+  "createdAt": "2026-03-30T00:00:00.000Z",
+  "sourceVideo": "https://www.youtube.com/watch?v=Y3PcRp5RFzk",
+  "videoTitle": "I Built 500 AI Workflows, These 5 Actually Sell in 2026",
+  "author": "Nate Herk | AI Automation",
+  "difficulty": "intermediate",
+  "learningTime": "2-4 hours per workflow",
+  "triggers": [
+    "ai automation",
+    "n8n workflows",
+    "make money with ai",
+    "sell ai agents",
+    "ai agency",
+    "automate workflows",
+    "ai workflows 2026"
+  ],
+  "tools": [
+    "n8n",
+    "Supabase",
+    "Gemini API",
+    "Claude API",
+    "WhatsApp API"
+  ],
+  "useCases": [
+    "Build lead qualification automations",
+    "Create quote generation workflows",
+    "Set up WhatsApp chatbots for insurance",
+    "Price AI services based on value delivered"
+  ],
+  "features": [
+    "5 proven workflow patterns that sell",
+    "Value-based pricing formula",
+    "Insurance-specific implementation examples",
+    "Tech stack recommendations"
+  ],
+  "relatedSkills": [
+    "n8n-automation",
+    "automate-whatsapp",
+    "supabase-postgres-best-practices"
+  ],
+  "pricingExamples": [
+    {
+      "workflow": "Personalized Outreach Writer",
+      "priceRange": "$1,500 - $2,500",
+      "problem": "Manual cold outreach writing"
+    },
+    {
+      "workflow": "Sales Quoting Agent",
+      "priceRange": "$3,000 - $5,000",
+      "problem": "Hours of admin work on quotes"
+    },
+    {
+      "workflow": "Internal Assistant",
+      "priceRange": "$4,000 - $7,000",
+      "problem": "Context switching, digging through files"
+    },
+    {
+      "workflow": "Customer Support Bot",
+      "priceRange": "$5,000 - $10,000",
+      "problem": "Slow response times, repetitive questions"
+    },
+    {
+      "workflow": "AI Concierge/Onboarding",
+      "priceRange": "$8,000 - $15,000",
+      "problem": "Manual onboarding, member management"
+    }
+  ]
+}

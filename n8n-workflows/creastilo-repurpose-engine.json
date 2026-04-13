@@ -1,0 +1,210 @@
+{
+  "name": "creastilo-repurpose-engine",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [{ "field": "hours", "hoursInterval": 6 }]
+        }
+      },
+      "id": "schedule-re",
+      "name": "Schedule Every 6h",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [250, 300]
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "SELECT rs.*, ac.name as client_name FROM repurpose_sources rs LEFT JOIN agency_clients ac ON rs.client_id = ac.id WHERE rs.is_active = true AND (rs.last_checked_at IS NULL OR rs.last_checked_at < NOW() - (rs.check_interval_hours || ' hours')::INTERVAL) LIMIT 20",
+        "options": {}
+      },
+      "id": "fetch-sources-1",
+      "name": "Fetch Active Sources",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.5,
+      "position": [470, 300]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {},
+          "conditions": [
+            {
+              "id": "has-sources",
+              "leftValue": "={{ $json.id }}",
+              "rightValue": "",
+              "operator": { "type": "string", "operation": "isNotEmpty" }
+            }
+          ]
+        }
+      },
+      "id": "check-sources-1",
+      "name": "Has Sources?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [690, 300]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Determinar URL de API segun tipo de fuente\nconst source = $input.first().json;\nlet apiUrl = '';\nlet params = {};\n\nswitch (source.source_type) {\n  case 'youtube_channel':\n    // YouTube Data API v3 — buscar videos nuevos del canal\n    apiUrl = 'https://www.googleapis.com/youtube/v3/search';\n    params = {\n      part: 'snippet',\n      channelId: source.source_identifier,\n      order: 'date',\n      maxResults: 5,\n      type: 'video',\n      publishedAfter: source.last_checked_at || new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString()\n    };\n    break;\n  case 'youtube_playlist':\n    apiUrl = 'https://www.googleapis.com/youtube/v3/playlistItems';\n    params = {\n      part: 'snippet',\n      playlistId: source.source_identifier,\n      maxResults: 5\n    };\n    break;\n  case 'blog_rss':\n  case 'podcast_rss':\n    apiUrl = source.source_url; // RSS feed URL directa\n    break;\n}\n\nreturn [{ json: { ...source, api_url: apiUrl, api_params: params } }];"
+      },
+      "id": "build-api-url-1",
+      "name": "Build API URL",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [910, 300]
+    },
+    {
+      "parameters": {
+        "method": "GET",
+        "url": "={{ $json.api_url }}",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            { "name": "key", "value": "={{ $env.GEMINI_API_KEY }}" }
+          ]
+        },
+        "options": {
+          "timeout": 15000
+        }
+      },
+      "id": "fetch-content-1",
+      "name": "Fetch New Content",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [1130, 300],
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Extraer contenido nuevo y preparar para Gemini\nconst source = $('Build API URL').first().json;\nconst response = $input.first().json;\nlet items = [];\n\nif (source.source_type.startsWith('youtube')) {\n  const videos = response.items || [];\n  items = videos\n    .filter(v => v.id.videoId !== source.last_content_id)\n    .map(v => ({\n      id: v.id.videoId || v.snippet.resourceId?.videoId,\n      title: v.snippet.title,\n      description: v.snippet.description,\n      url: 'https://youtube.com/watch?v=' + (v.id.videoId || v.snippet.resourceId?.videoId),\n      type: 'youtube_video'\n    }));\n} else {\n  // RSS parsing — simplified, real implementation would use xml parser\n  items = [{\n    id: 'rss-' + Date.now(),\n    title: response.title || 'New content',\n    description: response.description || '',\n    url: source.source_url,\n    type: source.source_type\n  }];\n}\n\nif (items.length === 0) {\n  return [{ json: { no_new_content: true, source_id: source.id } }];\n}\n\nreturn items.map(item => ({ json: { ...item, source } }));"
+      },
+      "id": "parse-content-1",
+      "name": "Parse New Content",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [1350, 300]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {},
+          "conditions": [
+            {
+              "id": "has-content",
+              "leftValue": "={{ $json.no_new_content }}",
+              "rightValue": "true",
+              "operator": { "type": "string", "operation": "notEquals" }
+            }
+          ]
+        }
+      },
+      "id": "has-new-content",
+      "name": "Has New Content?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [1570, 300]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            { "name": "key", "value": "={{ $env.GEMINI_API_KEY }}" }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify({ contents: [{ parts: [{ text: 'Convierte el siguiente contenido en posts para redes sociales en espanol mexicano.\\n\\nTitulo: ' + $json.title + '\\nDescripcion: ' + $json.description + '\\nURL original: ' + $json.url + '\\nInstrucciones adicionales: ' + ($json.source.transform_instructions || 'Mantener tono profesional') + '\\n\\nGenera EXACTAMENTE este JSON (sin markdown, sin ```):\\n{\"linkedin\": \"articulo de 500-800 palabras con insights y CTA\", \"x_posts\": [\"post 1 max 280 chars\", \"post 2 max 280 chars\", \"post 3 max 280 chars\"], \"instagram\": \"caption con hashtags relevantes\", \"facebook\": \"post con engagement hooks\", \"image_prompt\": \"descriptive prompt in English for AI image\"}' }] }], generationConfig: { temperature: 0.7, maxOutputTokens: 4096, responseMimeType: 'application/json' } }) }}",
+        "options": {
+          "timeout": 60000
+        }
+      },
+      "id": "gemini-repurpose-1",
+      "name": "Gemini Repurpose",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [1790, 300]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Parsear respuesta de Gemini y crear entradas en content_queue\nconst response = $input.first().json;\nconst contentItem = $('Has New Content?').first().json;\nconst source = contentItem.source;\n\nlet repurposed;\ntry {\n  const text = response.candidates[0].content.parts[0].text;\n  repurposed = JSON.parse(text);\n} catch (e) {\n  const text = response.candidates[0].content.parts[0].text;\n  const match = text.match(/\\{.*\\}/s);\n  repurposed = match ? JSON.parse(match[0]) : null;\n}\n\nif (!repurposed) {\n  return [{ json: { error: 'Failed to parse Gemini response' } }];\n}\n\nconst outputPlatforms = source.output_platforms || ['facebook', 'instagram', 'x', 'linkedin'];\nconst queueItems = [];\n\n// LinkedIn article\nif (outputPlatforms.includes('linkedin') && repurposed.linkedin) {\n  queueItems.push({\n    source_id: source.id,\n    client_id: source.client_id,\n    original_url: contentItem.url,\n    original_title: contentItem.title,\n    original_type: contentItem.type,\n    platform: 'linkedin',\n    caption: repurposed.linkedin,\n    image_prompt: repurposed.image_prompt\n  });\n}\n\n// X posts (multiple)\nif (outputPlatforms.includes('x') && repurposed.x_posts) {\n  repurposed.x_posts.forEach(tweet => {\n    queueItems.push({\n      source_id: source.id,\n      client_id: source.client_id,\n      original_url: contentItem.url,\n      original_title: contentItem.title,\n      original_type: contentItem.type,\n      platform: 'x',\n      caption: tweet,\n      image_prompt: repurposed.image_prompt\n    });\n  });\n}\n\n// Instagram\nif (outputPlatforms.includes('instagram') && repurposed.instagram) {\n  queueItems.push({\n    source_id: source.id,\n    client_id: source.client_id,\n    original_url: contentItem.url,\n    original_title: contentItem.title,\n    original_type: contentItem.type,\n    platform: 'instagram',\n    caption: repurposed.instagram,\n    image_prompt: repurposed.image_prompt\n  });\n}\n\n// Facebook\nif (outputPlatforms.includes('facebook') && repurposed.facebook) {\n  queueItems.push({\n    source_id: source.id,\n    client_id: source.client_id,\n    original_url: contentItem.url,\n    original_title: contentItem.title,\n    original_type: contentItem.type,\n    platform: 'facebook',\n    caption: repurposed.facebook,\n    image_prompt: repurposed.image_prompt\n  });\n}\n\nreturn queueItems.map(item => ({ json: item }));"
+      },
+      "id": "create-queue-items",
+      "name": "Create Queue Items",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [2010, 300]
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "INSERT INTO content_queue (source_id, client_id, original_url, original_title, original_type, platform, caption, image_prompt, status) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, 'pending')",
+        "options": {}
+      },
+      "id": "insert-queue-1",
+      "name": "Insert to Queue",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.5,
+      "position": [2230, 300]
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "UPDATE repurpose_sources SET last_checked_at = NOW(), last_content_id = $2, total_items_processed = total_items_processed + 1 WHERE id = $1",
+        "options": {}
+      },
+      "id": "update-source-1",
+      "name": "Update Source Status",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.5,
+      "position": [2450, 300]
+    }
+  ],
+  "connections": {
+    "Schedule Every 6h": {
+      "main": [[{ "node": "Fetch Active Sources", "type": "main", "index": 0 }]]
+    },
+    "Fetch Active Sources": {
+      "main": [[{ "node": "Has Sources?", "type": "main", "index": 0 }]]
+    },
+    "Has Sources?": {
+      "main": [
+        [{ "node": "Build API URL", "type": "main", "index": 0 }],
+        []
+      ]
+    },
+    "Build API URL": {
+      "main": [[{ "node": "Fetch New Content", "type": "main", "index": 0 }]]
+    },
+    "Fetch New Content": {
+      "main": [[{ "node": "Parse New Content", "type": "main", "index": 0 }]]
+    },
+    "Parse New Content": {
+      "main": [[{ "node": "Has New Content?", "type": "main", "index": 0 }]]
+    },
+    "Has New Content?": {
+      "main": [
+        [{ "node": "Gemini Repurpose", "type": "main", "index": 0 }],
+        [{ "node": "Update Source Status", "type": "main", "index": 0 }]
+      ]
+    },
+    "Gemini Repurpose": {
+      "main": [[{ "node": "Create Queue Items", "type": "main", "index": 0 }]]
+    },
+    "Create Queue Items": {
+      "main": [[{ "node": "Insert to Queue", "type": "main", "index": 0 }]]
+    },
+    "Insert to Queue": {
+      "main": [[{ "node": "Update Source Status", "type": "main", "index": 0 }]]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "timezone": "America/Mexico_City"
+  },
+  "tags": [{ "name": "creastilo" }, { "name": "repurpose" }, { "name": "automation" }]
+}

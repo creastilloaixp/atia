@@ -1,0 +1,93 @@
+{
+  "name": "Lanzamiento de Producto",
+  "industry": "ecommerce",
+  "duration_days": 30,
+  "content_mix": {
+    "educativo": 30,
+    "promocional": 40,
+    "social_proof": 20,
+    "behind_scenes": 10
+  },
+  "optimal_times_cst": {
+    "weekdays": ["10:00", "13:00", "19:00"],
+    "saturday": ["11:00"],
+    "sunday": []
+  },
+  "phases": [
+    {
+      "name": "Fase 1: Teaser + Reveal",
+      "days": "1-5",
+      "focus": "Generar expectativa y revelar el producto",
+      "posts": [
+        {"day": 1, "type": "promocional", "theme": "Teaser misterioso: 'Algo nuevo viene...' con imagen borrosa/silueta"},
+        {"day": 2, "type": "promocional", "theme": "Segundo teaser con pista visual mas clara"},
+        {"day": 3, "type": "promocional", "theme": "REVEAL oficial: presentacion del producto con foto hero"},
+        {"day": 4, "type": "educativo", "theme": "El problema que resuelve este producto en tu vida diaria"},
+        {"day": 5, "type": "promocional", "theme": "5 beneficios clave que lo hacen unico"}
+      ]
+    },
+    {
+      "name": "Fase 2: Educacion + Social Proof",
+      "days": "6-10",
+      "focus": "Explicar el producto y mostrar validacion",
+      "posts": [
+        {"day": 6, "type": "educativo", "theme": "Como funciona: explicacion simple con infografia"},
+        {"day": 7, "type": "behind_scenes", "theme": "La historia detras del producto: por que lo creamos"},
+        {"day": 8, "type": "social_proof", "theme": "Primeras opiniones de beta testers/early adopters"},
+        {"day": 9, "type": "educativo", "theme": "Comparativa honesta vs alternativas del mercado"},
+        {"day": 10, "type": "promocional", "theme": "Demo del producto en accion / video unboxing"}
+      ]
+    },
+    {
+      "name": "Fase 3: Comunidad + Confianza",
+      "days": "11-15",
+      "focus": "UGC, tips, equipo, FAQ",
+      "posts": [
+        {"day": 11, "type": "social_proof", "theme": "Contenido de usuarios usando el producto (UGC)"},
+        {"day": 12, "type": "educativo", "theme": "Tip de uso #1: sacale el maximo provecho"},
+        {"day": 13, "type": "behind_scenes", "theme": "Conoce al equipo detras del producto"},
+        {"day": 14, "type": "social_proof", "theme": "Review detallado de un cliente real con fotos"},
+        {"day": 15, "type": "educativo", "theme": "FAQ: las 5 preguntas mas frecuentes respondidas"}
+      ]
+    },
+    {
+      "name": "Fase 4: Oferta + Engagement",
+      "days": "16-20",
+      "focus": "Lanzar oferta, mas tips, behind scenes",
+      "posts": [
+        {"day": 16, "type": "promocional", "theme": "Oferta especial de lanzamiento: X% de descuento"},
+        {"day": 17, "type": "educativo", "theme": "Tip de uso #2: un hack que no conocias"},
+        {"day": 18, "type": "social_proof", "theme": "Influencer/creador de contenido usando el producto"},
+        {"day": 19, "type": "behind_scenes", "theme": "Proceso de empaque y envio: cuidamos cada detalle"},
+        {"day": 20, "type": "promocional", "theme": "Bundle especial: producto + complemento a precio combo"}
+      ]
+    },
+    {
+      "name": "Fase 5: Urgencia",
+      "days": "21-25",
+      "focus": "Crear urgencia con numeros y countdown",
+      "posts": [
+        {"day": 21, "type": "educativo", "theme": "Como cuidar y mantener tu producto en perfecto estado"},
+        {"day": 22, "type": "social_proof", "theme": "Milestone: X unidades vendidas, Y resenas de 5 estrellas"},
+        {"day": 23, "type": "promocional", "theme": "3 dias para que termine la oferta de lanzamiento"},
+        {"day": 24, "type": "behind_scenes", "theme": "Sneak peek de lo que viene: nuevo color/version"},
+        {"day": 25, "type": "social_proof", "theme": "Video testimonial emocional de un cliente"}
+      ]
+    },
+    {
+      "name": "Fase 6: Cierre",
+      "days": "26-30",
+      "focus": "Countdown final, flash sale, mega CTA",
+      "posts": [
+        {"day": 26, "type": "promocional", "theme": "2 dias: ultimas piezas a precio de lanzamiento"},
+        {"day": 27, "type": "educativo", "theme": "Guia completa de uso: tutorial paso a paso"},
+        {"day": 28, "type": "promocional", "theme": "FLASH SALE: 24 horas con descuento extra"},
+        {"day": 29, "type": "social_proof", "theme": "Compilacion de las mejores resenas y fotos de clientes"},
+        {"day": 30, "type": "promocional", "theme": "ULTIMO DIA: Aprovecha ahora — wa.me/526671326265"}
+      ]
+    }
+  ],
+  "default_hashtags": ["nuevoproducto", "lanzamiento", "compraonline", "enviogratis", "oferta", "descuento", "hechoenmexico"],
+  "cta_whatsapp": "wa.me/526671326265",
+  "image_style_guidelines": "Product photography on clean backgrounds. Lifestyle shots showing the product in use. Bright, modern, Instagram-worthy aesthetic. Use brand colors consistently."
+}

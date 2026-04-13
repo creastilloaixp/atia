@@ -1,0 +1,25 @@
+{
+  "twitter": {
+    "enabled": false,
+    "api_key": "process.env.TWITTER_API_KEY",
+    "api_secret": "process.env.TWITTER_API_SECRET",
+    "access_token": "process.env.TWITTER_ACCESS_TOKEN",
+    "access_secret": "process.env.TWITTER_ACCESS_SECRET"
+  },
+  "linkedin": {
+    "enabled": false,
+    "client_id": "process.env.LINKEDIN_CLIENT_ID",
+    "client_secret": "process.env.LINKEDIN_SECRET",
+    "access_token": "process.env.LINKEDIN_ACCESS_TOKEN"
+  },
+  "instagram": {
+    "enabled": false,
+    "facebook_app_id": "process.env.FB_APP_ID",
+    "facebook_app_secret": "process.env.FB_APP_SECRET"
+  },
+  "defaults": {
+    "min_hours_between_posts": 2,
+    "max_posts_per_day": 5,
+    "default_platform": "twitter"
+  }
+}

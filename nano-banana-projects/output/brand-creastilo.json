@@ -1,0 +1,107 @@
+{
+  "name": "Creastilo AI Xperience",
+  "industry": "Agencia de Desarrollo Web, Automatización e IA en México",
+  "tagline": "Creamos experiencias digitales impulsadas por inteligencia artificial",
+  "description": "Agencia de desarrollo web, automatización e inteligencia artificial. Creamos landing pages, SaaS, contenido multimedia y automatizaciones con IA.",
+  "colors": {
+    "primary": "#0066FF",
+    "secondary": "#0A0A0F",
+    "accent": "#00D4FF",
+    "accentWarm": "#FF6B35",
+    "background": "#0A0A0F",
+    "backgroundLight": "#12121A",
+    "text": "#FFFFFF",
+    "textMuted": "#A0A0B0"
+  },
+  "fonts": {
+    "heading": ["Cabinet Grotesk", "Outfit", "Satoshi"],
+    "body": ["Inter", "Satoshi"],
+    "mono": ["JetBrains Mono"]
+  },
+  "hero": {
+    "headline": "Experiencias Digitales Potenciadas por IA",
+    "subheadline": "Desarrollo web, automatización y contenido multimedia con inteligencia artificial"
+  },
+  "services": [
+    {
+      "name": "Desarrollo Web & Apps",
+      "tech": ["React 19", "Next.js", "Supabase", "Stitch 2.0"],
+      "description": "Landing pages, SaaS, PWAs y apps móviles"
+    },
+    {
+      "name": "Automatización con IA",
+      "tech": ["WhatsApp API", "n8n", "CRM", "Workflows"],
+      "description": "WhatsApp Business API, CRM automatizado, lead capture, nurturing"
+    },
+    {
+      "name": "Contenido Multimedia",
+      "tech": ["Remotion", "Veo", "ElevenLabs", "Gemini", "FLUX"],
+      "description": "Videos marketing, voiceovers, imágenes con IA"
+    },
+    {
+      "name": "Marketing Digital",
+      "tech": ["SEO", "Analytics", "A/B Testing"],
+      "description": "SEO técnico, campañas automatizadas, analytics en tiempo real"
+    },
+    {
+      "name": "Consultoría IA",
+      "tech": ["Agentes IA", "Training", "Estrategia"],
+      "description": "Auditoría de procesos, implementación de agentes IA"
+    }
+  ],
+  "pricing": {
+    "starter": {
+      "name": "Starter",
+      "price": "Desde $15,000 MXN",
+      "description": "Landing page profesional"
+    },
+    "growth": {
+      "name": "Growth",
+      "price": "Desde $45,000 MXN",
+      "description": "App completa + CRM + WhatsApp"
+    },
+    "enterprise": {
+      "name": "Enterprise",
+      "price": "Personalizado",
+      "description": "SaaS multi-tenant + agentes IA dedicados"
+    }
+  },
+  "contact": {
+    "email": "hola@creastilo-ai-xperience.com",
+    "whatsapp": "Respuesta en minutos",
+    "location": "México"
+  },
+  "sceneConcepts": [
+    {
+      "description": "Futurista - Neural network nodes en cyan y naranja, holographic UI elements, floating data panels, AI brain visualization",
+      "mood": "Premium luxury tech, innovation, artificial intelligence"
+    },
+    {
+      "description": "Dark mode - abstract digital landscape con gradientes cyan-electric y acentos warm amber, partículas flotantes, elementos tecnológicos",
+      "mood": "Technology, sophistication, AI-powered"
+    },
+    {
+      "description": "Minimal tech - Clean interface con AI elements, code snippets flotantes, geometric shapes, glow effects en primary blue",
+      "mood": "Modern, professional, cutting-edge"
+    }
+  ],
+  "techStack": [
+    "React 19",
+    "Next.js",
+    "TypeScript",
+    "Tailwind CSS",
+    "Supabase",
+    "Prisma",
+    "Node.js",
+    "Google Gemini",
+    "Claude Code",
+    "ElevenLabs",
+    "Remotion",
+    "Veo",
+    "Vercel",
+    "WhatsApp API",
+    "n8n",
+    "Stripe",
+    "Mercado Pago"
+  ]
+}

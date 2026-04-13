@@ -1,0 +1,29 @@
+name: Sincronización Diaria de Inventario ATIA
+
+on:
+  schedule:
+    - cron: '0 12 * * *' # 6:00 AM hora México (Central/Sinaloa aprox)
+  workflow_dispatch: # Permite lanzarlo manualmente desde la pestaña Actions de GitHub
+
+jobs:
+  sync_properties:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: |
+          npm install puppeteer @supabase/supabase-js cheerio
+
+      - name: Run Scraper Visual Engine
+        env:
+          VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL }}
+          VITE_SUPABASE_ANON_KEY: ${{ secrets.VITE_SUPABASE_ANON_KEY }}
+        run: node scripts/local-scraper.js

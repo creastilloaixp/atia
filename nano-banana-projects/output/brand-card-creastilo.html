@@ -1,0 +1,468 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Brand Card — Creastilo AI Xperience</title>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: 'Inter', sans-serif;
+    background: #0A0A0F;
+    color: #FFFFFF;
+    min-height: 100vh;
+    padding: 40px;
+  }
+  .card {
+    max-width: 900px;
+    margin: 0 auto;
+    background: linear-gradient(135deg, #0A0A0F 0%, #12121A 100%);
+    border-radius: 24px;
+    overflow: hidden;
+    border: 1px solid rgba(0, 212, 255, 0.15);
+    box-shadow: 0 25px 80px rgba(0, 102, 255, 0.15);
+  }
+  .hero {
+    background: linear-gradient(135deg, #0066FF 0%, #00D4FF 50%, #FF6B35 100%);
+    padding: 60px 40px;
+    text-align: center;
+  }
+  .hero h1 {
+    font-family: 'Outfit', sans-serif;
+    font-size: 48px;
+    font-weight: 700;
+    margin-bottom: 8px;
+    letter-spacing: -1px;
+  }
+  .hero .industry {
+    font-size: 14px;
+    text-transform: uppercase;
+    letter-spacing: 3px;
+    opacity: 0.9;
+  }
+  .hero .tagline {
+    font-size: 18px;
+    margin-top: 12px;
+    opacity: 0.95;
+  }
+  .content { padding: 40px; }
+  .section { margin-bottom: 32px; }
+  .section h2 {
+    font-family: 'Outfit', sans-serif;
+    font-size: 14px;
+    color: #00D4FF;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    margin-bottom: 16px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid rgba(0, 212, 255, 0.2);
+  }
+  
+  /* Brand Vision */
+  .brand-vision {
+    background: linear-gradient(135deg, rgba(0, 102, 255, 0.1), rgba(0, 212, 255, 0.05));
+    border: 1px solid rgba(0, 212, 255, 0.2);
+    border-radius: 16px;
+    padding: 24px;
+  }
+  .vision-tagline {
+    font-family: 'Outfit', sans-serif;
+    font-size: 24px;
+    font-weight: 700;
+    color: #FFFFFF;
+    margin-bottom: 12px;
+  }
+  .vision-desc {
+    font-size: 15px;
+    color: #A0A0B0;
+    line-height: 1.6;
+  }
+
+  /* Colorimetría */
+  .color-theory {
+    background: rgba(255,255,255,0.03);
+    border-radius: 12px;
+    padding: 20px;
+    margin-bottom: 16px;
+  }
+  .color-theory h4 {
+    font-family: 'Outfit', sans-serif;
+    font-size: 14px;
+    color: #FF6B35;
+    margin-bottom: 8px;
+  }
+  .color-theory p {
+    font-size: 13px;
+    color: #A0A0B0;
+    line-height: 1.5;
+  }
+  
+  .palette {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+  .swatch {
+    width: 90px;
+    text-align: center;
+  }
+  .swatch-color {
+    width: 90px;
+    height: 90px;
+    border-radius: 12px;
+    border: 2px solid rgba(255,255,255,0.1);
+    margin-bottom: 6px;
+  }
+  .swatch-label {
+    font-size: 11px;
+    color: #A0A0B0;
+    text-transform: uppercase;
+  }
+  .swatch-hex {
+    font-size: 12px;
+    font-family: monospace;
+    color: #00D4FF;
+  }
+
+  /* Tipografía */
+  .typography-demo h3 {
+    font-family: 'Outfit', sans-serif;
+    font-size: 32px;
+    font-weight: 600;
+    margin-bottom: 8px;
+    background: linear-gradient(135deg, #0066FF, #00D4FF);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  .typography-demo p {
+    font-family: 'Inter', sans-serif;
+    font-size: 16px;
+    color: #A0A0B0;
+    line-height: 1.6;
+  }
+
+  /* Hero Text */
+  .hero-text {
+    background: rgba(0, 102, 255, 0.1);
+    border-radius: 16px;
+    padding: 24px;
+    margin-top: 12px;
+    border: 1px solid rgba(0, 212, 255, 0.2);
+  }
+  .hero-text h3 {
+    font-family: 'Outfit', sans-serif;
+    font-size: 28px;
+    margin-bottom: 8px;
+    color: #FFFFFF;
+  }
+  .hero-text p { color: #A0A0B0; line-height: 1.5; }
+  .hero-text .theme {
+    margin-top: 12px;
+    font-size: 13px;
+    color: #00D4FF;
+    font-style: italic;
+  }
+
+  /* Services */
+  .services-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 16px;
+  }
+  .service-card {
+    background: rgba(255,255,255,0.03);
+    border: 1px solid rgba(0, 212, 255, 0.1);
+    border-radius: 12px;
+    padding: 20px;
+  }
+  .service-card h4 {
+    color: #00D4FF;
+    font-family: 'Outfit', sans-serif;
+    font-size: 16px;
+    margin-bottom: 8px;
+  }
+  .service-card p { font-size: 13px; color: #A0A0B0; margin-bottom: 8px; }
+  .service-card .tech {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+  .tech-tag {
+    font-size: 10px;
+    padding: 4px 8px;
+    background: rgba(0, 102, 255, 0.2);
+    border-radius: 4px;
+    color: #00D4FF;
+  }
+
+  /* Pricing */
+  .pricing-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+  }
+  @media (max-width: 768px) {
+    .pricing-grid { grid-template-columns: 1fr; }
+  }
+  .pricing-card {
+    background: rgba(255,255,255,0.03);
+    border: 1px solid rgba(255, 107, 53, 0.2);
+    border-radius: 12px;
+    padding: 20px;
+    text-align: center;
+  }
+  .pricing-card h4 {
+    font-family: 'Outfit', sans-serif;
+    font-size: 18px;
+    color: #FF6B35;
+    margin-bottom: 8px;
+  }
+  .pricing-card .price {
+    font-size: 24px;
+    font-weight: 700;
+    color: #FFFFFF;
+    margin-bottom: 8px;
+  }
+  .pricing-card p { font-size: 13px; color: #A0A0B0; }
+
+  /* Meta */
+  .meta-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+  }
+  .meta-item label {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: #A0A0B0;
+    display: block;
+    margin-bottom: 4px;
+  }
+  .meta-item span {
+    font-size: 15px;
+    color: #00D4FF;
+  }
+
+  /* Frames Info */
+  .frames-info {
+    background: rgba(0, 102, 255, 0.1);
+    border-radius: 12px;
+    padding: 20px;
+    margin-top: 16px;
+  }
+  .frames-info h4 {
+    color: #00D4FF;
+    margin-bottom: 8px;
+  }
+  .frames-info p { font-size: 14px; color: #A0A0B0; }
+
+  /* Button */
+  .approve-btn {
+    display: block;
+    width: 100%;
+    padding: 18px;
+    background: linear-gradient(135deg, #0066FF, #00D4FF);
+    color: white;
+    border: none;
+    border-radius: 12px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    margin-top: 24px;
+    transition: all 0.3s ease;
+  }
+  .approve-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 30px rgba(0, 102, 255, 0.4);
+  }
+</style>
+</head>
+<body>
+<div class="card">
+  <div class="hero">
+    <div class="industry">Agencia de Desarrollo Web, Automatización e IA</div>
+    <h1>Creastilo AI Xperience</h1>
+    <p class="tagline">Creamos experiencias digitales impulsadas por inteligencia artificial</p>
+  </div>
+  <div class="content">
+
+    <!-- Brand Vision -->
+    <div class="section">
+      <h2>Brand Vision — "Tecnología de Lujo" / "Cyber-SaaS Premium"</h2>
+      <div class="brand-vision">
+        <p class="vision-tagline">"Somos los arquitectos del futuro digital"</p>
+        <p class="vision-desc">Una identidad que comunica autoridad técnica y sofisticación creativa. El branding no pide permiso, establece un nuevo estándar de calidad en desarrollo con IA.</p>
+      </div>
+    </div>
+
+    <!-- Colorimetría -->
+    <div class="section">
+      <h2>Colorimetría: Contraste Infinito y Energía Digital</h2>
+      
+      <div class="color-theory">
+        <h4>⬛ Negro Obsidiana (#0A0A0F)</h4>
+        <p>Profundidad espacial que evoca elegancia, misterio y profesionalismo de alto nivel. El lienzo perfecto para que el resto de los colores "brillen".</p>
+      </div>
+      
+      <div class="color-theory">
+        <h4>🔵 Cian Eléctrico → Azul Cobalto (#00D4FF → #0066FF)</h4>
+        <p>El corazón de la marca. El cian aporta frescura e innovación (IA), mientras que el azul profundo transmite confianza y estabilidad (Desarrollo/SaaS).</p>
+      </div>
+      
+      <div class="color-theory">
+        <h4>🟠 Naranja "Fuego de Datos" (#FF6B35)</h4>
+        <p>Usado en líneas de fondo y circuitos. Simboliza la creatividad humana y la energía que fluye a través de la automatización. Rompe la frialdad del azul.</p>
+      </div>
+
+      <div class="palette" style="margin-top: 16px;">
+        <div class="swatch">
+          <div class="swatch-color" style="background:#0066FF"></div>
+          <div class="swatch-label">Primary</div>
+          <div class="swatch-hex">#0066FF</div>
+        </div>
+        <div class="swatch">
+          <div class="swatch-color" style="background:#0A0A0F"></div>
+          <div class="swatch-label">Secondary</div>
+          <div class="swatch-hex">#0A0A0F</div>
+        </div>
+        <div class="swatch">
+          <div class="swatch-color" style="background:#00D4FF"></div>
+          <div class="swatch-label">Accent</div>
+          <div class="swatch-hex">#00D4FF</div>
+        </div>
+        <div class="swatch">
+          <div class="swatch-color" style="background:#FF6B35"></div>
+          <div class="swatch-label">Accent Warm</div>
+          <div class="swatch-hex">#FF6B35</div>
+        </div>
+        <div class="swatch">
+          <div class="swatch-color" style="background:#12121A"></div>
+          <div class="swatch-label">Bg Light</div>
+          <div class="swatch-hex">#12121A</div>
+        </div>
+        <div class="swatch">
+          <div class="swatch-color" style="background:#A0A0B0"></div>
+          <div class="swatch-label">Text Muted</div>
+          <div class="swatch-hex">#A0A0B0</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Tipografía -->
+    <div class="section">
+      <h2>Tipografía</h2>
+      <div class="typography-demo">
+        <h3>Outfit — Modern, Premium, Tech</h3>
+        <p>Geometría limpia con formas circulares que suavizan la rigidez de los circuitos. Legibilidad ejecutiva que refuerza el look Enterprise.</p>
+      </div>
+    </div>
+
+    <!-- Servicios -->
+    <div class="section">
+      <h2>Servicios</h2>
+      <div class="services-grid">
+        <div class="service-card">
+          <h4>💻 Desarrollo Web & Apps</h4>
+          <p>Landing pages, SaaS, PWAs y apps móviles</p>
+          <div class="tech">
+            <span class="tech-tag">React 19</span>
+            <span class="tech-tag">Next.js</span>
+            <span class="tech-tag">Supabase</span>
+          </div>
+        </div>
+        <div class="service-card">
+          <h4>⚡ Automatización con IA</h4>
+          <p>WhatsApp Business API, CRM automatizado, lead capture</p>
+          <div class="tech">
+            <span class="tech-tag">WhatsApp API</span>
+            <span class="tech-tag">n8n</span>
+            <span class="tech-tag">CRM</span>
+          </div>
+        </div>
+        <div class="service-card">
+          <h4>🎬 Contenido Multimedia</h4>
+          <p>Videos marketing, voiceovers, imágenes con IA</p>
+          <div class="tech">
+            <span class="tech-tag">Remotion</span>
+            <span class="tech-tag">Veo</span>
+            <span class="tech-tag">ElevenLabs</span>
+          </div>
+        </div>
+        <div class="service-card">
+          <h4>📈 Marketing Digital</h4>
+          <p>SEO técnico, campañas automatizadas, analytics</p>
+          <div class="tech">
+            <span class="tech-tag">SEO</span>
+            <span class="tech-tag">Analytics</span>
+            <span class="tech-tag">A/B Testing</span>
+          </div>
+        </div>
+        <div class="service-card">
+          <h4>🧠 Consultoría IA</h4>
+          <p>Auditoría de procesos, implementación de agentes IA</p>
+          <div class="tech">
+            <span class="tech-tag">Agentes IA</span>
+            <span class="tech-tag">Training</span>
+            <span class="tech-tag">Estrategia</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Precios -->
+    <div class="section">
+      <h2>Precios</h2>
+      <div class="pricing-grid">
+        <div class="pricing-card">
+          <h4>Starter</h4>
+          <div class="price">Desde $15,000 MXN</div>
+          <p>Landing page profesional</p>
+        </div>
+        <div class="pricing-card">
+          <h4>Growth</h4>
+          <div class="price">Desde $45,000 MXN</div>
+          <p>App completa + CRM + WhatsApp</p>
+        </div>
+        <div class="pricing-card">
+          <h4>Enterprise</h4>
+          <div class="price">Personalizado</div>
+          <p>SaaS multi-tenant + agentes IA</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Frames -->
+    <div class="section">
+      <h2>Fotogramas Extraídos</h2>
+      <div class="frames-info">
+        <h4>✓ 61 fotogramas listos para scroll-driven animation</h4>
+        <p>Video procesado: creastilo-branded-video-1.mp4</p>
+        <p>Ubicación: nano-banana-projects/output/frames/</p>
+      </div>
+    </div>
+
+    <!-- Meta -->
+    <div class="section">
+      <h2>Detalles de Marca</h2>
+      <div class="meta-grid">
+        <div class="meta-item"><label>Tono</label><span>Premium, Innovador, Enterprise</span></div>
+        <div class="meta-item"><label>ADN</label><span>Innovación Estructural, Conectividad Neuronal, Minimalismo Industrial</span></div>
+        <div class="meta-item"><label>Email</label><span>hola@creastilo-ai-xperience.com</span></div>
+        <div class="meta-item"><label>Ubicación</label><span>México</span></div>
+        <div class="meta-item"><label>Tech Stack</label><span>React 19, Next.js, TypeScript, Tailwind, Supabase, Gemini</span></div>
+        <div class="meta-item"><label>WhatsApp</label><span>Respuesta en minutos</span></div>
+      </div>
+    </div>
+
+    <button class="approve-btn" onclick="alert('¡Brand aprobado! Procedemos a construir el sitio cinematográfico.')">
+      ✓ Aprobar Brand y Construir Sitio
+    </button>
+  </div>
+</div>
+</body>
+</html>

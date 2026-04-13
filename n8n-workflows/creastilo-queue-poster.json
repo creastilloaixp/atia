@@ -1,0 +1,196 @@
+{
+  "name": "creastilo-queue-poster",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [{ "field": "cronExpression", "expression": "0 8-20 * * 1-5" }]
+        }
+      },
+      "id": "schedule-qp",
+      "name": "Schedule Hourly (L-V 8am-8pm)",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [250, 300]
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "SELECT cq.*, ac.name as client_name, ac.social_accounts FROM content_queue cq LEFT JOIN agency_clients ac ON cq.client_id = ac.id WHERE cq.status = 'pending' AND (cq.scheduled_date IS NULL OR cq.scheduled_date <= CURRENT_DATE) ORDER BY cq.priority ASC, cq.created_at ASC LIMIT 10",
+        "options": {}
+      },
+      "id": "fetch-queue-1",
+      "name": "Fetch Pending Posts",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.5,
+      "position": [470, 300]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {},
+          "conditions": [
+            {
+              "id": "has-posts",
+              "leftValue": "={{ $json.id }}",
+              "rightValue": "",
+              "operator": { "type": "string", "operation": "isNotEmpty" }
+            }
+          ]
+        }
+      },
+      "id": "check-posts-1",
+      "name": "Has Posts?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [690, 300]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {},
+          "conditions": [
+            {
+              "id": "has-image-prompt",
+              "leftValue": "={{ $json.image_prompt }}",
+              "rightValue": "",
+              "operator": { "type": "string", "operation": "isNotEmpty" }
+            }
+          ]
+        }
+      },
+      "id": "needs-image-qp",
+      "name": "Needs Image?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [910, 300]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://generativelanguage.googleapis.com/v1beta/models/imagen-3.0-generate-002:predict",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            { "name": "key", "value": "={{ $env.GEMINI_API_KEY }}" }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify({ instances: [{ prompt: $json.image_prompt }], parameters: { sampleCount: 1, aspectRatio: '1:1', personGeneration: 'DONT_ALLOW' } }) }}",
+        "options": { "timeout": 30000 }
+      },
+      "id": "gen-image-qp",
+      "name": "Generate Image",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [1130, 200],
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Preparar post con o sin imagen\nconst post = $('Has Posts?').first().json;\nconst imageData = $json.predictions ? $json.predictions[0].bytesBase64Encoded : null;\n\nreturn [{ json: { ...post, image_base64: imageData } }];"
+      },
+      "id": "merge-image-qp",
+      "name": "Merge With Image",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [1350, 200]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Post sin imagen\nconst post = $input.first().json;\nreturn [{ json: { ...post, image_base64: null } }];"
+      },
+      "id": "no-image-qp",
+      "name": "No Image",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [1350, 420]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.blotato.com/v1/posts",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            { "name": "Authorization", "value": "Bearer {{ $env.BLOTATO_API_KEY }}" },
+            { "name": "Content-Type", "value": "application/json" }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify({ platform: $json.platform, content: $json.caption, media: $json.image_base64 ? [{ type: 'image', data: $json.image_base64 }] : [] }) }}",
+        "options": { "timeout": 15000 }
+      },
+      "id": "blotato-qp",
+      "name": "Blotato Publish",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [1570, 300],
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Determinar status basado en respuesta de Blotato\nconst response = $input.first().json;\nconst queueItem = $('Has Posts?').first().json;\nconst success = !response.error && response.id;\n\nreturn [{\n  json: {\n    queue_id: queueItem.id,\n    blotato_post_id: response.id || null,\n    status: success ? 'posted' : 'failed',\n    error_message: response.error || null\n  }\n}];"
+      },
+      "id": "check-result-qp",
+      "name": "Check Result",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [1790, 300]
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "UPDATE content_queue SET status = $2, blotato_post_id = $3, error_message = $4, updated_at = NOW() WHERE id = $1",
+        "options": {}
+      },
+      "id": "update-queue-qp",
+      "name": "Update Queue Status",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.5,
+      "position": [2010, 300]
+    }
+  ],
+  "connections": {
+    "Schedule Hourly (L-V 8am-8pm)": {
+      "main": [[{ "node": "Fetch Pending Posts", "type": "main", "index": 0 }]]
+    },
+    "Fetch Pending Posts": {
+      "main": [[{ "node": "Has Posts?", "type": "main", "index": 0 }]]
+    },
+    "Has Posts?": {
+      "main": [
+        [{ "node": "Needs Image?", "type": "main", "index": 0 }],
+        []
+      ]
+    },
+    "Needs Image?": {
+      "main": [
+        [{ "node": "Generate Image", "type": "main", "index": 0 }],
+        [{ "node": "No Image", "type": "main", "index": 0 }]
+      ]
+    },
+    "Generate Image": {
+      "main": [[{ "node": "Merge With Image", "type": "main", "index": 0 }]]
+    },
+    "Merge With Image": {
+      "main": [[{ "node": "Blotato Publish", "type": "main", "index": 0 }]]
+    },
+    "No Image": {
+      "main": [[{ "node": "Blotato Publish", "type": "main", "index": 0 }]]
+    },
+    "Blotato Publish": {
+      "main": [[{ "node": "Check Result", "type": "main", "index": 0 }]]
+    },
+    "Check Result": {
+      "main": [[{ "node": "Update Queue Status", "type": "main", "index": 0 }]]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "timezone": "America/Mexico_City"
+  },
+  "tags": [{ "name": "creastilo" }, { "name": "queue" }, { "name": "auto-post" }]
+}

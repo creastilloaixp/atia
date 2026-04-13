@@ -1,0 +1,100 @@
+{
+  "name": "CASTO - Evolution API Bot (V6 - VISION AI)",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "evolution-api-webhook",
+        "options": {}
+      },
+      "id": "e6f4777d-78dd-4a37-bba2-5cc1e1ec098f",
+      "name": "Webhook Evolution API",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [240, 300],
+      "webhookId": "casto-bot-webhook-2026"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "string": [
+            {
+              "value1": "={{ $node[\"Webhook Evolution API\"].json.body.data.messageType }}",
+              "value2": "image"
+            }
+          ]
+        }
+      },
+      "id": "vision-check-id",
+      "name": "¿Es una Foto?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [480, 500]
+    },
+    {
+      "parameters": {
+        "model": "gemini-1.5-flash",
+        "prompt": "Actúa como un experto valuador inmobiliario de lujo para CASTO. Analiza esta fachada de casa y dame 3 puntos clave (Estilo, Estado, Valoración Visual) en un tono profesional y amable. No uses más de 50 palabras. Sé muy específico con lo que ves (colores, materiales).",
+        "options": {
+          "maxTokens": 150
+        }
+      },
+      "id": "gemini-vision-id",
+      "name": "Gemini Vision Analysis",
+      "type": "n8n-nodes-base.googleGemini",
+      "typeVersion": 1,
+      "position": [800, 560],
+      "credentials": {
+        "googleApi": {
+          "id": "AIzaSyCSOOyI0QWaulpV3eMCXyycDC88EWuCEUA"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://n8n-evolution-api.yxmkwr.easypanel.host/message/sendText/Gen-IA",
+        "authentication": "none",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            { "name": "apikey", "value": "8F7D4621EE43-45ED-B33E-1D84EA69E4A5" }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "{\n  \"number\": \"{{ $node[\\\"Webhook Evolution API\\\"].json.body.data.key.remoteJid }}\",\n  \"text\": \"✨ *Escaneo de Trinity AI completado* ✨\\n\\n{{ $node[\\\"Gemini Vision Analysis\\\"].json.text }}\\n\\n📈 Estos datos se han sincronizado con el asesor Casto. Te marcamos ahora mismo para cerrar tu oferta.\"\n}",
+        "options": {}
+      },
+      "id": "response-vision-id",
+      "name": "Respuesta Análisis",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [1050, 560]
+    }
+  ],
+  "connections": {
+    "Webhook Evolution API": {
+      "main": [
+        [
+          { "node": "¿Es una Foto?", "type": "main", "index": 0 }
+        ]
+      ]
+    },
+    "¿Es una Foto?": {
+      "main": [
+        [
+          { "node": "Gemini Vision Analysis", "type": "main", "index": 0 }
+        ]
+      ]
+    },
+    "Gemini Vision Analysis": {
+      "main": [
+        [
+          { "node": "Respuesta Análisis", "type": "main", "index": 0 }
+        ]
+      ]
+    }
+  },
+  "settings": {}
+}

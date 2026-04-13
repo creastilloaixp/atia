@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Brand Card — CF Seguros</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Lato:wght@300;400;600&display=swap" rel="stylesheet">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: 'Lato', sans-serif;
+    background: #0a0a0a;
+    color: #f0f0f0;
+    min-height: 100vh;
+    padding: 40px;
+  }
+  .card {
+    max-width: 900px;
+    margin: 0 auto;
+    background: linear-gradient(135deg, #111 0%, #1a1a2e 100%);
+    border-radius: 24px;
+    overflow: hidden;
+    border: 1px solid rgba(255,255,255,0.08);
+    box-shadow: 0 25px 80px rgba(0,0,0,0.5);
+  }
+  .hero {
+    background: linear-gradient(135deg, #0A192F, #C0C0C0);
+    padding: 60px 40px;
+    text-align: center;
+  }
+  .hero h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: 42px;
+    font-weight: 700;
+    margin-bottom: 8px;
+  }
+  .hero .industry {
+    font-size: 14px;
+    text-transform: uppercase;
+    letter-spacing: 3px;
+    opacity: 0.8;
+  }
+  .content { padding: 40px; }
+  .section { margin-bottom: 32px; }
+  .section h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: 18px;
+    color: #FFD700;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    margin-bottom: 16px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+  }
+  .palette {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+  .swatch {
+    width: 80px;
+    text-align: center;
+  }
+  .swatch-color {
+    width: 80px;
+    height: 80px;
+    border-radius: 12px;
+    border: 2px solid rgba(255,255,255,0.1);
+    margin-bottom: 6px;
+  }
+  .swatch-label {
+    font-size: 11px;
+    opacity: 0.7;
+  }
+  .swatch-hex {
+    font-size: 12px;
+    font-family: monospace;
+    color: #FFD700;
+  }
+  .typography-demo h3 {
+    font-family: 'Playfair Display', serif;
+    font-size: 28px;
+    margin-bottom: 8px;
+  }
+  .typography-demo p {
+    font-family: 'Lato', sans-serif;
+    font-size: 16px;
+    opacity: 0.8;
+    line-height: 1.6;
+  }
+  .hero-text {
+    background: rgba(0,0,0,0.3);
+    border-radius: 16px;
+    padding: 24px;
+    margin-top: 12px;
+  }
+  .hero-text h3 {
+    font-family: 'Playfair Display', serif;
+    font-size: 24px;
+    margin-bottom: 8px;
+    color: #FFD700;
+  }
+  .hero-text p { opacity: 0.8; line-height: 1.5; }
+  .scene-card {
+    background: rgba(255,255,255,0.03);
+    border: 1px solid rgba(255,255,255,0.06);
+    border-radius: 12px;
+    padding: 20px;
+    margin-bottom: 12px;
+  }
+  .scene-card h4 {
+    color: #FFD700;
+    margin-bottom: 8px;
+  }
+  .scene-card p { font-size: 14px; opacity: 0.7; line-height: 1.5; }
+  .scene-card .animation-hint {
+    margin-top: 8px;
+    font-style: italic;
+    color: #C0C0C0;
+    font-size: 13px;
+  }
+  .meta-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+  }
+  .meta-item label {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    opacity: 0.5;
+    display: block;
+    margin-bottom: 4px;
+  }
+  .meta-item span {
+    font-size: 15px;
+  }
+  .approve-btn {
+    display: block;
+    width: 100%;
+    padding: 16px;
+    background: linear-gradient(135deg, #0A192F, #FFD700);
+    color: white;
+    border: none;
+    border-radius: 12px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    margin-top: 20px;
+  }
+</style>
+</head>
+<body>
+<div class="card">
+  <div class="hero">
+    <div class="industry">Insurance</div>
+    <h1>CF Seguros</h1>
+    <p style="margin-top:8px;opacity:0.9">Protección de Alta Gama</p>
+  </div>
+  <div class="content">
+    <div class="section">
+      <h2>Color Palette</h2>
+      <div class="palette">
+        
+        <div class="swatch">
+          <div class="swatch-color" style="background:#0A192F"></div>
+          <div class="swatch-label">primary</div>
+          <div class="swatch-hex">#0A192F</div>
+        </div>
+        <div class="swatch">
+          <div class="swatch-color" style="background:#C0C0C0"></div>
+          <div class="swatch-label">secondary</div>
+          <div class="swatch-hex">#C0C0C0</div>
+        </div>
+        <div class="swatch">
+          <div class="swatch-color" style="background:#FFD700"></div>
+          <div class="swatch-label">accent</div>
+          <div class="swatch-hex">#FFD700</div>
+        </div>
+        <div class="swatch">
+          <div class="swatch-color" style="background:#050B15"></div>
+          <div class="swatch-label">background</div>
+          <div class="swatch-hex">#050B15</div>
+        </div>
+        <div class="swatch">
+          <div class="swatch-color" style="background:#E0E0E0"></div>
+          <div class="swatch-label">text</div>
+          <div class="swatch-hex">#E0E0E0</div>
+        </div>
+        <div class="swatch">
+          <div class="swatch-color" style="background:#A0A0A0"></div>
+          <div class="swatch-label">textLight</div>
+          <div class="swatch-hex">#A0A0A0</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="section">
+      <h2>Typography</h2>
+      <div class="typography-demo">
+        <h3>Playfair Display — Elegant, Modern, Premium</h3>
+        <p>CF Seguros offers instant, personalized insurance for cars and motorcycles, eliminating the need for paperwork and queues. They provide premium protection, ensuring the best support for what you value most. Experience high-end coverage issued immediately, giving you unparalleled peace of mind.</p>
+      </div>
+    </div>
+
+    <div class="section">
+      <h2>Hero Direction</h2>
+      <div class="hero-text">
+        <h3>Your Legacy Protected. Instantly.</h3>
+        <p>Experience unparalleled peace of mind with high-end auto and moto insurance, crafted for your ultimate convenience and security.</p>
+        <p style="margin-top:12px;font-size:13px;opacity:0.5">Theme: A sophisticated and modern aesthetic with a focus on deep, rich tones, subtle metallic accents, and clean typography. Emphasizes luxury, reliability, and cutting-edge technology through sleek visuals and cinematic compositions.</p>
+      </div>
+    </div>
+
+    <div class="section">
+      <h2>Suggested Hero Scenes</h2>
+      
+      <div class="scene-card">
+        <h4>1. The Armored Guardian</h4>
+        <p>Cinematic shot of a sleek, dark luxury car (e.g., a high-end sedan or sports car) parked on a futuristic, illuminated platform in a minimalist, architectural garage at dusk. Soft, golden hour light from a large window casts long shadows. Rain streaks subtly down the glass. The car is pristine, reflecting subtle gold and silver hues from the environment. Low angle, wide shot, with a shallow depth of field, focusing on the car's grille. Mood is secure, powerful, and exclusive. Colors: Deep navy, charcoal, silver, subtle gold, warm amber highlights. Ultra-premium, photorealistic, 8K, wide aspect ratio.</p>
+        <p class="animation-hint">🎬 Slow, subtle camera dolly-in towards the front of the car, with a gentle lens flare catching the edge of the vehicle. Rain streaks animate, and a soft, ethereal glow emanates from beneath the platform.</p>
+      </div>
+      <div class="scene-card">
+        <h4>2. Digital Fortress</h4>
+        <p>Close-up, high-angle shot of a person's hands (elegant, professional, manicured) interacting with a holographic interface displaying a personalized insurance quote. The interface projects vibrant blue and gold data streams and secure icons. The background is a subtly blurred, modern office or a sophisticated lounge with ambient, indirect lighting. Focus on the seamless, intuitive interaction, showing calm confidence. Colors: Dominant deep blues and purples, electric blues for highlights, subtle gold for data points. Cinematic, high-tech, ultra-sharp detail, 8K, shallow depth of field.</p>
+        <p class="animation-hint">🎬 The holographic interface subtly pulsates and animates with data flowing. Hands move gracefully, and the camera performs a very slow, almost imperceptible crane shot, revealing more of the elegant background.</p>
+      </div>
+      <div class="scene-card">
+        <h4>3. Serene Horizons</h4>
+        <p>Epic wide shot of a person (gender-neutral, elegant attire) standing on a cliff overlooking a vast, serene ocean at sunrise, with a high-end motorcycle parked safely nearby. The sky is painted with soft pastels of rose, gold, and lavender. The person is looking out at the horizon, exuding peace and freedom. The motorcycle is perfectly framed, symbolizing protected adventure. The overall mood is aspirational, calm, and reassuring. Golden ratio composition. Colors: Soft morning blues, pinks, golds, with the deep charcoal of the motorcycle and elegant clothing providing contrast. Ultra-premium, breathtaking landscape, 8K, cinematic vista.</p>
+        <p class="animation-hint">🎬 A slow, sweeping drone shot that starts wide, focusing on the landscape and the person, then subtly zooms out to reveal the full grandeur of the scene. Gentle cloud movement and subtle shimmering on the ocean surface.</p>
+      </div>
+    </div>
+
+    <div class="section">
+      <h2>Brand Details</h2>
+      <div class="meta-grid">
+        <div class="meta-item"><label>Tone</label><span>Luxury, Professional, Trustworthy, Seamless</span></div>
+        <div class="meta-item"><label>Target Audience</label><span>Discerning individuals and professionals who own high-value cars and motorcycles, prioritizing premium protection, efficiency, and a seamless digital experience. They seek trustworthiness and appreciate a brand that reflects their sophisticated lifestyle.</span></div>
+        <div class="meta-item"><label>Key Products</label><span>Car Insurance, Motorcycle Insurance</span></div>
+        <div class="meta-item"><label>Address</label><span>N/A</span></div>
+        <div class="meta-item"><label>Hours</label><span>N/A</span></div>
+        <div class="meta-item"><label>Contact</label><span>N/A</span></div>
+      </div>
+    </div>
+
+    <button class="approve-btn" onclick="alert('Brand approved! Proceeding to Step 2: Scene Generation')">
+      ✓ Approve Brand &amp; Continue to Scene Generation
+    </button>
+  </div>
+</div>
+</body>
+</html>

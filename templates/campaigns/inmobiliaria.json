@@ -1,0 +1,93 @@
+{
+  "name": "Lanzamiento de Propiedad",
+  "industry": "inmobiliaria",
+  "duration_days": 30,
+  "content_mix": {
+    "educativo": 40,
+    "promocional": 30,
+    "social_proof": 20,
+    "behind_scenes": 10
+  },
+  "optimal_times_cst": {
+    "weekdays": ["09:00", "13:00", "19:00"],
+    "saturday": ["10:00"],
+    "sunday": []
+  },
+  "phases": [
+    {
+      "name": "Fase 1: Introduccion",
+      "days": "1-5",
+      "focus": "Hero image, datos clave, primera impresion",
+      "posts": [
+        {"day": 1, "type": "promocional", "theme": "Hero image de la propiedad con datos clave: ubicacion, recamaras, banos, m2, precio"},
+        {"day": 2, "type": "educativo", "theme": "Datos de la colonia: escuelas, hospitales, transporte publico, supermercados"},
+        {"day": 3, "type": "social_proof", "theme": "Testimonial de un cliente que ya compro en la misma zona"},
+        {"day": 4, "type": "educativo", "theme": "Tip: Como elegir la mejor ubicacion para tu hogar"},
+        {"day": 5, "type": "promocional", "theme": "Tour virtual o galeria de fotos interiores de la propiedad"}
+      ]
+    },
+    {
+      "name": "Fase 2: Confianza",
+      "days": "6-10",
+      "focus": "Equipo, mercado, amenidades, datos duros",
+      "posts": [
+        {"day": 6, "type": "behind_scenes", "theme": "Conoce al equipo de asesores inmobiliarios"},
+        {"day": 7, "type": "educativo", "theme": "Estado actual del mercado inmobiliario en la zona"},
+        {"day": 8, "type": "promocional", "theme": "Amenidades y areas comunes del desarrollo"},
+        {"day": 9, "type": "social_proof", "theme": "Cifras: plusvalia historica de la zona, ROI esperado"},
+        {"day": 10, "type": "educativo", "theme": "Opciones de financiamiento: Infonavit, Fovissste, bancario"}
+      ]
+    },
+    {
+      "name": "Fase 3: Diferenciacion",
+      "days": "11-15",
+      "focus": "Comparativas, proceso, reviews, documentos, lifestyle",
+      "posts": [
+        {"day": 11, "type": "promocional", "theme": "Comparativa de precio vs propiedades similares en la zona"},
+        {"day": 12, "type": "behind_scenes", "theme": "Nuestro proceso de venta paso a paso: de visita a escrituras"},
+        {"day": 13, "type": "social_proof", "theme": "Calificaciones y reviews de clientes en Google/Facebook"},
+        {"day": 14, "type": "educativo", "theme": "Documentos que necesitas para comprar: checklist completo"},
+        {"day": 15, "type": "promocional", "theme": "Estilo de vida en esta propiedad: restaurantes, parques, cultura"}
+      ]
+    },
+    {
+      "name": "Fase 4: Educacion Financiera",
+      "days": "16-20",
+      "focus": "Inversion, remodelacion, planos, gastos, construccion",
+      "posts": [
+        {"day": 16, "type": "educativo", "theme": "Por que invertir en bienes raices en 2026"},
+        {"day": 17, "type": "social_proof", "theme": "Antes y despues: transformacion de una propiedad similar"},
+        {"day": 18, "type": "promocional", "theme": "Planos y distribucion detallada de espacios"},
+        {"day": 19, "type": "behind_scenes", "theme": "Proceso de construccion/remodelacion detras de camaras"},
+        {"day": 20, "type": "educativo", "theme": "Gastos ocultos al comprar: escrituras, notario, avaluo, impuestos"}
+      ]
+    },
+    {
+      "name": "Fase 5: Urgencia",
+      "days": "21-25",
+      "focus": "Escasez, entregas, decoracion, precios, comunidad",
+      "posts": [
+        {"day": 21, "type": "promocional", "theme": "Solo quedan X unidades disponibles — no te quedes fuera"},
+        {"day": 22, "type": "social_proof", "theme": "Entrega de llaves a nuevo propietario feliz"},
+        {"day": 23, "type": "educativo", "theme": "Tips de decoracion para tu nuevo hogar"},
+        {"day": 24, "type": "promocional", "theme": "Desglose transparente de precios y opciones de pago"},
+        {"day": 25, "type": "behind_scenes", "theme": "La comunidad de vecinos y el ambiente del lugar"}
+      ]
+    },
+    {
+      "name": "Fase 6: Cierre",
+      "days": "26-30",
+      "focus": "Reconocimiento, oferta, countdown, CTA final",
+      "posts": [
+        {"day": 26, "type": "social_proof", "theme": "Mencion en medios de comunicacion o premios recibidos"},
+        {"day": 27, "type": "promocional", "theme": "Promocion especial: descuento o bonificacion por tiempo limitado"},
+        {"day": 28, "type": "educativo", "theme": "Checklist completo para tu mudanza perfecta"},
+        {"day": 29, "type": "promocional", "theme": "Cuenta regresiva: ultimos 2 dias de la promocion"},
+        {"day": 30, "type": "promocional", "theme": "CTA FINAL: Agenda tu visita por WhatsApp HOY — wa.me/526671326265"}
+      ]
+    }
+  ],
+  "default_hashtags": ["inmuebles", "bienesraices", "casa", "departamento", "inversion", "hogar", "propiedades"],
+  "cta_whatsapp": "wa.me/526671326265",
+  "image_style_guidelines": "Professional real estate photography. Well-lit interiors, wide-angle shots. Modern Mexican architecture. Aspirational lifestyle imagery. Clean, bright, and inviting."
+}

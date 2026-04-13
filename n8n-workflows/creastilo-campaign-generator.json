@@ -1,0 +1,269 @@
+{
+  "name": "creastilo-campaign-generator",
+  "nodes": [
+    {
+      "parameters": {
+        "path": "generate-campaign",
+        "httpMethod": "POST",
+        "responseMode": "lastNode",
+        "options": {}
+      },
+      "id": "webhook-cg",
+      "name": "Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [250, 300],
+      "webhookId": "generate-campaign"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {},
+          "conditions": [
+            {
+              "id": "validate-product",
+              "leftValue": "={{ $json.body.product }}",
+              "rightValue": "",
+              "operator": { "type": "string", "operation": "isNotEmpty" }
+            },
+            {
+              "id": "validate-industry",
+              "leftValue": "={{ $json.body.industry }}",
+              "rightValue": "",
+              "operator": { "type": "string", "operation": "isNotEmpty" }
+            }
+          ],
+          "combinator": "and"
+        }
+      },
+      "id": "validate-cg",
+      "name": "Validate Input",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [470, 300]
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ JSON.stringify({ error: 'product e industry son requeridos', status: 'error' }) }}",
+        "options": { "responseCode": 400 }
+      },
+      "id": "error-cg",
+      "name": "Error Response",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1,
+      "position": [690, 480]
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "INSERT INTO campaigns (name, product_or_service, industry, duration_days, start_date, end_date, target_audience, tone, language, cta_whatsapp, platforms, content_mix, status) VALUES ($1, $2, $3, $4, CURRENT_DATE, CURRENT_DATE + $4 * INTERVAL '1 day', $5, $6, 'es-MX', $7, $8::jsonb, $9::jsonb, 'generating') RETURNING id, name",
+        "options": {}
+      },
+      "id": "create-campaign-1",
+      "name": "Create Campaign Record",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.5,
+      "position": [690, 300]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            { "name": "key", "value": "={{ $env.GEMINI_API_KEY }}" }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify({ contents: [{ parts: [{ text: 'Eres un experto en marketing digital para el mercado mexicano. Genera un calendario de contenido de ' + ($('Webhook').first().json.body.duration_days || 30) + ' dias para:\\n\\nProducto/Servicio: ' + $('Webhook').first().json.body.product + '\\nIndustria: ' + $('Webhook').first().json.body.industry + '\\nAudiencia objetivo: ' + ($('Webhook').first().json.body.target_audience || 'Publico general en Mexico') + '\\nTono: ' + ($('Webhook').first().json.body.tone || 'profesional') + '\\nCTA WhatsApp: ' + ($('Webhook').first().json.body.cta_whatsapp || 'wa.me/526671326265') + '\\n\\nREGLAS:\\n- Mix de contenido: 40% educativo, 30% promocional, 20% social proof, 10% behind the scenes\\n- Horarios optimos Mexico (CST): L-V 9-10am, 1-2pm, 7-8pm / Sabado 10-11am\\n- Todo en espanol mexicano natural\\n- CTAs siempre con enlace de WhatsApp\\n- Hashtags relevantes al nicho (5-10 por post)\\n- Cada post debe tener un image_prompt descriptivo en ingles para generar imagen con AI\\n\\nRespunde SOLO con un JSON array valido (sin markdown, sin ```), cada elemento con esta estructura exacta:\\n{\"day\": 1, \"type\": \"educativo|promocional|social_proof|behind_scenes\", \"time\": \"10:00\", \"caption\": \"texto del post en espanol\", \"caption_x\": \"version corta 280 chars max\", \"hashtags\": [\"tag1\", \"tag2\"], \"image_prompt\": \"descriptive prompt in English for AI image generation\"}' }] }], generationConfig: { temperature: 0.8, maxOutputTokens: 8192, responseMimeType: 'application/json' } }) }}",
+        "options": {
+          "timeout": 120000
+        }
+      },
+      "id": "gemini-calendar-1",
+      "name": "Gemini Generate Calendar",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [910, 300]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Parsear respuesta de Gemini y preparar posts\nconst response = $input.first().json;\nconst campaignId = $('Create Campaign Record').first().json.id;\nconst webhookData = $('Webhook').first().json.body;\nconst startDate = new Date();\n\nlet calendar;\ntry {\n  const text = response.candidates[0].content.parts[0].text;\n  calendar = JSON.parse(text);\n} catch (e) {\n  // Intentar extraer JSON de texto\n  const text = response.candidates[0].content.parts[0].text;\n  const match = text.match(/\\[.*\\]/s);\n  if (match) {\n    calendar = JSON.parse(match[0]);\n  } else {\n    throw new Error('No se pudo parsear el calendario de Gemini: ' + e.message);\n  }\n}\n\n// Generar posts con fechas programadas\nconst posts = calendar.map((item, index) => {\n  const postDate = new Date(startDate);\n  postDate.setDate(postDate.getDate() + (item.day - 1));\n  \n  return {\n    json: {\n      campaign_id: campaignId,\n      day_number: item.day,\n      post_type: item.type,\n      caption: item.caption,\n      caption_x: item.caption_x || item.caption.substring(0, 277) + '...',\n      hashtags: item.hashtags || [],\n      image_prompt: item.image_prompt,\n      scheduled_date: postDate.toISOString().split('T')[0],\n      scheduled_time: item.time + ':00',\n      platforms: webhookData.platforms || ['facebook', 'instagram', 'x', 'linkedin']\n    }\n  };\n});\n\nreturn posts;"
+      },
+      "id": "parse-calendar-1",
+      "name": "Parse Calendar",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [1130, 300]
+    },
+    {
+      "parameters": {
+        "batchSize": 5,
+        "options": {}
+      },
+      "id": "batch-1",
+      "name": "Batch Posts",
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [1350, 300]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://generativelanguage.googleapis.com/v1beta/models/imagen-3.0-generate-002:predict",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            { "name": "key", "value": "={{ $env.GEMINI_API_KEY }}" }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify({ instances: [{ prompt: $json.image_prompt }], parameters: { sampleCount: 1, aspectRatio: '1:1', personGeneration: 'DONT_ALLOW' } }) }}",
+        "options": {
+          "timeout": 30000
+        }
+      },
+      "id": "gemini-imagen-cg",
+      "name": "Generate Image",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [1570, 300],
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Preparar post para Blotato scheduling\nconst post = $('Batch Posts').first().json;\nconst imageData = $json.predictions ? $json.predictions[0].bytesBase64Encoded : null;\n\n// Calcular datetime ISO para scheduling\nconst scheduledDateTime = post.scheduled_date + 'T' + post.scheduled_time + '-06:00'; // CST\n\nreturn [{\n  json: {\n    ...post,\n    image_base64: imageData,\n    scheduled_datetime: scheduledDateTime\n  }\n}];"
+      },
+      "id": "prepare-schedule-1",
+      "name": "Prepare Schedule",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [1790, 300]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.blotato.com/v1/posts",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            { "name": "Authorization", "value": "Bearer {{ $env.BLOTATO_API_KEY }}" },
+            { "name": "Content-Type", "value": "application/json" }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify({ platforms: $json.platforms, content: $json.caption, media: $json.image_base64 ? [{ type: 'image', data: $json.image_base64 }] : [], scheduled_at: $json.scheduled_datetime }) }}",
+        "options": {
+          "timeout": 15000
+        }
+      },
+      "id": "blotato-schedule-1",
+      "name": "Blotato Schedule",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [2010, 300],
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "INSERT INTO campaign_posts (campaign_id, day_number, post_type, caption, caption_x, image_prompt, platforms, scheduled_date, scheduled_time, blotato_post_id, status) VALUES ($1, $2, $3, $4, $5, $6, $7::jsonb, $8::date, $9::time, $10, 'scheduled')",
+        "options": {}
+      },
+      "id": "supabase-insert-post",
+      "name": "Save Post to DB",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.5,
+      "position": [2230, 300]
+    },
+    {
+      "parameters": {
+        "amount": 2,
+        "unit": "seconds"
+      },
+      "id": "wait-rate-limit",
+      "name": "Rate Limit Wait",
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [2450, 300]
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "UPDATE campaigns SET status = 'active', total_posts = (SELECT COUNT(*) FROM campaign_posts WHERE campaign_id = $1) WHERE id = $1",
+        "options": {}
+      },
+      "id": "update-campaign-status",
+      "name": "Activate Campaign",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.5,
+      "position": [2670, 300]
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ JSON.stringify({ status: 'success', campaign_id: $('Create Campaign Record').first().json.id, message: 'Campana generada y programada exitosamente', total_posts: $json.total_posts || 30 }) }}",
+        "options": { "responseCode": 200 }
+      },
+      "id": "success-cg",
+      "name": "Success Response",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1,
+      "position": [2890, 300]
+    }
+  ],
+  "connections": {
+    "Webhook": {
+      "main": [[{ "node": "Validate Input", "type": "main", "index": 0 }]]
+    },
+    "Validate Input": {
+      "main": [
+        [{ "node": "Create Campaign Record", "type": "main", "index": 0 }],
+        [{ "node": "Error Response", "type": "main", "index": 0 }]
+      ]
+    },
+    "Create Campaign Record": {
+      "main": [[{ "node": "Gemini Generate Calendar", "type": "main", "index": 0 }]]
+    },
+    "Gemini Generate Calendar": {
+      "main": [[{ "node": "Parse Calendar", "type": "main", "index": 0 }]]
+    },
+    "Parse Calendar": {
+      "main": [[{ "node": "Batch Posts", "type": "main", "index": 0 }]]
+    },
+    "Batch Posts": {
+      "main": [
+        [{ "node": "Generate Image", "type": "main", "index": 0 }],
+        [{ "node": "Activate Campaign", "type": "main", "index": 0 }]
+      ]
+    },
+    "Generate Image": {
+      "main": [[{ "node": "Prepare Schedule", "type": "main", "index": 0 }]]
+    },
+    "Prepare Schedule": {
+      "main": [[{ "node": "Blotato Schedule", "type": "main", "index": 0 }]]
+    },
+    "Blotato Schedule": {
+      "main": [[{ "node": "Save Post to DB", "type": "main", "index": 0 }]]
+    },
+    "Save Post to DB": {
+      "main": [[{ "node": "Rate Limit Wait", "type": "main", "index": 0 }]]
+    },
+    "Rate Limit Wait": {
+      "main": [[{ "node": "Batch Posts", "type": "main", "index": 0 }]]
+    },
+    "Activate Campaign": {
+      "main": [[{ "node": "Success Response", "type": "main", "index": 0 }]]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "timezone": "America/Mexico_City"
+  },
+  "tags": [{ "name": "creastilo" }, { "name": "campaign" }, { "name": "marketing" }]
+}

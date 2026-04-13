@@ -1,0 +1,24 @@
+{
+  "brand": "CF Seguros",
+  "generatedAt": "2026-04-02T02:15:40.396Z",
+  "scenes": [
+    {
+      "index": 0,
+      "title": "The Armored Guardian",
+      "path": "nano-banana-projects\\output\\scene-1-cf-seguros-1775096116354.png",
+      "animationHint": "Slow, subtle camera dolly-in towards the front of the car, with a gentle lens flare catching the edge of the vehicle. Rain streaks animate, and a soft, ethereal glow emanates from beneath the platform."
+    },
+    {
+      "index": 1,
+      "title": "Digital Fortress",
+      "path": "nano-banana-projects\\output\\scene-2-cf-seguros-1775096125132.png",
+      "animationHint": "The holographic interface subtly pulsates and animates with data flowing. Hands move gracefully, and the camera performs a very slow, almost imperceptible crane shot, revealing more of the elegant background."
+    },
+    {
+      "index": 2,
+      "title": "Serene Horizons",
+      "path": "nano-banana-projects\\output\\scene-3-cf-seguros-1775096133801.png",
+      "animationHint": "A slow, sweeping drone shot that starts wide, focusing on the landscape and the person, then subtly zooms out to reveal the full grandeur of the scene. Gentle cloud movement and subtle shimmering on the ocean surface."
+    }
+  ]
+}

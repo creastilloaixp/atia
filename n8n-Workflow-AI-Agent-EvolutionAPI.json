@@ -1,0 +1,182 @@
+{
+  "name": "Adriana: WhatsApp AI Agent (Evolution API)",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "evolution-inbound",
+        "responseMode": "lastNode",
+        "options": {}
+      },
+      "id": "webhook-evolution",
+      "name": "Webhook Evolution API",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [0, 300]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Extraer los datos del webhook de Evolution API\nconst body = $input.first().json.body || $input.first().json;\n\n// Filtrar solo eventos de nuevos mensajes\nif (body.event !== 'messages.upsert') {\n  return []; // Ignorar otros eventos (como status, acks)\n}\n\nconst messageData = body.data;\n\n// Ignorar mensajes enviados por el propio bot (para evitar bucles)\nif (!messageData || !messageData.key || messageData.key.fromMe) {\n  return [];\n}\n\n// Obtener el número de teléfono (removiendo el sufijo @s.whatsapp.net)\nconst remoteJid = messageData.key.remoteJid || '';\nconst phone = remoteJid.replace('@s.whatsapp.net', '');\n\n// Obtener el nombre del perfil de WhatsApp\nconst name = messageData.pushName || 'Cliente';\n\n// Extraer el texto del mensaje (puede venir en 'conversation' o 'extendedTextMessage')\nlet text = '';\nif (messageData.message) {\n  text = messageData.message.conversation || \n         (messageData.message.extendedTextMessage && messageData.message.extendedTextMessage.text) || \n         '';\n}\n\n// Si no hay texto, ignorar (puede ser una imagen sin caption)\nif (!text) return [];\n\nreturn [{\n  json: {\n    phone: phone,\n    name: name,\n    message: text,\n    sessionId: phone // Usaremos el teléfono como ID de memoria para el agente\n  }\n}];"
+      },
+      "id": "parse-evolution",
+      "name": "Parsear Mensaje",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [200, 300]
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $json.message }}",
+        "options": {
+          "systemMessage": "Eres Adriana, una asesora inmobiliaria virtual experta de CompramosTuCasa.mx.\n\nCONTEXTO DE NEGOCIO:\n- CompramosTuCasa.mx compra propiedades de hasta $1.4 millones MXN.\n- Operamos en CDMX, Estado de México, Quintana Roo, Querétaro y Sonora.\n- Ofrecemos: avalúo gratuito, compra directa y rápida, liquidación de adeudos.\n- Pagamos deudas hipotecarias, de luz, agua, predial e Infonavit.\n\nTU PERFIL:\n- Eres amable, profesional, empática y vas al grano.\n- Tu objetivo es guiar al prospecto a agendar una visita o llamada de diagnóstico para avaluar su casa.\n- Respondes SIEMPRE a \"{{ $json.name }}\".\n- Tus mensajes deben ser cortos (estilo WhatsApp) y usar pocos emojis.\n- Si preguntan precios, indica que dependemos del diagnóstico gratuito."
+        }
+      },
+      "id": "ai-agent",
+      "name": "AI Agent (Adriana)",
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 1.7,
+      "position": [440, 300]
+    },
+    {
+      "parameters": {
+        "modelName": "models/gemini-2.0-flash",
+        "options": {
+          "temperature": 0.5
+        }
+      },
+      "id": "gemini-model",
+      "name": "Google Gemini",
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [440, 500],
+      "credentials": {
+        "googlePalmApi": {
+          "id": "EA8iPOxLa646zDOn",
+          "name": "Google Gemini Trinity"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sessionIdKey": "={{ $json.sessionId }}"
+      },
+      "id": "buffer-memory",
+      "name": "Window Buffer Memory",
+      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+      "typeVersion": 1.3,
+      "position": [580, 520]
+    },
+    {
+      "id": "evolution-api-reply",
+      "name": "Evo API: Responder Lead",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [780, 300],
+      "parameters": {
+        "method": "POST",
+        "url": "https://n8n-evolution-api.yxmkwr.easypanel.host/message/sendText/Gen-IA",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "apikey",
+              "value": "8F7D4621EE43-45ED-B33E-1D84EA69E4A5"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"number\": \"{{ $('Parsear Mensaje').item.json.phone }}\",\n  \"text\": \"{{ $json.output }}\"\n}",
+        "options": {}
+      }
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={\n  \"status\": \"success\"\n}",
+        "options": {
+          "responseCode": 200
+        }
+      },
+      "id": "respond-webhook",
+      "name": "Aceptar Webhook",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.1,
+      "position": [1000, 300]
+    }
+  ],
+  "connections": {
+    "Webhook Evolution API": {
+      "main": [
+        [
+          {
+            "node": "Parsear Mensaje",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Parsear Mensaje": {
+      "main": [
+        [
+          {
+            "node": "AI Agent (Adriana)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent (Adriana)": {
+      "main": [
+        [
+          {
+            "node": "Evo API: Responder Lead",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent (Adriana)",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Window Buffer Memory": {
+      "ai_memory": [
+        [
+          {
+            "node": "AI Agent (Adriana)",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Evo API: Responder Lead": {
+      "main": [
+        [
+          {
+            "node": "Aceptar Webhook",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {}
+}

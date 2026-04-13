@@ -1,0 +1,509 @@
+================================================================================
+  CASTOPROJECT — MAPA COMPLETO DE CAPACIDADES, SKILLS Y AGENTES
+  Generado: 2026-03-18
+================================================================================
+
+INDICE
+------
+1. Skills Formales (invocables con /comando)
+2. Agent Skills (.agents/skills/) — 23 skills especializadas
+3. Agentes Built-in (subprocesos autonomos)
+4. MCP Servers (servicios externos conectados)
+5. Scripts Custom (herramientas ejecutables)
+6. n8n Workflows (automatizacion de marketing)
+7. Servicios y Utilidades del Proyecto
+8. Permisos Configurados (settings.local.json)
+9. Como Trabajan Juntos — Flujos Optimos
+10. Recomendaciones de Rendimiento
+
+
+================================================================================
+1. SKILLS FORMALES — Invocables con /comando
+================================================================================
+
+Ubicacion: .claude/skills/
+Se cargan automaticamente cuando se invoca el slash command.
+
++------------------------------------+--------------------------------------------------+
+| Skill                              | Proposito                                        |
++------------------------------------+--------------------------------------------------+
+| /simplify                          | Revisa codigo por reuso, calidad y eficiencia.   |
+|                                    | Detecta duplicados y sugiere refactors.          |
++------------------------------------+--------------------------------------------------+
+| /web-design-guidelines             | Audita UI contra mejores practicas web.          |
+|                                    | Revisa accesibilidad, UX, diseno.                |
++------------------------------------+--------------------------------------------------+
+| /vercel-react-best-practices       | Optimizacion de performance React/Next.js.       |
+|                                    | Data fetching, bundles, rendering.               |
++------------------------------------+--------------------------------------------------+
+| /vercel-composition-patterns       | Patrones avanzados de composicion React 19.      |
+|                                    | Compound components, render props, context.      |
++------------------------------------+--------------------------------------------------+
+| /vercel-react-native-skills        | React Native y Expo. Performance movil,          |
+|                                    | animaciones nativas, listas optimizadas.         |
++------------------------------------+--------------------------------------------------+
+| /claude-api                        | Construir apps con Claude API / Anthropic SDK.   |
+|                                    | Se activa al importar anthropic o claude sdk.    |
++------------------------------------+--------------------------------------------------+
+| /find-skills                       | Descubrir e instalar nuevas skills.              |
+|                                    | "is there a skill for X?"                        |
++------------------------------------+--------------------------------------------------+
+| /loop                              | Ejecutar tarea recurrente en intervalo.           |
+|                                    | Ej: /loop 5m /babysit-prs                       |
++------------------------------------+--------------------------------------------------+
+| /update-config                     | Configurar settings.json, permisos, hooks, env.  |
+|                                    | Automatizaciones "cuando X haz Y".               |
++------------------------------------+--------------------------------------------------+
+| /keybindings-help                  | Personalizar atajos de teclado de Claude Code.   |
++------------------------------------+--------------------------------------------------+
+| /remotion-best-practices           | Creacion de video con React (Remotion).          |
++------------------------------------+--------------------------------------------------+
+| /session-handoff (via agent skill) | Guardar contexto antes de perder tokens.         |
++------------------------------------+--------------------------------------------------+
+
+
+================================================================================
+2. AGENT SKILLS — 23 Skills Especializadas
+================================================================================
+
+Ubicacion: .agents/skills/
+Son referencia contextual que Claude lee cuando detecta un trigger.
+No se invocan con /comando, se activan por contexto o instruccion directa.
+
+--- DISENO Y UX/UI (4 skills) ---
+
+casto-design-system
+  Proposito: Sistema de diseno visual para Casto Landing. Define tokens, paleta
+             de colores, glassmorphism, tipografia y estandares de UI oscura premium.
+  Trigger:   Al crear o revisar cualquier componente UI, cuando se pida "revisar
+             diseno", "aplicar estetica", o al escribir CSS/clases de Tailwind.
+
+a11y-wcag-compliance
+  Proposito: Asegurar accesibilidad segun WCAG 2.2 AA para interfaces React.
+  Trigger:   Al crear componentes UI, revisar formularios, manejar navegacion
+             por teclado, asegurar contraste, o pedir "revisar accesibilidad".
+
+web-design-guidelines
+  Proposito: Revisar codigo de UI para cumplir con guias de interfaces web.
+  Trigger:   "review my UI", "check accessibility", "audit design", "review UX".
+
+flipper-conversion-copywriting
+  Proposito: Copywriting de conversion para landing pages de flipping inmobiliario.
+  Trigger:   Al escribir textos de UI, CTAs, titulares, badges, o pedir
+             "mejorar copy", "texto de conversion", "optimizar CTA".
+
+
+--- ANIMACION Y PRESENTACION (3 skills) ---
+
+landing-animations-gsap-motion
+  Proposito: Animaciones avanzadas con GSAP (scroll) y motion.dev (micro-
+             interacciones) para landing pages y demos de UI.
+  Trigger:   Al planificar y crear animaciones al hacer scroll o microinteracciones.
+
+scroll-choreography
+  Proposito: Timeline maestro para la estructura del scroll en la landing de Casto.
+             Define elementos a animar, aparicion y orden durante el scroll.
+  Trigger:   Al planificar animaciones de scroll, crear nuevas secciones, o pedir
+             "coreografia", "timeline de scroll", "secuencia de animaciones".
+
+excalidraw-diagram
+  Proposito: Crear diagramas en formato JSON de Excalidraw abstractos y fluidos.
+  Trigger:   Al necesitar visualizar flujos, arquitecturas, conceptos, o pedir
+             "diagrama", "visualizar arquitectura".
+
+
+--- REACT Y DEPLOY (4 skills) ---
+
+vercel-react-best-practices
+  Proposito: Guias de performance y optimizacion para React/Next.js con Vercel.
+  Trigger:   Al escribir, revisar o refactorizar codigo React/Next.js.
+
+vercel-composition-patterns
+  Proposito: Patrones avanzados de composicion React para escalar (React 19 APIs).
+  Trigger:   Al refactorizar componentes grandes, boolean props, Compound Components.
+
+github-actions-vercel-deployment
+  Proposito: Configurar CI/CD con GitHub Actions + Vercel.
+  Trigger:   Al automatizar despliegues, revisar flujos, gestionar secretos/acciones.
+
+landing-seo-performance
+  Proposito: SEO tecnico y optimizacion Core Web Vitals en landing pages.
+  Trigger:   Al modificar index.html, agregar imagenes, o pedir "optimizar SEO",
+             "mejorar performance".
+
+
+--- OPERATIVA n8n (7 skills) ---
+
+n8n-workflow-patterns
+  Proposito: Patrones estructurales para diseno de flujos n8n a gran escala.
+  Trigger:   Al configurar webhooks, plantear cron jobs, o armar logica HTTP/APIs.
+
+n8n-node-configuration
+  Proposito: Asistencia para configuracion precisa de nodos individuales en n8n.
+  Trigger:   Al modificar, armar y ajustar propiedades complejas de un nodo.
+
+n8n-code-javascript
+  Proposito: Base de conocimiento de JavaScript nativo dentro de n8n.
+  Trigger:   Al invocar rutinas JS en Code node con $json, $input, DateTime.
+
+n8n-code-python
+  Proposito: Reglas de escritura Python en nodos Code dentro de n8n.
+  Trigger:   Estando en sintaxis _input, _json, o limitaciones tecnicas de n8n.
+
+n8n-expression-syntax
+  Proposito: Correctiva de expresiones condicionales {{ expresiones }}.
+  Trigger:   Al validar errores sobre campos $json o acceso a $node por webhook.
+
+n8n-validation-expert
+  Proposito: Identificar cuellos de botella y alertas de Warning en n8n.
+  Trigger:   Cuando surgen mensajes de alerta de estructura o del loop de ejecucion.
+
+n8n-mcp-tools-expert
+  Proposito: Catalogo de metodos del integrador MCP para n8n.
+  Trigger:   Al consultar plantillas de accion o validar workflow/herramienta MCP.
+
+
+--- MARKETING AUTOMATIZADO (3 skills) ---
+
+campaign-generator
+  Proposito: Generar campana completa de 30 dias con contenido AI, imagenes y
+             scheduling automatico en todas las plataformas.
+  Trigger:   "crea campana", "genera campana", "30-day campaign", "lanza campana".
+  Endpoint:  POST https://n8n.creastilo.com/webhook/generate-campaign
+
+content-repurpose
+  Proposito: Monitorear canales (YouTube, blogs, podcasts) y convertir contenido
+             existente en posts sociales automaticamente.
+  Trigger:   "monitorea este canal", "repurpose", "convierte este video en posts".
+
+social-media-multipost
+  Proposito: Publicar un post en 4-9 plataformas simultaneamente via Blotato.
+  Trigger:   "publica esto en redes", "multipost", "comparte en todas las redes".
+  Endpoint:  POST https://n8n.creastilo.com/webhook/multipost
+
+
+--- BROWSER Y SCRAPING (1 skill) — NUEVA ---
+
+browser-automation
+  Proposito: Chrome DevTools Protocol controller para web scraping, analisis de
+             contenido, extraccion de transcripts de YouTube, screenshots y
+             automatizacion de browser. Zero dependencies.
+  Trigger:   "analiza este video", "extrae el transcript", "dame los puntos clave
+             de [URL]", "lee esta pagina", "screenshot de [URL]", "navega a".
+  Requiere:  Chrome corriendo con --remote-debugging-port=9222
+  Script:    node scripts/browser.cjs <command> [args...]
+  Comandos:  list, navigate, content, html, title, screenshot, click, evaluate
+
+
+--- UTILIDAD Y SESION (1 skill) ---
+
+session-handoff
+  Proposito: Preservar contexto critico antes de perder tokens entre sesiones.
+  Trigger:   "guarda contexto", "handoff", "save session", o proactivamente cuando
+             la conversacion esta proxima a su limite.
+  Output:    Actualiza memory/session-handoff.md
+
+
+================================================================================
+3. AGENTES BUILT-IN — Subprocesos Autonomos
+================================================================================
+
+Claude Code puede lanzar agentes especializados que trabajan de forma autonoma
+y pueden ejecutarse en paralelo para tareas independientes.
+
++------------------------------+--------------------------------------------------+
+| Agente                       | Que hace                                         |
++------------------------------+--------------------------------------------------+
+| general-purpose              | Investigacion multi-paso, busquedas complejas,   |
+|                              | tareas que requieren multiples herramientas.     |
++------------------------------+--------------------------------------------------+
+| Explore                      | Exploracion rapida de codebase. Buscar archivos  |
+|                              | por patron, keywords, o responder preguntas      |
+|                              | sobre la arquitectura. 3 niveles de profundidad. |
++------------------------------+--------------------------------------------------+
+| Plan                         | Arquitecto de software. Disena planes de         |
+|                              | implementacion paso a paso. Identifica archivos  |
+|                              | criticos y trade-offs arquitectonicos.           |
++------------------------------+--------------------------------------------------+
+| build-guide-page-creator     | Genera landing pages completas (HTML/CSS/JS).    |
+|                              | Recibe contenido estructurado + inspiracion      |
+|                              | visual y produce paginas listas.                 |
++------------------------------+--------------------------------------------------+
+| visual-spec-generator        | Crea especificaciones visuales y mockups.        |
+|                              | Define layout, secciones, design tokens e        |
+|                              | interacciones antes de implementar.              |
++------------------------------+--------------------------------------------------+
+| visual-asset-generator       | Genera assets visuales (heroes, iconos, fondos,  |
+|                              | elementos UI) basados en inspiracion/referencia.  |
++------------------------------+--------------------------------------------------+
+| landing-page-visual-reviewer | Analiza screenshots de paginas renderizadas para |
+|                              | detectar problemas de diseno y usabilidad.       |
++------------------------------+--------------------------------------------------+
+| iteration-improver           | Mejora iterativa de paginas existentes basada en |
+|                              | feedback de screenshots, usuario o metas.        |
++------------------------------+--------------------------------------------------+
+| claude-code-guide            | Responde preguntas sobre Claude Code, MCP,       |
+|                              | hooks, slash commands, Claude API/SDK.           |
++------------------------------+--------------------------------------------------+
+
+NOTA: Los agentes pueden ejecutarse en paralelo cuando las tareas son
+independientes. Ejemplo: Explore + Plan + visual-reviewer simultaneos.
+
+
+================================================================================
+4. MCP SERVERS — Servicios Externos Conectados
+================================================================================
+
++---------------+--------------------------------------------------+
+| MCP Server    | Herramientas disponibles                         |
++---------------+--------------------------------------------------+
+| Vercel        | - deploy_to_vercel (deploy directo)              |
+|               | - list_projects / get_project                    |
+|               | - list_deployments / get_deployment              |
+|               | - get_deployment_build_logs                      |
+|               | - get_runtime_logs                               |
+|               | - check_domain_availability_and_price            |
+|               | - get_access_to_vercel_url                       |
+|               | - web_fetch_vercel_url                           |
+|               | - search_vercel_documentation                    |
+|               | - list_teams                                     |
+|               | - Toolbar: list/get/reply/edit threads,          |
+|               |   add reactions, change resolve status           |
++---------------+--------------------------------------------------+
+| NotebookLM    | - add_notebook / get_notebook / list_notebooks   |
+|               | - select_notebook / search_notebooks             |
+|               | - update_notebook / remove_notebook              |
+|               | - ask_question (consultar contenido guardado)    |
+|               | - list_sessions / close_session / reset_session  |
+|               | - setup_auth / re_auth / get_health              |
+|               | - cleanup_data                                   |
++---------------+--------------------------------------------------+
+
+
+================================================================================
+5. SCRIPTS CUSTOM — Herramientas Ejecutables
+================================================================================
+
+scripts/browser.cjs (342 lineas)
+  - Chrome DevTools Protocol controller via WebSocket custom
+  - Comandos: list, navigate, content, html, title, screenshot, click, evaluate
+  - Uso principal: extraccion de transcripts de YouTube
+  - Sin dependencias externas (WebSocket implementado desde cero)
+  - Requiere: Chrome con --remote-debugging-port=9222
+
+scripts/deploy-n8n-workflows.sh (62 lineas)
+  - Deploy de workflows n8n via API
+  - Requiere: N8N_BASE_URL y N8N_API_KEY en .env
+  - Despliega 4 archivos de workflow a instancia n8n
+  - Incluye manejo de errores y verificacion
+
+scripts/setup-marketing-automation.sh (137 lineas)
+  - Setup completo del sistema de marketing automatizado
+  - Valida .env (Supabase, n8n, Gemini API keys)
+  - Instrucciones para SQL migrations, Blotato, n8n deploy
+  - Testea endpoint de Gemini Imagen 3
+
+parse_vid.py (13 lineas)
+  - Parser de metadata de video
+  - Lee video_info.json (UTF-16) y extrae titulo + descripcion
+  - Output: video_summary.txt
+
+
+================================================================================
+6. n8n WORKFLOWS — Automatizacion de Marketing
+================================================================================
+
+Ubicacion: /n8n-workflows/
+
+creastilo-multipost.json (9 KB)
+  - Level 1: Multi-platform posting
+  - Webhook: POST /multipost
+  - Publica un post en 4-9 redes via Blotato API
+
+creastilo-campaign-generator.json (12.4 KB)
+  - Level 2: Generacion de campanas de 30 dias
+  - Webhook: POST /generate-campaign
+  - Gemini genera calendario + imagenes, Blotato programa posts
+
+creastilo-repurpose-engine.json (11.6 KB)
+  - Level 3A: Motor de repurposing automatico
+  - Schedule: cada 6 horas
+  - Monitorea YouTube/blogs/podcasts, convierte a posts sociales
+
+creastilo-queue-poster.json (6.9 KB)
+  - Level 3B: Publicador de cola
+  - Schedule: cada hora, L-V 8am-8pm CST
+  - Toma posts de la cola y los publica en horarios optimos
+
+--- Workflows adicionales (raiz del proyecto) ---
+
+n8n-Workflow-AI-Agent-EvolutionAPI.json
+  - Adriana: Asistente AI para consultas inmobiliarias via WhatsApp
+
+n8n-Workflow-Casto-Leads-EvolutionAPI.json
+  - Manejo automatizado de leads via Evolution API / WhatsApp
+
+
+================================================================================
+7. SERVICIOS Y UTILIDADES DEL PROYECTO
+================================================================================
+
+src/services/geminiSearchService.ts
+  - Busqueda inteligente de propiedades usando Gemini 2.0-Flash con JSON mode
+  - Motor "CASTO SEARCH" con Gemini Cognitive Engine
+
+src/services/flipperService.ts
+  - Logica de negocio de flipping inmobiliario
+
+src/services/supabase.ts
+  - Conexion y configuracion de Supabase
+
+src/lib/utils.ts
+  - Utilidad de merge de clases Tailwind (clsx + tailwindMerge)
+
+--- Base de datos (Supabase) ---
+
+sql/001_marketing_automation.sql — 6 tablas:
+  - agency_clients (gestion de clientes)
+  - campaigns (metadata de campanas)
+  - campaign_posts (posts individuales)
+  - campaign_templates (plantillas por industria)
+  - content_queue (contenido programado)
+  - repurpose_sources (fuentes para repurposing)
+
+sql/002_seed_campaign_templates.sql — 3 plantillas:
+  - inmobiliaria, ecommerce, servicios
+
+
+================================================================================
+8. PERMISOS CONFIGURADOS — settings.local.json
+================================================================================
+
+Bash permitidos:
+  - npm install/run, npx tsc/vite/eslint, node, git add/commit/push
+  - grep, claude mcp, python3 -c
+  - notebooklm-mcp auth
+  - browser.cjs evaluate (transcript YouTube — configurado explicitamente)
+
+WebSearch: permitido globalmente
+
+WebFetch permitido para:
+  - compramostucasa.mx, tecompramostucasa.mx, fliphouse.com.mx (competencia)
+  - carrot.com, reimarketingexperts.com (referencia)
+  - localhost (dev local)
+  - marketinglab.mx, raw.githubusercontent.com
+  - zadarma.com
+
+MCP NotebookLM permitido:
+  - get_health, setup_auth, list_notebooks, select_notebook, ask_question
+
+
+================================================================================
+9. COMO TRABAJAN JUNTOS — FLUJOS OPTIMOS
+================================================================================
+
+--- Flujo A: Desarrollo de Landing Page ---
+
+  1. /web-design-guidelines        Auditar estado actual de UI
+  2. Agent: Plan                    Disenar mejoras arquitectonicas
+  3. Agent: visual-spec-generator   Crear mockup visual antes de codear
+  4. Skills: casto-design-system    Aplicar tokens de diseno al codigo
+         + landing-animations       + animaciones GSAP/motion
+         + scroll-choreography      + coreografia de scroll
+  5. Implementar cambios            Codigo directo con React/Tailwind
+  6. Agent: visual-reviewer         QA con screenshot automatico
+  7. Agent: iteration-improver      Pulir basado en feedback
+  8. /simplify                      Limpiar codigo final
+  9. MCP: Vercel deploy             Deploy a produccion
+
+--- Flujo B: Analisis de Video YouTube ---
+
+  1. Skill: browser-automation      Navegar al video
+  2. browser.cjs: click transcript  Abrir panel de transcript
+  3. browser.cjs: evaluate          Extraer segmentos de texto
+  4. Claude analiza contenido       Puntos clave, resumen, ideas
+  5. Opcional: NotebookLM           Guardar analisis para consulta futura
+
+--- Flujo C: Marketing Automatizado ---
+
+  1. Skill: campaign-generator      "Crea campana de 30 dias para X"
+  2. n8n webhook recibe request     Gemini genera calendario + imagenes
+  3. Blotato programa posts         Publicacion automatica multi-plataforma
+  4. Skill: content-repurpose       Monitoreo continuo de fuentes
+  5. n8n queue-poster               Publicacion en horarios optimos
+
+--- Flujo D: Trabajo con n8n ---
+
+  1. Skill: n8n-workflow-patterns   Disenar estructura del workflow
+  2. Skill: n8n-node-configuration  Configurar nodos individuales
+  3. Skill: n8n-code-javascript     Escribir logica en Code nodes
+  4. Skill: n8n-expression-syntax   Validar expresiones {{ }}
+  5. Skill: n8n-validation-expert   Diagnosticar warnings/errores
+  6. Script: deploy-n8n-workflows   Desplegar a instancia n8n
+
+--- Flujo E: SEO y Performance ---
+
+  1. Skill: landing-seo-performance Auditar Core Web Vitals
+  2. /vercel-react-best-practices   Optimizar componentes React
+  3. Skill: a11y-wcag-compliance    Verificar accesibilidad WCAG 2.2
+  4. Agent: Explore                 Buscar bottlenecks en el codigo
+  5. MCP: Vercel deploy + logs      Deploy y monitorear runtime
+
+
+================================================================================
+10. RECOMENDACIONES DE RENDIMIENTO
+================================================================================
+
+A. PARALELISMO DE AGENTES
+   - Lanzar multiples agentes simultaneos cuando las tareas son independientes
+   - Ejemplo: Explore (investigar) + Plan (planificar) + visual-reviewer (QA)
+     corriendo al mismo tiempo
+
+B. PROMOVER SKILLS CRITICAS
+   - Las agent skills en .agents/skills/ son contexto pasivo (se leen por trigger)
+   - Las skills en .claude/skills/ se invocan directamente con /comando
+   - Candidatas a promover: casto-design-system, browser-automation
+   - Beneficio: activacion inmediata sin esperar deteccion de trigger
+
+C. HOOKS AUTOMATICOS
+   - Configurar en settings.json con /update-config
+   - Ejemplo: "cada vez que mencione YouTube, usar browser.cjs automaticamente"
+   - Ejemplo: "antes de cada deploy, ejecutar /simplify"
+   - Los hooks los ejecuta el harness, no Claude — persisten entre sesiones
+
+D. USAR NOTEBOOKLM COMO BASE DE CONOCIMIENTO
+   - Guardar investigacion inmobiliaria, analisis de competencia, transcripts
+   - Consultar con ask_question en lugar de re-investigar cada vez
+   - Acumular conocimiento entre sesiones
+
+E. CADENA DE SKILLS PARA CALIDAD
+   - Siempre cerrar con: /simplify (codigo) + visual-reviewer (diseno)
+   - Usar flipper-conversion-copywriting para TODO texto visible al usuario
+   - Pasar por a11y-wcag-compliance antes de deploy a produccion
+
+F. CONTEXTO ENTRE SESIONES
+   - Usar session-handoff antes de cerrar sesiones largas
+   - MEMORY.md se carga automaticamente en cada nueva sesion
+   - Mantener memories actualizadas (user, feedback, project, reference)
+
+G. EVITAR DUPLICACION DE TRABAJO
+   - No buscar manualmente lo que un agente Explore puede hacer mas rapido
+   - No re-investigar lo que ya esta en NotebookLM
+   - No reescribir lo que una skill ya tiene documentado
+
+
+================================================================================
+  RESUMEN NUMERICO
+================================================================================
+
+  Skills formales (/comando):     11
+  Agent skills (.agents/skills):  23
+  Agentes built-in:                9
+  MCP servers:                     2  (Vercel + NotebookLM)
+  Scripts custom:                  4  (browser.cjs, deploy, setup, parse_vid)
+  n8n workflows:                   6  (4 marketing + 2 WhatsApp)
+  Servicios TypeScript:            3  (gemini, flipper, supabase)
+  Tablas Supabase:                 6
+  ---
+  TOTAL CAPACIDADES:              64
+================================================================================

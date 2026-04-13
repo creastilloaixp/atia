@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reporte Trinity | CASTO</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <style>
+        :root {
+            --primary: #22d3ee;
+            --accent: #d946ef;
+            --bg: #030712;
+            --card: rgba(17, 24, 39, 0.7);
+        }
+
+        body {
+            background-color: var(--bg);
+            color: white;
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        .container {
+            max-width: 500px;
+            width: 100%;
+            background: var(--card);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 24px;
+            padding: 40px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+            position: relative;
+        }
+
+        .badge {
+            display: inline-block;
+            background: linear-gradient(90deg, var(--primary), var(--accent));
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 10px;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 20px;
+        }
+
+        h1 {
+            font-size: 24px;
+            font-weight: 900;
+            margin: 0 0 10px 0;
+            background: linear-gradient(to right, #fff, #94a3b8);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        p.subtitle {
+            color: #94a3b8;
+            font-size: 14px;
+            margin-bottom: 30px;
+        }
+
+        .analysis-box {
+            background: rgba(0,0,0,0.3);
+            border-left: 3px solid var(--accent);
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+        }
+
+        .analysis-box h3 {
+            margin: 0 0 10px 0;
+            font-size: 14px;
+            color: var(--accent);
+        }
+
+        .analysis-box p {
+            margin: 0;
+            font-size: 13px;
+            line-height: 1.6;
+            color: #d1d5db;
+        }
+
+        .status-call {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 15px;
+            background: rgba(34, 211, 238, 0.1);
+            border: 1px solid rgba(34, 211, 238, 0.2);
+            border-radius: 12px;
+        }
+
+        .pulse {
+            width: 10px;
+            height: 10px;
+            background: var(--primary);
+            border-radius: 50%;
+            box-shadow: 0 0 0 0 rgba(34, 211, 238, 0.7);
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(34, 211, 238, 0.7); }
+            70% { transform: scale(1); box-shadow: 0 0 0 10px rgba(34, 211, 238, 0); }
+            100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(34, 211, 238, 0); }
+        }
+
+        footer {
+            margin-top: 40px;
+            text-align: center;
+            font-size: 12px;
+            color: #64748b;
+        }
+
+        .trinity-logo {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            opacity: 0.2;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="trinity-logo">
+            <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
+            </svg>
+        </div>
+        <div class="badge">Análisis de Propiedad AI</div>
+        <h1>Trinity Vision Report</h1>
+        <p class="subtitle">Análisis arquitectónico generado para el Lead #7741</p>
+
+        <div class="analysis-box">
+            <h3>GEMINI VISION INSIGHT</h3>
+            <p>La fachada presenta un estilo contemporáneo con acabados de alta gama. Hemos identificado un potencial de revalorización del 15% mediante modernización de iluminación exterior. </p>
+        </div>
+
+        <div class="status-call">
+            <div class="pulse"></div>
+            <div style="font-size: 13px;">
+                <b style="color: var(--primary);">Llamada Enlazada:</b> Asesor 105 conectado con cliente.
+            </div>
+        </div>
+
+        <footer>
+            CASTO Intelligence Systems &bull; 2026<br>
+            <i>"The future of real estate is automated."</i>
+        </footer>
+    </div>
+
+    <script>
+        gsap.from(".container", { opacity: 0, y: 50, duration: 1, ease: "power4.out" });
+        gsap.from(".analysis-box", { opacity: 0, x: -30, duration: 0.8, delay: 0.5, ease: "back.out" });
+        gsap.from(".status-call", { opacity: 0, scale: 0.9, duration: 0.5, delay: 1, ease: "elastic.out(1, 0.3)" });
+    </script>
+</body>
+</html>

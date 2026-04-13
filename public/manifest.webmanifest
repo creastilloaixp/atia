@@ -1,0 +1,10 @@
+{
+  "name": "Casto Inmobiliaria",
+  "short_name": "Casto",
+  "description": "Compra y vende propiedades con nosotros",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#050505",
+  "theme_color": "#002F6C",
+  "icons": []
+}

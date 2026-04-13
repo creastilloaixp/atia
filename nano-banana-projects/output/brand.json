@@ -1,0 +1,48 @@
+{
+  "companyName": "CF Seguros",
+  "industry": "Insurance",
+  "tagline": "Protección de Alta Gama",
+  "description": "CF Seguros offers instant, personalized insurance for cars and motorcycles, eliminating the need for paperwork and queues. They provide premium protection, ensuring the best support for what you value most. Experience high-end coverage issued immediately, giving you unparalleled peace of mind.",
+  "colors": {
+    "primary": "#0A192F",
+    "secondary": "#C0C0C0",
+    "accent": "#FFD700",
+    "background": "#050B15",
+    "text": "#E0E0E0",
+    "textLight": "#A0A0A0"
+  },
+  "typography": {
+    "headingFont": "Playfair Display",
+    "bodyFont": "Lato",
+    "style": "Elegant, Modern, Premium"
+  },
+  "tone": "Luxury, Professional, Trustworthy, Seamless",
+  "heroHeadline": "Your Legacy Protected. Instantly.",
+  "heroSubheadline": "Experience unparalleled peace of mind with high-end auto and moto insurance, crafted for your ultimate convenience and security.",
+  "themeDirection": "A sophisticated and modern aesthetic with a focus on deep, rich tones, subtle metallic accents, and clean typography. Emphasizes luxury, reliability, and cutting-edge technology through sleek visuals and cinematic compositions.",
+  "keyProducts": [
+    "Car Insurance",
+    "Motorcycle Insurance"
+  ],
+  "targetAudience": "Discerning individuals and professionals who own high-value cars and motorcycles, prioritizing premium protection, efficiency, and a seamless digital experience. They seek trustworthiness and appreciate a brand that reflects their sophisticated lifestyle.",
+  "suggestedHeroScenes": [
+    {
+      "title": "The Armored Guardian",
+      "prompt": "Cinematic shot of a sleek, dark luxury car (e.g., a high-end sedan or sports car) parked on a futuristic, illuminated platform in a minimalist, architectural garage at dusk. Soft, golden hour light from a large window casts long shadows. Rain streaks subtly down the glass. The car is pristine, reflecting subtle gold and silver hues from the environment. Low angle, wide shot, with a shallow depth of field, focusing on the car's grille. Mood is secure, powerful, and exclusive. Colors: Deep navy, charcoal, silver, subtle gold, warm amber highlights. Ultra-premium, photorealistic, 8K, wide aspect ratio.",
+      "animationHint": "Slow, subtle camera dolly-in towards the front of the car, with a gentle lens flare catching the edge of the vehicle. Rain streaks animate, and a soft, ethereal glow emanates from beneath the platform."
+    },
+    {
+      "title": "Digital Fortress",
+      "prompt": "Close-up, high-angle shot of a person's hands (elegant, professional, manicured) interacting with a holographic interface displaying a personalized insurance quote. The interface projects vibrant blue and gold data streams and secure icons. The background is a subtly blurred, modern office or a sophisticated lounge with ambient, indirect lighting. Focus on the seamless, intuitive interaction, showing calm confidence. Colors: Dominant deep blues and purples, electric blues for highlights, subtle gold for data points. Cinematic, high-tech, ultra-sharp detail, 8K, shallow depth of field.",
+      "animationHint": "The holographic interface subtly pulsates and animates with data flowing. Hands move gracefully, and the camera performs a very slow, almost imperceptible crane shot, revealing more of the elegant background."
+    },
+    {
+      "title": "Serene Horizons",
+      "prompt": "Epic wide shot of a person (gender-neutral, elegant attire) standing on a cliff overlooking a vast, serene ocean at sunrise, with a high-end motorcycle parked safely nearby. The sky is painted with soft pastels of rose, gold, and lavender. The person is looking out at the horizon, exuding peace and freedom. The motorcycle is perfectly framed, symbolizing protected adventure. The overall mood is aspirational, calm, and reassuring. Golden ratio composition. Colors: Soft morning blues, pinks, golds, with the deep charcoal of the motorcycle and elegant clothing providing contrast. Ultra-premium, breathtaking landscape, 8K, cinematic vista.",
+      "animationHint": "A slow, sweeping drone shot that starts wide, focusing on the landscape and the person, then subtly zooms out to reveal the full grandeur of the scene. Gentle cloud movement and subtle shimmering on the ocean surface."
+    }
+  ],
+  "address": null,
+  "hours": null,
+  "contactInfo": null
+}
