@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Evaluación de Rentabilidad - Atia Inmobiliaria</title>
+    <!-- NOTA: Las reglas CSS en emails deben ir en línea (inline-styles) para máxima compatibilidad con Outlook/Gmail. 
+         Solo usaremos <style> para cosas básicas y responsivas -->
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: #F8FAFC;
+            font-family: 'Arial', sans-serif;
+            -webkit-font-smoothing: antialiased;
+        }
+        table {
+            border-spacing: 0;
+            border-collapse: collapse;
+        }
+        .container {
+            width: 100%;
+            max-width: 600px;
+            margin: 0 auto;
+            background-color: #FFFFFF;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+            margin-top: 40px;
+            margin-bottom: 40px;
+        }
+        .header {
+            background-color: #0F172A;
+            padding: 30px;
+            text-align: center;
+            border-bottom: 4px solid #FF6600;
+        }
+        .body-content {
+            padding: 40px 30px;
+        }
+        .data-table {
+            width: 100%;
+            margin-top: 20px;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        .data-table th, .data-table td {
+            padding: 15px;
+            text-align: left;
+            border-bottom: 1px solid #E2E8F0;
+        }
+        .data-table th {
+            background-color: #F1F5F9;
+            color: #475569;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-weight: bold;
+            width: 40%;
+        }
+        .data-table td {
+            color: #0F172A;
+            font-weight: bold;
+            font-size: 14px;
+        }
+        .btn-whatsapp {
+            display: inline-block;
+            background-color: #25D366;
+            color: #FFFFFF;
+            text-decoration: none;
+            padding: 14px 28px;
+            border-radius: 50px;
+            font-weight: bold;
+            margin-top: 30px;
+            text-transform: uppercase;
+            font-size: 12px;
+            letter-spacing: 1px;
+        }
+        .btn-action {
+            display: inline-block;
+            background-color: #0F172A;
+            color: #FFFFFF;
+            text-decoration: none;
+            padding: 14px 28px;
+            border-radius: 50px;
+            font-weight: bold;
+            margin-top: 10px;
+            text-transform: uppercase;
+            font-size: 12px;
+            letter-spacing: 1px;
+        }
+    </style>
+</head>
+<body>
+
+    <table width="100%" bgcolor="#F8FAFC" cellpadding="0" cellspacing="0">
+        <tr>
+            <td align="center">
+                <div class="container">
+                    
+                    <!-- HEADER -->
+                    <div class="header">
+                        <!-- Logotipo de ATIA -->
+                        <img src="https://static.tokkobroker.com/tfw_images/9795_Grupo%20Atia/LOGO_2024-02.png" alt="Atia Inmobiliaria" width="180" style="display: block; margin: 0 auto; filter: brightness(0) invert(1);">
+                        <h2 style="color: #FFFFFF; margin-top: 20px; font-size: 18px; letter-spacing: 2px; text-transform: uppercase; font-weight: normal;">Alerta de Inversión</h2>
+                    </div>
+
+                    <!-- BODY DEL CORREO -->
+                    <div class="body-content">
+                        <h1 style="color: #0F172A; font-size: 24px; margin-top: 0; margin-bottom: 10px;">Nuevo prospecto a revisar</h1>
+                        
+                        <p style="color: #64748B; line-height: 1.6; font-size: 15px; margin-bottom: 30px;">
+                            Estimado equipo de evaluación:<br><br>
+                            Se ha recibido un nuevo registro de venta rápida/embargo. Por favor, analicen detenidamente los siguientes parámetros para determinar la <strong>viabilidad y rentabilidad</strong> del proyecto (Flipping) antes de establecer comunicación formal.
+                        </p>
+
+                        <!-- TABLA DE PARÁMETROS -->
+                        <table class="data-table" cellpadding="0" cellspacing="0">
+                            <!-- Datos del Lead -->
+                            <tr>
+                                <th colspan="2" style="background-color: #FF6600; color: #FFFFFF; font-size: 14px;">1. Datos de Contacto</th>
+                            </tr>
+                            <tr>
+                                <th>Nombre del Cliente:</th>
+                                <td>{{nombre_cliente}}</td>
+                            </tr>
+                            <tr>
+                                <th>Teléfono (WhatsApp):</th>
+                                <td>{{telefono_cliente}}</td>
+                            </tr>
+
+                            <!-- Parámetros Inmobiliarios -->
+                            <tr>
+                                <th colspan="2" style="background-color: #0F172A; color: #FFFFFF; font-size: 14px;">2. Criterios de la Propiedad</th>
+                            </tr>
+                            <tr>
+                                <th>Colonia / Ubicación:</th>
+                                <td>{{colonia_propiedad}}</td>
+                            </tr>
+                            <tr>
+                                <th>M² (Aprox):</th>
+                                <td>{{metros_cuadrados}} m² <span style="font-size:10px; color:#94A3B8;">(Filtro &lt; 90m2)</span></td>
+                            </tr>
+                            <tr>
+                                <th>Estado Físico Actual:</th>
+                                <td>{{estado_fisico}} <br><span style="font-size: 11px; color:#FF6600; font-weight:normal;">*Nota: Revisa si requiere cableado o puertas.</span></td>
+                            </tr>
+
+                            <!-- Parámetros Financieros (El Dolor) -->
+                            <tr>
+                                <th colspan="2" style="background-color: #0F172A; color: #FFFFFF; font-size: 14px;">3. Perfil Financiero (Matemática)</th>
+                            </tr>
+                            <tr>
+                                <th>Situación Legal / Deuda:</th>
+                                <td><strong style="color: #E11D48;">{{situacion_legal}}</strong></td>
+                            </tr>
+                            <tr>
+                                <th>Monto Aprox Deuda:</th>
+                                <td>{{deuda_aprox}} MXN</td>
+                            </tr>
+                            <tr>
+                                <th>Precio Esperado (Cliente):</th>
+                                <td>{{precio_esperado}} MXN</td>
+                            </tr>
+                        </table>
+
+                        <!-- CALL TO ACTIONS -->
+                        <div style="text-align: center; margin-top: 40px; border-top: 1px dashed #E2E8F0; padding-top: 30px;">
+                            <p style="color: #64748B; font-size: 13px; margin-bottom: 20px;">
+                                Si la matemática es rentable, inicia el embudo en tu CRM. Si urge respuesta, usa WhatsApp:
+                            </p>
+                            
+                            <a href="https://wa.me/52{{telefono_whatsapp_limpio}}?text=Hola%20{{nombre_cliente}},%20somos%20el%20equipo%20de%20Atia%20Inmobiliaria." class="btn-whatsapp">
+                                💬 Abrir Chat de WhatsApp
+                            </a>
+                            <br>
+                            <a href="https://tu-crm-url.com/lead/{{id_lead}}" class="btn-action">
+                                📊 Ver en Base de Datos
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- FOOTER -->
+                    <div style="background-color: #F1F5F9; padding: 20px; text-align: center;">
+                        <p style="color: #94A3B8; font-size: 11px; margin: 0;">
+                            Atia Inmobiliaria Analytics &bull; Sistema Confidencial Interno<br>
+                            Este mensaje fue generado automáticamente por los embudos de IA.
+                        </p>
+                    </div>
+
+                </div>
+            </td>
+        </tr>
+    </table>
+</body>
+</html>

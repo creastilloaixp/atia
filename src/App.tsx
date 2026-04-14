@@ -16,6 +16,7 @@ import { SmartLeadForm } from './components/SmartLeadForm';
 import { VisionDashboard } from './components/VisionDashboard';
 import { AtiaLogo } from './components/AtiaLogo';
 import { ZadarmaCallWidget } from './components/ZadarmaCallWidget';
+import { FlippingCalculator } from './components/FlippingCalculator';
 import { ToastContainer, toast } from './components/Toast';
 
 type Audience = 'seller' | 'admin';
@@ -113,9 +114,9 @@ function App() {
         </div>
       </div>
 
-      <nav className="fixed top-0 w-full p-3 md:p-4 flex justify-between items-center z-40 bg-white/30 backdrop-blur-md border-b border-white/20" role="navigation" aria-label="Navegación principal">
+    <nav className="fixed top-0 w-full p-3 md:p-4 flex justify-between items-center z-40 bg-white/30 backdrop-blur-md border-b border-white/20" role="navigation" aria-label="Navegación principal">
         <div className="flex items-center gap-2">
-          <AtiaLogo height={48} primaryColor="#FF6600" />
+          <AtiaLogo height={72} primaryColor="#FF6600" />
         </div>
         <div className="flex items-center gap-3 md:gap-4">
           <button
@@ -166,6 +167,7 @@ function App() {
             </div>
             <TrustBar />
             <SellerHero onOpenForm={openForm} onOpenCalculator={() => setIsCalculatorOpen(true)} />
+            <FlippingCalculator />
             <DebtTypes onOpenForm={openForm} onOpenCalculator={() => setIsCalculatorOpen(true)} />
             <SellerProcess />
             <SellerTestimonials />

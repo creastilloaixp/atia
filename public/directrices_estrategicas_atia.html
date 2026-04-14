@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ATIA - Masterplan de Conversión Inmobiliaria</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Fuentes Premium -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        display: ['Space Grotesk', 'sans-serif'],
+                    },
+                    colors: {
+                        atia: {
+                            DEFAULT: '#FF6600',
+                            dark: '#CC5200',
+                            light: '#FF8533',
+                            glow: 'rgba(255, 102, 0, 0.4)'
+                        },
+                        dark: {
+                            bg: '#0B0F19',
+                            card: '#111827',
+                            border: '#1F2937'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            background-color: #0B0F19;
+            color: #E5E7EB;
+            overflow-x: hidden;
+        }
+        ::selection {
+            background-color: #FF6600;
+            color: white;
+        }
+        .glow-effect {
+            box-shadow: 0 0 40px -10px var(--tw-colors-atia-glow);
+        }
+        .text-gradient {
+            background: linear-gradient(to right, #ffffff, #9ca3af);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .text-gradient-atia {
+            background: linear-gradient(135deg, #FF8533, #FF6600);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .mesh-bg {
+            position: fixed;
+            top: 0; left: 0; width: 100vw; height: 100vh;
+            z-index: -1;
+            background-image: 
+                radial-gradient(at 100% 0%, rgba(255, 102, 0, 0.08) 0px, transparent 50%),
+                radial-gradient(at 0% 100%, rgba(30, 58, 138, 0.15) 0px, transparent 50%);
+        }
+        .card-hover {
+            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .card-hover:hover {
+            transform: translateY(-5px);
+            border-color: rgba(255, 102, 0, 0.4);
+            box-shadow: 0 20px 40px -10px rgba(0,0,0,0.5), 0 0 20px rgba(255, 102, 0, 0.1);
+        }
+        .stagger-item {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+    </style>
+</head>
+<body class="antialiased selection:bg-atia selection:text-white pb-32">
+    <div class="mesh-bg"></div>
+
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 pt-16">
+        
+        <!-- HEADER DE ALTO IMPACTO -->
+        <header class="text-center mb-24 stagger-item" id="headerAnim">
+            <!-- LOGOTIPO GIGANTE -->
+            <div class="relative inline-block mb-10">
+                <div class="absolute inset-0 bg-atia blur-[60px] opacity-20 rounded-full"></div>
+                <img src="https://static.tokkobroker.com/tfw_images/9795_Grupo%20Atia/LOGO_2024-02.png" 
+                     alt="Atia Inteligencia Inmobiliaria" 
+                     class="h-32 md:h-40 mx-auto relative z-10 drop-shadow-2xl brightness-110 filter hover:scale-105 transition-transform duration-500">
+            </div>
+
+            <div class="inline-flex items-center gap-3 bg-dark-border/50 border border-dark-border px-5 py-2.5 rounded-full mb-8 shadow-lg backdrop-blur-md">
+                <span class="w-2 h-2 rounded-full bg-atia animate-pulse"></span>
+                <span class="text-xs font-bold uppercase tracking-[0.2em] text-gray-300">Confidencial &bull; Masterplan Estratégico</span>
+            </div>
+
+            <h1 class="text-5xl md:text-7xl font-display font-bold tracking-tight mb-6">
+                Ingeniería de <span class="text-gradient-atia">Conversión Real.</span>
+            </h1>
+            <p class="text-xl md:text-2xl text-gray-400 max-w-3xl mx-auto leading-relaxed font-light">
+                Reestructuración tecnológica y operativa de Grupo Atia: Del desarrollo de software genérico hacia la creación de <strong class="text-white font-medium">Embudos de Inteligencia Artificial (AI Funnels)</strong> hiper-optimizados.
+            </p>
+        </header>
+
+
+        <!-- GRID DE DIRECTRICES (MÁS NUTRIDO) -->
+        <main class="space-y-12 relative z-10">
+            
+            <!-- SECCIÓN 1: EL PIVOTE HACIA LA CONVERSIÓN -->
+            <div class="grid grid-cols-1 md:grid-cols-12 gap-8 stagger-item">
+                <div class="md:col-span-4 bg-dark-card border border-dark-border rounded-3xl p-8 flex flex-col justify-center">
+                    <div class="w-14 h-14 bg-gradient-to-br from-gray-800 to-gray-900 border border-gray-700 rounded-2xl flex items-center justify-center text-atia font-display font-bold text-2xl mb-6 shadow-lg shadow-black/50">
+                        01
+                    </div>
+                    <h2 class="text-2xl font-display font-bold text-white mb-4">El Pivote a la Conversión</h2>
+                    <p class="text-gray-400 text-sm leading-relaxed mb-6">
+                        Construir un CRM inmobiliario desde cero es reinventar la rueda frente a titanes del mercado. Nuestro capital tecnológico se inyecta exclusivamente en la adquisición matemática de leads.
+                    </p>
+                </div>
+                <div class="md:col-span-8 bg-black/40 border border-dark-border rounded-3xl p-8 backdrop-blur-xl card-hover relative overflow-hidden">
+                    <div class="absolute right-0 top-0 w-64 h-64 bg-blue-500/10 rounded-full blur-[80px]"></div>
+                    <h3 class="text-xl font-bold text-white mb-6">Arquitectura del Stack de Operaciones</h3>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                        <div class="bg-dark-card border border-dark-border rounded-xl p-5">
+                            <h4 class="text-atia font-bold text-sm mb-2 uppercase tracking-wide">Fase 1: Atracción</h4>
+                            <p class="text-gray-400 text-sm">Landing pages ultra-ligeras programadas en React. Carga en < 1 segundo para anular la tasa de rebote del tráfico de pauta (Meta Ads).</p>
+                        </div>
+                        <div class="bg-dark-card border border-dark-border rounded-xl p-5">
+                            <h4 class="text-atia font-bold text-sm mb-2 uppercase tracking-wide">Fase 2: Motor Lógico</h4>
+                            <p class="text-gray-400 text-sm">Orquestación mediante n8n y Supabase. Desvío de datos estructurados directamente a la base de datos sin depender de plugins de terceros.</p>
+                        </div>
+                        <div class="bg-dark-card border border-dark-border rounded-xl p-5">
+                            <h4 class="text-atia font-bold text-sm mb-2 uppercase tracking-wide">Fase 3: Distribución</h4>
+                            <p class="text-gray-400 text-sm">Integración EvolutionAPI para WhatsApp bots, inyección de leads en CRMs existentes (como Tokko Broker) y notificaciones automáticas al equipo.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SECCIÓN 2: COREOGRAFÍA DE ZADARMA -->
+            <div class="grid grid-cols-1 md:grid-cols-12 gap-8 stagger-item">
+                <div class="md:col-span-7 bg-black/40 border border-dark-border rounded-3xl p-8 backdrop-blur-xl card-hover relative overflow-hidden">
+                    <div class="absolute left-0 bottom-0 w-64 h-64 bg-atia/10 rounded-full blur-[80px]"></div>
+                    <h3 class="text-xl font-bold text-white mb-6">El Retraso Estratégico (Zadarma)</h3>
+                    <p class="text-gray-300 text-sm leading-relaxed mb-6">
+                        Enrutar la llamada al milisegundo es un error operativo táctico. El puente de telefonía PBX (Zadarma) debe introducir un <strong>delay artificial de 3 a 5 minutos</strong> tras la captura del formulario.
+                    </p>
+                    <div class="flex items-center gap-4 bg-dark-card border border-gray-800 rounded-xl p-5">
+                        <div class="flex-shrink-0 w-12 h-12 bg-gray-800 rounded-full flex items-center justify-center text-xl">⏳</div>
+                        <div>
+                            <h4 class="text-white font-medium text-sm">Empoderamiento del Broker</h4>
+                            <p class="text-gray-400 text-xs mt-1">Este margen de tiempo otorga al asesor la oportunidad absoluta de leer el expediente Financiero y de Dolor del cliente, posibilitando un guion de ventas personalizado y no un "cold call" genérico.</p>
+                        </div>
+                    </div>
+                </div>
+                <!-- NUMERO LADO DERECHO -->
+                <div class="md:col-span-5 bg-dark-card border border-dark-border rounded-3xl p-8 flex flex-col justify-center items-end text-right">
+                    <div class="w-14 h-14 bg-gradient-to-bl from-gray-800 to-gray-900 border border-gray-700 rounded-2xl flex items-center justify-center text-atia font-display font-bold text-2xl mb-6 shadow-lg shadow-black/50">
+                        02
+                    </div>
+                    <h2 class="text-2xl font-display font-bold text-white mb-4">Coreografía de Adquisición</h2>
+                    <p class="text-gray-400 text-sm leading-relaxed">
+                        Control del <i>timing</i> exacto entre la interacción digital del usuario y el contacto humano en frío. Optimización total de la infraestructura SIP y Webhooks.
+                    </p>
+                </div>
+            </div>
+
+            <!-- SECCIÓN 3: ALGORITMO DE FLIPPING (SPAN COMPLETO) -->
+            <div class="bg-gradient-to-b from-[#111827] to-[#0a0f1a] border border-gray-800 rounded-3xl p-8 md:p-12 shadow-2xl relative overflow-hidden stagger-item card-hover">
+                
+                <div class="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-transparent via-atia to-transparent"></div>
+                <div class="absolute -right-20 -top-20 w-96 h-96 bg-atia/10 blur-[100px] pointer-events-none rounded-full"></div>
+
+                <div class="flex flex-col md:flex-row gap-12 relative z-10">
+                    <div class="flex-1">
+                        <div class="flex items-center gap-4 mb-6">
+                            <div class="w-14 h-14 bg-black/50 border border-gray-700 rounded-2xl flex items-center justify-center text-atia font-display font-bold text-2xl shadow-lg">
+                                03
+                            </div>
+                            <h2 class="text-3xl font-display font-bold text-white">El Algoritmo de Flipping & Criterio Confidencial</h2>
+                        </div>
+                        <p class="text-gray-300 mb-6 text-base leading-relaxed">
+                            El negocio real radica en la compra a descuento. La calculadora pública mostrada en las plataformas es una herramienta de enganche; el verdadero motor está en el <strong>backend administrativo</strong>.
+                        </p>
+                        <p class="text-gray-400 text-sm leading-relaxed mb-8">
+                            Los datos duros determinan el paso a paso. No buscamos casas residenciales inmaculadas; cazamos deuda estructurada, inmuebles vandalizados y oportunidades de adjudicación bancaria. 
+                        </p>
+                        
+                        <div class="bg-black/60 border border-gray-800 rounded-2xl p-6">
+                            <h4 class="text-sm font-bold uppercase tracking-widest text-[#FF6600] mb-5 border-b border-gray-800 pb-3">Score Crítico de Aprobación Inmobiliaria</h4>
+                            <ul class="space-y-4">
+                                <li class="flex items-start gap-4">
+                                    <div class="mt-1 w-2 h-2 rounded-full bg-red-500 shadow-[0_0_8px_rgba(239,68,68,0.8)]"></div>
+                                    <div>
+                                        <strong class="text-white text-sm block">1. Regla Matemática del 70%</strong>
+                                        <span class="text-gray-500 text-xs">(Valor ARV * 0.70) - Gastos de Remodelación = Oferta Máxima de Adquisición (MAO). Cualquier operación por encima de esto se rechaza.</span>
+                                    </div>
+                                </li>
+                                <li class="flex items-start gap-4">
+                                    <div class="mt-1 w-2 h-2 rounded-full bg-blue-500 shadow-[0_0_8px_rgba(59,130,246,0.8)]"></div>
+                                    <div>
+                                        <strong class="text-white text-sm block">2. Filtro Técnico de Espacios (< 90m²)</strong>
+                                        <span class="text-gray-500 text-xs">Propiedades con metraje superior inflan dramáticamente el Cash-on-Cash y estiran los márgenes operativos de reparación.</span>
+                                    </div>
+                                </li>
+                                <li class="flex items-start gap-4">
+                                    <div class="mt-1 w-2 h-2 rounded-full bg-orange-500 shadow-[0_0_8px_rgba(249,115,22,0.8)]"></div>
+                                    <div>
+                                        <strong class="text-white text-sm block">3. Diagnóstico del Dolor (Deuda Infonavit/Bancaria)</strong>
+                                        <span class="text-gray-500 text-xs">Capturamos "situación legal" de la propiedad para identificar remates, urgencias por liquidez, o imposibilidad de crédito.</span>
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                    
+                    <div class="flex-1 md:max-w-md flex flex-col justify-center">
+                        <div class="bg-gradient-to-b from-[#1E293B] to-[#0F172A] border border-gray-700/50 rounded-2xl p-8 relative shadow-2xl">
+                            <div class="absolute top-0 right-8 px-3 py-1 bg-atia text-white text-[10px] font-bold uppercase rounded-b-md shadow-lg">Backend View</div>
+                            <h4 class="text-white font-display text-lg mb-6 pt-2">Simulación de Filtro Interno</h4>
+                            
+                            <div class="space-y-4">
+                                <div class="bg-black/50 p-3 rounded-lg border border-gray-800 flex justify-between items-center">
+                                    <span class="text-xs text-gray-400">ARV (After Repair Value)</span>
+                                    <span class="text-sm text-green-400 font-mono font-bold">$1,200,000</span>
+                                </div>
+                                <div class="bg-black/50 p-3 rounded-lg border border-gray-800 flex justify-between items-center">
+                                    <span class="text-xs text-gray-400">Regla del 70% Máxima</span>
+                                    <span class="text-sm text-white font-mono font-bold">$840,000</span>
+                                </div>
+                                <div class="bg-black/50 p-3 rounded-lg border border-gray-800 flex justify-between items-center">
+                                    <span class="text-xs text-gray-400">Reparaciones Estimadas</span>
+                                    <span class="text-sm text-red-400 font-mono font-bold">-$120,000</span>
+                                </div>
+                                <div class="h-px bg-gray-800 my-2"></div>
+                                <div class="bg-atia/10 p-4 rounded-lg border border-atia/30 flex justify-between items-center">
+                                    <span class="text-sm font-bold text-white uppercase">Oferta Target (MAO)</span>
+                                    <span class="text-lg text-atia font-mono font-bold">$720,000</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- MÓDULO INFERIOR CON 2 COLUMNAS (4 Y 5) -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 stagger-item">
+                <!-- DIRECTRIZ 4 -->
+                <div class="bg-dark-card border border-dark-border rounded-3xl p-8 card-hover relative group">
+                    <div class="absolute inset-0 bg-gradient-to-t from-gray-900 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity rounded-3xl pointer-events-none"></div>
+                    <div class="flex items-center justify-between mb-8">
+                        <h3 class="text-2xl font-display font-bold text-white">04. Experiencia UI Minimalista</h3>
+                        <div class="w-10 h-10 bg-gray-800 rounded-full flex items-center justify-center border border-gray-700">🎨</div>
+                    </div>
+                    <p class="text-gray-400 mb-6 text-sm leading-relaxed">
+                        Extirpación de Pop-Ups intrusivos. Las métricas nos dictan que la intrusión reduce las conversiones 
+                        en móviles. Implementamos <strong>Float Action Buttons (FABs)</strong> como widgets perennes anclados a la esquina derecha inferior, junto a WhatsApp, invitando a la acción sin ahogar el contenido comercial.
+                    </p>
+                </div>
+
+                <!-- DIRECTRIZ 5 -->
+                <div class="bg-dark-card border border-dark-border rounded-3xl p-8 card-hover relative border-l-4 border-l-atia">
+                    <div class="flex items-center justify-between mb-8">
+                        <h3 class="text-2xl font-display font-bold text-white">05. Roadmap de Implementación</h3>
+                        <div class="w-10 h-10 bg-gray-800 rounded-full flex items-center justify-center text-atia border border-gray-700">🚀</div>
+                    </div>
+                    <ul class="space-y-4">
+                        <li class="flex items-start gap-4 pb-4 border-b border-gray-800">
+                            <span class="w-6 h-6 rounded-full bg-green-500/10 text-green-500 flex items-center justify-center shrink-0 border border-green-500/20 text-xs">✓</span>
+                            <div>
+                                <h5 class="text-sm font-bold text-white mb-1">Cálculos de Rentabilidad Configurados</h5>
+                                <p class="text-xs text-gray-500">Calculadora de ROI y Cash-on-Cash funcional en frontend.</p>
+                            </div>
+                        </li>
+                        <li class="flex items-start gap-4 pb-4 border-b border-gray-800">
+                            <span class="w-6 h-6 rounded-full bg-atia/10 text-atia flex items-center justify-center shrink-0 border border-atia/20 text-xs animate-pulse">●</span>
+                            <div>
+                                <h5 class="text-sm font-bold text-white mb-1">Triggers de Supabase para Callback</h5>
+                                <p class="text-xs text-gray-500">Programar el Edge Function de Zadarma con el cron-delay.</p>
+                            </div>
+                        </li>
+                        <li class="flex items-start gap-4">
+                            <span class="w-6 h-6 rounded-full bg-gray-800 text-gray-400 flex items-center justify-center shrink-0 border border-gray-700 text-xs">○</span>
+                            <div>
+                                <h5 class="text-sm font-bold text-white mb-1">Plantilla Email a Outlook/GMail</h5>
+                                <p class="text-xs text-gray-500">Conexión de la plantilla HTML pura mediante el nodo de email de n8n.</p>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+        </main>
+
+        <!-- FOOTER FIRMA -->
+        <footer class="mt-24 pt-10 border-t border-dark-border text-center stagger-item">
+            <img src="https://static.tokkobroker.com/tfw_images/9795_Grupo%20Atia/LOGO_2024-02.png" alt="Atia Inmobiliaria" class="h-10 mx-auto mb-4 opacity-50 grayscale hover:grayscale-0 hover:opacity-100 transition-all">
+            <p class="text-xs text-gray-600 uppercase tracking-[0.2em] font-medium">Arquitectura de Software Generativa &bull; Operaciones 2026</p>
+        </footer>
+    </div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            // Animación en cascada para la carga inicial
+            const items = document.querySelectorAll('.stagger-item');
+            items.forEach((item, index) => {
+                setTimeout(() => {
+                    item.style.transition = 'all 0.8s cubic-bezier(0.16, 1, 0.3, 1)';
+                    item.style.opacity = '1';
+                    item.style.transform = 'translateY(0)';
+                }, 100 + (index * 200));
+            });
+        });
+    </script>
+</body>
+</html>
