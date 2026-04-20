@@ -577,10 +577,12 @@ Deno.serve(async (req) => {
     const supabase = createClient(Deno.env.get("SUPABASE_URL") ?? "", Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? "");
 
     // 0. Check if this lead is handed_off (human advisor took over)
+    // Defense #1: check ai_conversation_context.status
+    // Defense #2: check leads.status directly (fallback if upsert ever failed)
     try {
       const { data: existingLead } = await supabase
         .from("leads")
-        .select("id")
+        .select("id, status")
         .eq("whatsapp", phone)
         .eq("org_id", ORG_ID)
         .limit(1)
@@ -593,7 +595,9 @@ Deno.serve(async (req) => {
           .eq("lead_id", existingLead.id)
           .maybeSingle();
 
-        if (aiCtx?.status === "handed_off") {
+        const isHandedOff = aiCtx?.status === "handed_off" || existingLead.status === "handed_off";
+
+        if (isHandedOff) {
           // Still save message to CRM inbox for advisor visibility
           await supabase.from("conversations").insert({
             lead_id: existingLead.id,
@@ -603,7 +607,7 @@ Deno.serve(async (req) => {
             is_bot: false,
             message_id: messageId,
           }).catch(() => {});
-          console.log(`[ADRIANA] ${phone} is handed_off — message saved to CRM, bot skipped.`);
+          console.log(`[ADRIANA] ${phone} is handed_off (lead.status=${existingLead.status}, ctx=${aiCtx?.status}) — CRM saved, bot skipped.`);
           return new Response(JSON.stringify({ status: "handed_off", reason: "human_advisor_active" }), {
             status: 200, headers: { ...corsHeaders, "Content-Type": "application/json" },
           });
