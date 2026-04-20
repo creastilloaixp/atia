@@ -619,7 +619,7 @@ export function VisionDashboard({ onBack }: Props) {
                           </h4>
                           <Bookmark size={14} className="text-slate-200 hover:text-amber-500 cursor-pointer transition-colors" />
                         </div>
-                        <p className="text-[10px] font-bold text-slate-400 uppercase tracking-wider flex items-center gap-1.5 mb-4">
+                        <p className="text-[10px] font-bold text-slate-500 uppercase tracking-wider flex items-center gap-1.5 mb-4">
                           <MapPin size={10} /> {prop.sector}
                         </p>
 
@@ -636,7 +636,7 @@ export function VisionDashboard({ onBack }: Props) {
                         </div>
 
                         {prop.bedrooms && (
-                          <div className="flex gap-3 text-[10px] text-slate-400 font-bold">
+                          <div className="flex gap-3 text-[10px] text-slate-600 font-bold">
                             {prop.bedrooms && <span>{prop.bedrooms} Rec</span>}
                             {prop.bathrooms && <span>· {prop.bathrooms} Baños</span>}
                           </div>
@@ -662,8 +662,8 @@ export function VisionDashboard({ onBack }: Props) {
                             {prop.broker.isAISIN ? <ShieldCheck size={18} /> : <Users size={18} />}
                           </div>
                           <div className="flex-1 text-left">
-                            <p className="text-[10px] font-black text-slate-900 uppercase">{prop.broker.name}</p>
-                            <p className="text-[9px] font-bold text-slate-400 uppercase tracking-tighter">{prop.broker.company || 'Independiente'}</p>
+                            <p className="text-[10px] font-black text-slate-900 uppercase">{showBrokerDetail?.name || prop.broker.name}</p>
+                            <p className="text-[9px] font-bold text-slate-600 uppercase tracking-tighter">{showBrokerDetail?.company || prop.broker.company || 'Independiente'}</p>
                           </div>
                           <ChevronRight size={14} className="text-slate-300" />
                         </button>
@@ -706,8 +706,8 @@ export function VisionDashboard({ onBack }: Props) {
                         <span className="text-emerald-500 text-[9px] font-black flex items-center gap-1 uppercase tracking-wider"><Signal size={10} /> Enlace Satelital Activo</span>
                       </div>
                       <h3 className="text-xl font-black uppercase tracking-tight mb-1 text-[#000000]">Inteligencia Atia Inmobiliaria</h3>
-                      <p className="text-[11px] text-slate-500 max-w-md leading-relaxed font-bold">
-                        Nuestro núcleo de automatización cruza datos de <span className="text-[#FF6600]">Wiggot, Lamudi y Tokko</span> cada 15 minutos mediante Python para detectar oportunidades críticas.
+                      <p className="text-[11px] text-slate-600 max-w-md leading-relaxed font-bold">
+                        Nuestro núcleo de automatización cruza datos de <span className="text-[#FF6600]">Wiggot, Lamudi y Tokko</span> cada 15 minutes mediante Python para detectar oportunidades críticas.
                       </p>
                     </div>
                   </div>

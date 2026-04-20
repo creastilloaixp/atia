@@ -3,107 +3,102 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Autorización de Despliegue - Atia Inteligencia Inmobiliaria</title>
+    <title>Acción Requerida - Atia Inmobiliaria</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
     <script>
         tailwind.config = {
             theme: {
                 extend: {
-                    fontFamily: {
-                        sans: ['Inter', 'sans-serif'],
-                        display: ['Space Grotesk', 'sans-serif'],
-                    },
+                    fontFamily: { sans: ['Inter', 'sans-serif'], display: ['Space Grotesk', 'sans-serif'] },
                     colors: {
-                        atia: {
-                            DEFAULT: '#FF6600',
-                            glow: 'rgba(255, 102, 0, 0.4)'
-                        },
-                        dark: {
-                            bg: '#0A0A0A',
-                            card: '#121212',
-                            border: '#262626'
-                        }
+                        atia: { DEFAULT: '#FF6600', dark: '#CC5200' },
+                        brand: { navy: '#0F172A', light: '#F8FAFC' }
                     }
                 }
             }
         }
     </script>
-    <style>
-        body {
-            background-color: #0A0A0A;
-            color: #E5E7EB;
-        }
-        .status-pulse {
-            animation: pulse-orange 2s infinite cubic-bezier(0.4, 0, 0.6, 1);
-        }
-        @keyframes pulse-orange {
-            0%, 100% { opacity: 1; transform: scale(1); box-shadow: 0 0 0 0 rgba(255, 102, 0, 0.7); }
-            50% { opacity: .7; transform: scale(1.05); box-shadow: 0 0 15px 5px rgba(255, 102, 0, 0.0); }
-        }
-        .anim-fade { animation: fadeIn 0.8s ease-out forwards; }
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(15px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-    </style>
 </head>
-<body class="min-h-screen flex items-center justify-center p-4">
+<body class="bg-brand-light min-h-screen flex py-16 px-4 items-start justify-center font-sans text-brand-navy">
     
-    <div class="max-w-2xl w-full anim-fade">
-        <!-- Tarjeta Principal -->
-        <div class="bg-dark-card border border-dark-border rounded-2xl shadow-2xl overflow-hidden relative">
+    <div class="max-w-2xl w-full">
+        <div class="bg-white border border-slate-200 rounded-3xl shadow-xl overflow-hidden relative">
+            <!-- Brand Accent Line -->
+            <div class="absolute top-0 left-0 w-full h-1.5 bg-atia"></div>
             
-            <!-- Resplandor superior -->
-            <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-atia to-transparent"></div>
-            
-            <!-- Cabecera -->
-            <div class="p-8 pb-6 border-b border-dark-border">
-                <div class="flex justify-between items-start mb-6">
-                    <img src="https://static.tokkobroker.com/tfw_images/9795_Grupo%20Atia/LOGO_2024-02.png" alt="Atia Inmobiliaria" class="h-10 brightness-200">
-                    <div class="inline-flex items-center gap-2 bg-yellow-500/10 border border-yellow-500/20 px-3 py-1 rounded-full">
-                        <span class="w-2 h-2 bg-yellow-500 rounded-full status-pulse"></span>
-                        <span class="text-xs font-bold text-yellow-500 uppercase tracking-widest">Acción de Cliente Requerida</span>
-                    </div>
+            <!-- HEADER -->
+            <div class="p-10 pb-6 text-center border-b border-slate-100">                <!-- Atia Master Vector Logo -->
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 1000" class="h-32 mx-auto mb-6">
+                    <g fill="#E95C1A">
+                        <rect x="127.213" y="648.249" width="12.144" height="60.144" />
+                        <rect x="483.718" y="648.249" width="12.144" height="60.144" />
+                        <rect x="588.969" y="648.249" width="12.144" height="60.144" />
+                        <rect x="779.545" y="648.249" width="12.144" height="60.144" />
+                        <rect x="570.526" y="485.241" width="45.211" height="145.342" />
+                        <path d="M 231.4322 624.6338 L 230.8152 625.2217999999999 L 196.6572 660.8087999999999 L 196.8062 695.7048 L 225.4492 695.8788 L 231.7502 690.1247999999999 L 231.45319999999998 689.7298 L 232.0912 690.3267999999999 L 236.9112 695.3077999999999 L 268.1552 693.3118 L 266.6622 661.2897999999999 L 231.75119999999998 624.8937999999999 L 231.4322 624.6338" />
+                        <path d="M 166.3414 291.6071 L 166.3414 351.7511 L 178.1564 351.7511 L 202.7724 311.5871 L 202.7724 351.7511 L 214.0544 351.7511 L 214.0544 291.6071 L 201.8694 291.6071 L 177.6224 330.8281 L 177.6224 291.6071 L 166.3414 291.6071" />
+                        <path d="M 242.0235 291.6071 L 242.0235 351.7511 L 260.1975 351.7511 L 271.1115 310.7251 L 281.9015 351.7511 L 300.1165 351.7511 L 300.1165 291.6071 L 288.8345 291.6071 L 288.8345 338.9511 L 276.8955 291.6071 L 265.2025 291.6071 L 253.3055 338.9511 L 253.3055 291.6071 L 242.0235 291.6071" />
+                        <path d="M 337.5217 321.7199 L 342.2397 306.2329 L 354.2187 300.9609 L 366.1377 306.1919 L 370.7937 321.8839 L 366.2607 337.3099 L 354.2187 342.3969 L 342.1167 337.2479 L 337.5217 321.7199" />
+                        <path d="M 325.0087 321.3099 L 327.7577 336.7359 L 333.3577 344.9819 L 341.1317 350.3979 L 354.0967 352.7779 L 375.3677 344.5309 L 383.3487 321.5979 L 375.4307 298.8079 L 354.2607 290.5819 L 332.9267 298.7659 L 325.0087 321.3099" />
+                        <path d="M 523.0507 291.6071 L 523.0507 351.2591 L 535.1947 351.2591 L 535.1947 301.7411 L 565.3897 301.7411 L 565.3897 291.6071 L 523.0507 291.6071" />
+                        <path d="M 682.2109 291.607 L 668.9999 291.607 L 663.7479 305.269 L 639.7069 305.269 L 634.7429 291.607 L 621.8609 291.607 L 645.2869 351.751 L 658.1279 351.751 L 682.2109 291.607" />
+                        <path d="M 703.9848 291.6074 L 703.9848 351.7514 L 729.5448 351.7514 L 743.5548 350.1304 L 750.5498 344.3674 L 753.1758 334.8894 L 749.1958 323.7104 L 737.2978 318.1504 L 743.8018 313.1044 L 750.7138 303.3414 L 758.0578 291.6074 L 743.5348 291.6074 L 734.7558 304.6944 L 728.3548 313.5354 L 724.7028 316.0384 L 718.5898 316.7144 L 716.1288 316.7144 L 716.1288 291.6074 L 703.9848 291.6074" />
+                        <path d="M 872.7868 291.607 L 859.5758 291.607 L 854.3238 305.269 L 830.2828 305.269 L 825.3188 291.607 L 812.4368 291.607 L 835.8628 351.751 L 848.7038 351.751 L 872.7868 291.607" />
+                        <path d="M 792.7511 593.3334 L 872.7871 369.4164 L 823.7571 369.4164 L 767.0911 535.1394 L 712.2571 369.4164 L 664.2971 369.4164 L 744.4861 593.3334 L 792.7511 593.3334" />
+                        <path d="M 255.6675 593.3334 L 335.7035 369.4164 L 286.6735 369.4164 L 230.0075 535.1394 L 175.1735 369.4164 L 127.2135 369.4164 L 207.4025 593.3334 L 255.6675 593.3334" />
+                        <path d="M 513.6453 593.3334 L 486.8243 593.3334 L 335.7033 593.3334 L 335.7033 555.4534 L 402.1453 555.4534 L 402.1453 369.4164 L 447.3553 369.4164 L 447.3553 555.4534 L 486.8243 555.4534 L 513.6453 555.4534 L 664.2973 555.4534 L 664.2973 593.3334 L 513.6453 593.3334" />
+                        <path d="M 726.4386 667.026 L 768.8306 709.418 L 811.2226 667.026 L 768.8306 624.634 L 726.4386 667.026" />
+                    </g>
+                </svg>
+                <div class="inline-flex items-center gap-2 bg-yellow-50 border border-yellow-200 px-4 py-1.5 rounded-full mb-4">
+                    <span class="w-2 h-2 bg-yellow-500 rounded-full animate-pulse"></span>
+                    <span class="text-[10px] font-bold text-yellow-700 uppercase tracking-widest">Protocolo de Seguridad SSL</span>
                 </div>
-                <h1 class="text-2xl md:text-3xl font-display font-bold text-white mb-2">
-                    Actualización de Protocolo de Seguridad (SSL)
-                </h1>
-                <p class="text-gray-400 text-sm">Notificación automática del Centro de Ingeniería.</p>
+                <h1 class="text-3xl font-display font-bold leading-tight">Autorización de Despliegue Crítico</h1>
             </div>
 
-            <!-- Cuerpo del mensaje -->
-            <div class="p-8">
-                <p class="text-gray-300 text-base leading-relaxed mb-6">
-                    Estimado cliente, nuestro equipo técnico está finalizando el enrutamiento de sus servidores hacia la <strong>nueva infraestructura Anycast de ATIA</strong>. Este proceso garantizará que su dominio web goce de tiempos de carga hiperrápidos y posea el <strong>certificado de grado militar SSL</strong> requerido por los navegadores modernos.
+            <!-- CONTENT -->
+            <div class="p-10">
+                <p class="text-slate-500 text-sm leading-relaxed mb-6 italic">
+                    Centro de Operaciones ATIA: Notificación de sincronización de servidores Anycast.
                 </p>
-
-                <div class="bg-black/50 border border-gray-800 rounded-xl p-5 mb-8">
-                    <h3 class="text-white font-bold text-sm uppercase tracking-wide mb-3 flex items-center gap-2">
-                        <svg class="w-4 h-4 text-atia" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path></svg>
-                        Estatus del Despliegue: En Pausa
-                    </h3>
-                    <p class="text-gray-400 text-sm leading-relaxed">
-                        Para inyectar la nueva dirección IP (<strong>216.198.79.1</strong>), hemos iniciado sesión exitosamente en su proveedor de dominio. Sin embargo, los sistemas de seguridad del proveedor han disparado un <strong>Código de Verificación (2FA)</strong> que fue enviado directamente a su bandeja de correo electrónico personal.
+                <div class="space-y-4 text-slate-700 text-sm leading-relaxed mb-8">
+                    <p>
+                        Estimado cliente, estamos inyectando la nueva dirección IP (<strong>216.198.79.1</strong>) para garantizar la máxima seguridad y velocidad en su dominio corporativo.
+                    </p>
+                    <p>
+                        Para completar esta mejora técnica, su proveedor ha enviado un <strong>Código de Verificación (2FA)</strong> a su bandeja de correo electrónico personal.
                     </p>
                 </div>
 
-                <!-- Call to action -->
-                <div class="text-center bg-gradient-to-br from-[#1A110B] to-[#0A0A0A] border border-atia/20 rounded-xl p-6">
-                    <h4 class="text-white font-display font-bold text-lg mb-2">¿Qué necesitamos de usted?</h4>
-                    <p class="text-gray-400 text-sm mb-6">
-                        Por favor, revise su correo electrónico (bandeja de entrada o spam). Busque un código de seguridad de 6 dígitos enviado por su proveedor de dominio y <strong>compártalo con nuestro equipo a través de WhatsApp.</strong>
-                    </p>
-                    <a href="https://wa.me/523300000000?text=Hola%20equipo.%20El%20c%C3%B3digo%20de%20seguridad%20de%20mi%20dominio%20es:%20" class="inline-flex items-center justify-center gap-2 bg-atia hover:bg-atia-dark text-white font-bold text-sm px-6 py-3 rounded-full transition-colors shadow-[0_0_20px_rgba(255,102,0,0.3)]">
-                        <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51a12.8 12.8 0 00-.57-.01c-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
-                        Notificar Código Vía WhatsApp
+                <div class="bg-slate-50 border border-slate-100 rounded-2xl p-6 mb-8">
+                    <h3 class="font-bold text-sm uppercase tracking-wide mb-4 text-brand-navy">Pasos a seguir:</h3>
+                    <ul class="text-sm text-slate-600 space-y-4">
+                        <li class="flex gap-4 items-start">
+                           <span class="flex-shrink-0 w-6 h-6 bg-atia text-white text-[10px] font-bold rounded-full flex items-center justify-center">01</span>
+                           <p>Localice el código de seguridad enviado por su registrador de dominio.</p>
+                        </li>
+                        <li class="flex gap-4 items-start">
+                           <span class="flex-shrink-0 w-6 h-6 bg-atia text-white text-[10px] font-bold rounded-full flex items-center justify-center">02</span>
+                           <p>Compártalo con nuestro equipo vía WhatsApp para activar el certificado SSL de inmediato.</p>
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- CALL TO ACTION -->
+                <div class="text-center pt-2">
+                    <a href="https://wa.me/523300000000?text=Hola%20equipo%20ATIA.%20El%20c%C3%B3digo%20de%20verificaci%C3%B3n%20para%20mi%20dominio%20es:%20" class="inline-flex items-center justify-center bg-atia text-white font-bold text-sm px-12 py-4 rounded-full transition-all shadow-lg hover:shadow-atia/30 hover:scale-[1.02]">
+                        Compartir Código vía WhatsApp
                     </a>
                 </div>
             </div>
-
-            <!-- Footer -->
-            <div class="bg-dark-bg p-4 text-center border-t border-dark-border">
-                <p class="text-[#404040] text-xs font-mono">ID INCIDENCIA: #ATIA-DNS-791 &bull; CIFRADO PUNTO A PUNTO ESTABLECIDO</p>
+            
+            <!-- FOOTER -->
+            <div class="bg-slate-50 px-8 py-5 text-center border-t border-slate-100 uppercase tracking-widest">
+                <p class="text-slate-400 text-[10px] font-medium">
+                    ID INCIDENCIA: #ATIA-DNS-791 &bull; PROTOCOLO DE CIFRADO ACTIVO
+                </p>
             </div>
         </div>
     </div>

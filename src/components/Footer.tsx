@@ -95,15 +95,15 @@ export function Footer({ onOpenForm }: Props = {}) {
           </div>
 
           {/* Legible Legal Links */}
-          <div className="flex gap-8 text-slate-500 text-[11px] uppercase tracking-[0.2em] font-black">
-            <a href="#" className="hover:text-amber-600 transition-colors">Términos</a>
-            <a href="#" className="hover:text-amber-600 transition-colors">Privacidad</a>
-            <a href="#" className="hover:text-amber-600 transition-colors">Legal</a>
+          <div className="flex gap-8 text-slate-600 text-[11px] uppercase tracking-[0.2em] font-black">
+            <a href="#" className="hover:text-amber-600 transition-colors" aria-label="Ver Términos y Condiciones">Términos</a>
+            <a href="#" className="hover:text-amber-600 transition-colors" aria-label="Ver Política de Privacidad">Privacidad</a>
+            <a href="#" className="hover:text-amber-600 transition-colors" aria-label="Información Legal">Legal</a>
           </div>
 
           {/* Tech/Copyright */}
           <div className="flex flex-col md:items-end gap-3">
-             <div className="text-slate-400 text-[10px] uppercase tracking-[0.15em] font-black">
+             <div className="text-slate-500 text-[10px] uppercase tracking-[0.15em] font-black">
               © 2025 ATIA Inmobiliaria — Voice Bridge Engine v4.3
             </div>
             {onOpenForm && (

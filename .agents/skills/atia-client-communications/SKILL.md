@@ -1,6 +1,6 @@
 ---
 name: atia-client-communications
-description: Estándares visuales y de código para generar comunicados, avisos técnicos, notificaciones y HTMLs estáticos para clientes de Atia Inmobiliaria.
+description: Estándares visuales y de código para generar comunicados, avisos técnicos, notificaciones y HTMLs estáticos para clientes de Atia Inmobiliaria. Basado en el branding real: Blanco con acentos Naranjas.
 ---
 
 # Atia Client Communications & Notifications
@@ -11,24 +11,22 @@ Aplica automáticamente cuando el usuario solicite:
 - "Crea un aviso para el cliente"
 - "Haz una página estática para notificar X"
 - "Genera un HTML con las métricas"
-- "Genera una plantilla de correo"
 
-## 1. El Identificador Central (Atia Premium Dark Theme)
-La marca ATIA representa alto rendimiento, tecnología y elitismo inmobiliario (Flipping automatizado). Absolutamente todos los comunicados deben transmitir esto:
-- **Tema Base:** Modo oscuro estricto (Fondos en negros absolutos y grises muy oscuros). 
-- **Color Principal (Brand):** Atia Naranja `#FF6600`. Úsalo para CTAs, glows sutiles, acentos e iconos clave.
-- **Tipografía:** `Space Grotesk` para títulos/encabezados (le da el toque de laboratorio tecnológico/fintech) e `Inter` para los párrafos. Cárgalas siempre vía Google Fonts.
+## 1. El Identificador Central (Atia Light Premium)
+La marca ATIA utiliza una estética limpia, profesional y luminosa:
+- **Tema Base:** Fondos blancos o crema muy claros (`#FFFFFF`, `#F8FAFC`).
+- **Color Principal (Brand):** Atia Naranja `#FF6600`. Úsalo para logos, botones, bordes de énfasis y tags.
+- **Contraste:** Tipografía en azul noche profundo (`#0F172A`) o gris pizarra (`#334155`) para máxima legibilidad.
+- **Tipografía:** `Space Grotesk` para títulos/encabezados y `Inter` para párrafos.
 
-## 2. Reglas de Componentes UI
-Al generar un archivo HTML para Atia, debes incorporar estas convenciones en tu Tailwind config vía CDN o clases directas:
+## 2. Reglas de Componentes UI (Light)
+Al generar un archivo HTML para Atia, debes incorporar estas convenciones:
 
-- **Contenedores:** Usa `max-w-3xl mx-auto` para centrar. En lugar de estar al borde de la pantalla, el contenido siempre va en una tarjeta (`bg-[#121212] border border-[#262626] rounded-2xl`).
-- **Logotipo:** Siempre usar `https://static.tokkobroker.com/tfw_images/9795_Grupo%20Atia/LOGO_2024-02.png`. Como es oscuro por defecto, agrégale `class="brightness-200"` o `filter: invert(1)` para que luzca épico sobre el fondo negro.
-- **Micro-Animaciones (Soft-Tech):** Agrega animaciones sutiles (pulse en luces de estado, fade de entrada `anim-fade` que suba desde `translateY(15px)`). 
-- **Botones (Calls to Action):** El botón primario SIEMPRE es pill-shaped (`rounded-full`), con fondo `#FF6600` y si es relevante una ligera sombra: `shadow-[0_0_20px_rgba(255,102,0,0.3)]`.
+- **Contenedores:** Fondo blanco puro, con sombras suaves (`shadow-xl`) y bordes redondeados amplios (`rounded-3xl`).
+- **Logotipo:** Siempre usar `https://static.tokkobroker.com/tfw_images/9795_Grupo%20Atia/LOGO_2024-02.png`. Usar en su color original o con leves ajustes de brillo si el fondo no es blanco puro.
+- **Botones:** Fondo `#FF6600`, texto blanco, redondos (`rounded-full`).
 
-## 3. Plantilla Base Obligatoria
-Copia y usa siempre este esqueleto al generar un nuevo requerimiento HTML.
+## 3. Plantilla Base Obligatoria (Light)
 
 ```html
 <!DOCTYPE html>
@@ -36,7 +34,7 @@ Copia y usa siempre este esqueleto al generar un nuevo requerimiento HTML.
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Comunicado Oficial - Atia Inteligencia Inmobiliaria</title>
+    <title>Comunicado - Atia Inmobiliaria</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
     <script>
@@ -45,67 +43,39 @@ Copia y usa siempre este esqueleto al generar un nuevo requerimiento HTML.
                 extend: {
                     fontFamily: { sans: ['Inter', 'sans-serif'], display: ['Space Grotesk', 'sans-serif'] },
                     colors: {
-                        atia: { DEFAULT: '#FF6600', glow: 'rgba(255, 102, 0, 0.4)' },
-                        dark: { bg: '#0A0A0A', card: '#121212', border: '#262626' }
+                        atia: { DEFAULT: '#FF6600', dark: '#CC5200' },
+                        brand: { navy: '#0F172A', light: '#F8FAFC' }
                     }
                 }
             }
         }
     </script>
-    <style>
-        body { background-color: #0A0A0A; color: #E5E7EB; }
-        .anim-fade { animation: fadeIn 0.8s ease-out forwards; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
-    </style>
 </head>
-<body class="min-h-screen flex py-16 px-4 items-start justify-center">
-    
-    <div class="max-w-2xl w-full anim-fade">
-        <div class="bg-dark-card border border-dark-border rounded-3xl shadow-2xl overflow-hidden relative">
-            <!-- Glow Line -->
-            <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-atia to-transparent"></div>
+<body class="bg-brand-light min-h-screen flex py-16 px-4 items-start justify-center font-sans text-brand-navy">
+    <div class="max-w-2xl w-full">
+        <div class="bg-white border border-slate-200 rounded-3xl shadow-xl overflow-hidden relative">
+            <div class="absolute top-0 left-0 w-full h-1.5 bg-atia"></div>
             
-            <!-- HEADER -->
-            <div class="p-8 pb-6 border-b border-dark-border text-center">
-                <img src="https://static.tokkobroker.com/tfw_images/9795_Grupo%20Atia/LOGO_2024-02.png" alt="Atia Inmobiliaria" class="h-14 mx-auto brightness-200 mb-6 drop-shadow-lg">
-                <div class="inline-flex items-center gap-2 bg-[#FF6600]/10 border border-[#FF6600]/20 px-4 py-1.5 rounded-full mb-4">
-                    <span class="w-2 h-2 bg-[#FF6600] rounded-full animate-pulse"></span>
-                    <span class="text-[10px] font-bold text-[#FF6600] uppercase tracking-widest">Ejemplo de Tag Categórico</span>
-                </div>
-                <h1 class="text-3xl font-display font-bold text-white leading-tight">Título Principal del Mensaje</h1>
+            <div class="p-10 pb-6 text-center border-b border-slate-100">
+                <!-- Atia SVG Logo (Vector) -->
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 2084 2084" class="h-32 mx-auto mb-6">
+                    <path d="M 1593.500 605.627 C 1558.916 609.141, 1528.898 632.942, 1518.143 665.378 C 1507.419 697.718, 1515.524 732.413, 1539.375 756.263 C 1550.044 766.933, 1566.128 776.068, 1580.608 779.683 C 1591.460 782.393, 1614.125 782.131, 1624.500 779.176 C 1655.782 770.266, 1678.162 747.827, 1687.222 716.289 C 1690.389 705.265, 1690.376 682.202, 1687.197 670.663 C 1684.610 661.275, 1678.414 648.566, 1672.738 641.006 C 1660.217 624.328, 1640.381 611.441, 1621.130 607.477 C 1613.724 605.952, 1599.604 605.006, 1593.500 605.627 M 431 622.393 C 406.629 627.820, 391.195 653.525, 396.070 680.566 C 398.025 691.414, 403.196 700.036, 415.434 712.853 C 444.785 743.593, 481.404 781.527, 481.951 781.761 C 482.539 782.011, 533.148 729.787, 551.622 709.866 C 565.094 695.339, 569.024 686.433, 568.976 670.540 C 568.930 655.525, 564.443 644.266, 554.585 634.428 C 544.242 624.108, 531.307 619.755, 517.764 622.040 C 507.951 623.695, 500.849 627.775, 491.278 637.256 L 483.055 645.401 480.778 643.405 C 479.525 642.308, 475.442 638.613, 471.704 635.196 C 463.535 627.727, 455.429 623.438, 446.855 622.046 C 439.185 620.802, 438.030 620.827, 431 622.393 M 431.493 848.250 C 431.248 848.938, 393.688 953.861, 348.024 1081.413 C 302.361 1208.966, 265 1313.483, 265 1313.673 C 265 1313.863, 287.536 1313.902, 315.080 1313.759 L 365.159 1313.500 421.705 1142.500 C 452.806 1048.450, 478.545 971.172, 478.904 970.772 C 479.263 970.371, 503.127 1038.996, 531.934 1123.272 C 560.742 1207.547, 587.227 1284.938, 590.790 1295.250 L 597.268 1314 648.134 1314 C 678.378 1314, 699 1313.628, 699 1313.081 C 699 1312.576, 661.650 1207.684, 616 1079.988 C 570.350 952.292, 533 847.630, 533 847.407 C 533 847.183, 510.261 847, 482.469 847 C 442.947 847, 431.840 847.272, 431.493 848.250 M 699 886.500 L 699 926 768.500 926 L 838 926 838 1120 L 838 1314 885 1314 L 932 1314 932 1120 L 932 926 1158 926 L 1384 926 1384 886.500 L 1384 847 1041.500 847 L 699 847 699 886.500 M 1550.473 848.250 C 1547.286 856.841, 1384 1313.242, 1384 1313.561 C 1384 1313.802, 1406.478 1314, 1433.950 1314 L 1483.900 1314 1524.519 1191.250 C 1546.860 1123.737, 1572.361 1046.675, 1581.188 1020 C 1590.015 993.325, 1597.522 971.185, 1597.869 970.800 C 1598.216 970.415, 1623.212 1042.415, 1653.415 1130.800 C 1683.618 1219.185, 1710.114 1296.563, 1712.296 1302.750 L 1716.262 1314 1767.131 1314 C 1795.109 1314, 1818.004 1313.662, 1818.010 1313.250 C 1818.015 1312.838, 1780.585 1207.763, 1734.831 1079.750 L 1651.643 847 1601.290 847 C 1561.922 847, 1550.836 847.273, 1550.473 848.250 M 1189 1162.500 L 1189 1314 1236 1314 L 1283 1314 1283 1162.500 L 1283 1011 1236 1011 L 1189 1011 1189 1162.500 M 727.500 1348.937 C 714.258 1350.658, 704.323 1355.113, 696.063 1363.033 C 682.272 1376.255, 676.030 1394.768, 677.323 1418.608 C 677.984 1430.793, 680.010 1439.084, 684.507 1448.015 C 691.054 1461.014, 702.630 1470.579, 717.500 1475.275 C 726.866 1478.233, 748.292 1478.428, 757.500 1475.640 C 777.487 1469.587, 791.565 1454.416, 796.606 1433.500 C 799.100 1423.149, 798.887 1401.916, 796.187 1391.856 C 793.104 1380.366, 788.659 1372.442, 781.115 1364.985 C 773.778 1357.733, 765.574 1352.952, 756.500 1350.640 C 748.957 1348.718, 735.339 1347.918, 727.500 1348.937 M 265 1413.500 L 265 1476 277.500 1476 L 290 1476 290 1413.500 L 290 1351 L 277.500 1351 L 265 1351 265 1413.500 M 347 1413.500 L 347 1476 358.489 1476 L 369.978 1476 370.239 1435.561 L 370.500 1395.122 395.500 1435.554 L 420.500 1475.986 433.250 1475.993 L 446 1476 446 1413.500 L 446 1351 434.011 1351 L 422.022 1351 421.761 1391.739 L 421.500 1432.478 396.566 1391.739 L 371.632 1351 359.316 1351 L 347 1351 347 1413.500 M 504 1413.478 L 504 1476 516 1476 L 528 1476 528.075 1428.250 L 528.149 1380.500 540.325 1428.249 L 552.500 1475.999 564.711 1475.999 L 576.923 1476 577.904 1472.250 C 578.443 1470.188, 583.681 1449.375, 589.543 1426 C 595.406 1402.625, 600.593 1382.825, 601.071 1382 C 601.571 1381.136, 601.952 1400.744, 601.970 1428.250 L 602 1476 613.500 1476 L 625 1476 625 1413.500 L 625 1351 606.047 1351 L 587.094 1351 586.201 1354.250 C 585.710 1356.037, 580.894 1374.375, 575.498 1395 C 570.103 1415.625, 565.394 1432.843, 565.033 1433.261 C 564.672 1433.680, 559.455 1415.455, 553.439 1392.761 L 542.500 1351.500 523.250 1351.228 L 504 1350.957 504 1413.478 M 850 1413.444 L 850 1476 880.250 1475.964 C 919.374 1475.918, 928.228 1475.147, 936.523 1471.063 C 943.809 1467.476, 948.227 1462.874, 951.899 1455.046 C 954.160 1450.225, 954.499 1448.193, 954.491 1439.500 C 954.484 1431.018, 954.136 1428.849, 952.200 1425.209 C 949.126 1419.430, 942.905 1413.570, 937.471 1411.336 C 932.568 1409.319, 931.997 1408.453, 934.955 1407.514 C 938.343 1406.439, 945.766 1397.220, 947.538 1391.887 C 951.335 1380.453, 947.872 1367.666, 938.756 1359.471 C 930.145 1351.728, 929.461 1351.619, 887.250 1351.231 L 850 1350.888 850 1413.444 M 1008 1413.500 L 1008 1476 1020.500 1476 L 1033 1476 1033 1413.500 L 1033 1351 1020.500 1351 L 1008 1351 1008 1413.500 M 1227 1413.500 L 1227 1476 1239.500 1476 L 1252 1476 1252 1413.500 L 1252 1351 1239.500 1351 L 1227 1351 1227 1413.500 M 1342.908 1353.750 C 1342.335 1355.263, 1331.546 1382.986, 1318.933 1415.357 C 1306.320 1447.729, 1296 1474.617, 1296 1475.107 C 1296 1475.598, 1301.964 1476, 1309.254 1476 L 1322.508 1476 1327.636 1461.750 L 1332.765 1447.500 1357.430 1447.232 L 1382.095 1446.965 1384.379 1452.232 C 1385.635 1455.130, 1388.201 1461.658, 1390.081 1466.740 L 1393.500 1475.981 1407.357 1475.990 C 1420.134 1475.999, 1421.164 1475.864, 1420.574 1474.250 C 1420.222 1473.287, 1409.036 1445.169, 1395.717 1411.764 L 1371.500 1351.027 1357.725 1351.014 L 1343.950 1351 1342.908 1353.750 M 1467 1413.436 L 1467 1476 1479.500 1476 L 1492 1476 1492 1450 L 1492 1424 1499.532 1424 C 1513.271 1424, 1515.062 1425.571, 1534.987 1455.085 L 1549.106 1476 1564.053 1476 C 1572.274 1476, 1579 1475.805, 1579 1475.566 C 1579 1474.981, 1562.714 1449.005, 1557.649 1441.512 C 1552.365 1433.694, 1546.620 1427.523, 1541.073 1423.706 L 1536.600 1420.629 1541.591 1419.505 C 1552.762 1416.989, 1560.876 1411.002, 1565.737 1401.687 C 1568.172 1397.023, 1568.448 1395.441, 1568.473 1386 C 1568.497 1376.696, 1568.198 1374.856, 1565.849 1369.845 C 1562.431 1362.556, 1556.315 1356.675, 1549.174 1353.813 C 1543.677 1351.610, 1542.306 1351.528, 1505.250 1351.205 L 1467 1350.872 1467 1413.436 M 1624 1413.500 L 1624 1476 1636.500 1476 L 1649 1476 1649 1413.500 L 1649 1351 1636.500 1351 L 1624 1351 1624 1413.500 M 1740.289 1352.750 C 1739.933 1353.713, 1729.147 1381.455, 1716.321 1414.399 C 1703.494 1447.343, 1693 1474.681, 1693 1475.149 C 1693 1475.617, 1698.991 1476, 1706.313 1476 L 1719.625 1476 1724.706 1461.750 L 1729.787 1447.500 1754.075 1447.232 C 1769.013 1447.067, 1778.742 1447.342, 1779.346 1447.946 C 1779.886 1448.486, 1782.626 1454.907, 1785.435 1462.214 L 1790.542 1475.500 1804.271 1475.778 C 1811.822 1475.931, 1818.005 1475.706, 1818.011 1475.278 C 1818.017 1474.850, 1806.880 1446.722, 1793.261 1412.771 L 1768.500 1351.042 1754.719 1351.021 C 1742.496 1351.002, 1740.864 1351.198, 1740.289 1352.750 M 1090 1414 L 1090 1476 1134 1476 L 1178 1476 1178 1465.500 L 1178 1455 1146.500 1455 L 1115 1455 1115 1403.500 L 1115 1352 1102.500 1352 L 1090 1352 1090 1414 M 727.552 1371.658 C 716.656 1375.001, 709.465 1382.510, 705.734 1394.440 C 702.594 1404.483, 702.672 1422.678, 705.895 1431.917 C 711.748 1448.693, 723.608 1456.866, 740.525 1455.780 C 756.355 1454.764, 767.507 1444.301, 771.079 1427.114 C 772.699 1419.316, 771.790 1398.726, 769.550 1392.500 C 763.239 1374.959, 745.494 1366.152, 727.552 1371.658 M 876 1385.500 L 876 1400 894.032 1400 C 907.076 1400, 912.954 1399.621, 915.282 1398.629 C 924.775 1394.584, 927.313 1382.852, 920.229 1375.767 C 917.716 1373.255, 916.120 1372.665, 909.879 1371.942 C 905.821 1371.472, 896.538 1371.068, 889.250 1371.044 L 876 1371 876 1385.500 M 1492 1388.138 L 1492 1404.275 1511.250 1403.579 C 1528.194 1402.965, 1531.031 1402.620, 1534.932 1400.691 C 1545.774 1395.331, 1545.837 1379.695, 1535.038 1374.250 C 1530.871 1372.149, 1529.302 1372, 1511.288 1372 L 1492 1372 1492 1388.138 M 1356.542 1382.707 C 1354.947 1386.761, 1341 1425.271, 1341 1425.621 C 1341 1425.829, 1348.425 1426, 1357.500 1426 C 1366.575 1426, 1374 1425.711, 1374 1425.358 C 1374 1424.565, 1358.056 1381.723, 1357.586 1381.253 C 1357.400 1381.066, 1356.930 1381.721, 1356.542 1382.707 M 1754.030 1381.055 C 1754.014 1381.360, 1750.400 1391.460, 1746 1403.500 C 1741.600 1415.540, 1738 1425.528, 1738 1425.695 C 1738 1425.863, 1745.425 1426, 1754.500 1426 C 1763.575 1426, 1771 1425.713, 1771 1425.362 C 1771 1424.440, 1755.910 1383.786, 1754.905 1382 C 1754.441 1381.175, 1754.047 1380.750, 1754.030 1381.055 M 876 1437.997 L 876 1455.252 896.306 1454.825 C 914.206 1454.448, 917.073 1454.158, 920.499 1452.380 C 925.636 1449.714, 928.109 1446.214, 928.727 1440.733 C 929.667 1432.394, 925.646 1425.755, 918 1423.020 C 915.898 1422.268, 906.812 1421.563, 895.250 1421.255 L 876 1420.741 876 1437.997" fill="#FF6600" />
+                </svg>
+                <h1 class="text-3xl font-display font-bold leading-tight">Título del Comunicado</h1>
             </div>
 
-            <!-- CONTENT -->
-            <div class="p-8">
-                <p class="text-gray-400 text-sm leading-relaxed mb-6">
-                    Estimado usuario. Este es el espacio para el cuerpo principal de la notificación. El texto debe mantener un tono corporativo, seguro y tecnológico en todo momento.
-                </p>
-                <!-- DATA BLOCK (Ejemplo) -->
-                <div class="bg-black/50 border border-gray-800 rounded-2xl p-5 mb-8">
-                    <h3 class="text-white font-bold text-sm uppercase tracking-wide mb-3">Sub Bloque de Información</h3>
-                    <ul class="text-sm text-gray-400 space-y-2">
-                        <li class="flex gap-2">👉 <span class="text-white">Punto:</span> Ejemplo de lista.</li>
-                    </ul>
-                </div>
-                <!-- CALL TO ACTION -->
+            <div class="p-10">
+                <p class="text-slate-600 leading-relaxed mb-6">Contenido del mensaje...</p>
                 <div class="text-center pt-4">
-                    <a href="#" class="inline-flex items-center justify-center bg-atia text-white font-bold text-sm px-8 py-3 rounded-full hover:bg-orange-600 transition-colors shadow-[0_0_20px_rgba(255,102,0,0.3)]">
-                        Acción Requerida
-                    </a>
+                    <a href="#" class="inline-block bg-atia text-white font-bold px-10 py-4 rounded-full shadow-lg hover:shadow-atia/30 transition-all">Acción</a>
                 </div>
             </div>
-            
-            <!-- FOOTER -->
-            <div class="bg-black/80 px-8 py-5 text-center border-t border-dark-border">
-                <p class="text-gray-600 text-[10px] font-mono tracking-widest uppercase">
-                    Telecomunicaciones y Operaciones ATIA &bull; Confidencial
-                </p>
+
+            <div class="bg-slate-50 p-6 text-center border-t border-slate-100">
+                <p class="text-slate-400 text-xs font-medium uppercase tracking-widest">Atia Inmobiliaria &bull; Operaciones</p>
             </div>
         </div>
     </div>
 </body>
 </html>
 ```
-
-## Resumen Ejecutivo para IA: 
-**A partir de ahora, si haces un HTML estático extra:** NO USES BLANCO. NO USES FONDO CLARO. Solo el contenedor negro (#121212), la fuente naranja (#FF6600) en botones y acentos, el tag redondo, la raya naranja luminosa hasta arriba y la fuente Space Grotesk. Revisa el código base superior.

@@ -149,7 +149,7 @@ Un asesor experto visitará tu propiedad para darte el diagnóstico legal sin co
             : `¡Hola ${name}! 👋 Soy Adriana de CompramosTuCasa.mx. He recibido tu solicitud de diagnóstico gratuito. ¿Te gustaría agendar una cita gratuita con nuestro asesor legal? También puedo resolver cualquier duda que tengas.`;
         }
 
-        const evolutionRes = await fetch(`${process.env.EVOLUTION_API_URL || 'https://n8n-evolution-api.yxmkwr.easypanel.host'}/message/sendText/${process.env.EVOLUTION_INSTANCE || 'Gen-IA'}`, {
+        const evolutionRes = await fetch(`${process.env.EVOLUTION_API_URL || 'https://n8n-evolution-api.yxmkwr.easypanel.host'}/message/sendText/${process.env.EVOLUTION_INSTANCE || 'GRUPOATIA'}`, {
           method: 'POST',
           headers: {
             'apikey': process.env.EVOLUTION_API_KEY,

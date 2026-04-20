@@ -4,129 +4,66 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Plantilla Maestra ATIA - Comunicados Estáticos</title>
-    <!-- Tailwind CSS (CDN para HTML estáticos e independientes) -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Tipografía Brand ATIA -->
     <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
-    
     <script>
         tailwind.config = {
             theme: {
                 extend: {
-                    fontFamily: {
-                        sans: ['Inter', 'sans-serif'],
-                        display: ['Space Grotesk', 'sans-serif'],
-                    },
+                    fontFamily: { sans: ['Inter', 'sans-serif'], display: ['Space Grotesk', 'sans-serif'] },
                     colors: {
-                        atia: {
-                            DEFAULT: '#FF6600',
-                            glow: 'rgba(255, 102, 0, 0.4)'
-                        },
-                        dark: {
-                            bg: '#0A0A0A',
-                            card: '#121212',
-                            border: '#262626'
-                        }
+                        atia: { DEFAULT: '#E95C1A', dark: '#CC5200' },
+                        brand: { navy: '#0F172A', light: '#F8FAFC' }
                     }
                 }
             }
         }
     </script>
-    <style>
-        body { 
-            background-color: #0A0A0A; 
-            color: #E5E7EB; 
-            background-image: radial-gradient(at 0% 0%, rgba(255, 102, 0, 0.05) 0px, transparent 50%), radial-gradient(at 100% 100%, rgba(30, 58, 138, 0.1) 0px, transparent 50%);
-            background-attachment: fixed;
-        }
-        ::selection { background-color: #FF6600; color: white; }
-        
-        .anim-fade { animation: fadeIn 0.8s ease-out forwards; }
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(15px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-    </style>
 </head>
-<body class="min-h-screen flex py-16 px-4 items-start justify-center">
+<body class="bg-brand-light min-h-screen flex py-16 px-4 items-start justify-center font-sans text-brand-navy">
     
-    <div class="max-w-2xl w-full anim-fade">
-        <!-- Tarjeta Principal Brandeada -->
-        <div class="bg-dark-card border border-dark-border rounded-3xl shadow-2xl overflow-hidden relative">
+    <div class="max-w-2xl w-full">
+        <div class="bg-white border border-slate-200 rounded-3xl shadow-xl overflow-hidden relative">
+            <div class="absolute top-0 left-0 w-full h-1.5 bg-atia"></div>
             
-            <!-- Glow Line Superior (Identidad ATIA) -->
-            <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-atia to-transparent"></div>
-            
-            <!-- Cabecera -->
-            <div class="p-8 pb-6 border-b border-dark-border text-center">
-                <!-- Logotipo invertido para lectura en fondo oscuro -->
-                <img src="https://static.tokkobroker.com/tfw_images/9795_Grupo%20Atia/LOGO_2024-02.png" 
-                     alt="Atia Inteligencia Inmobiliaria" 
-                     class="h-16 mx-auto brightness-200 mb-6 drop-shadow-2xl">
-                
-                <!-- Tag / Badge Categórico -->
+            <div class="p-10 pb-6 text-center border-b border-slate-100">
+                <img src="https://static.tokkobroker.com/tfw_images/9795_Grupo%20Atia/LOGO_2024-02.png" alt="ATIA" style="height: 80px; width: auto; display: block; margin: 0 auto 20px;">
                 <div class="inline-flex items-center gap-2 bg-atia/10 border border-atia/20 px-4 py-1.5 rounded-full mb-4">
                     <span class="w-2 h-2 bg-atia rounded-full animate-pulse"></span>
                     <span class="text-[10px] font-bold text-atia uppercase tracking-widest">Master Template UI</span>
                 </div>
-                
-                <h1 class="text-3xl font-display font-bold text-white leading-tight">
-                    El Titular Principal de este Comunicado Va Aquí
-                </h1>
+                <h1 class="text-3xl font-display font-bold leading-tight">Titular de un Comunicado Maestro</h1>
             </div>
 
-            <!-- Cuerpo del mensaje -->
-            <div class="p-8 md:p-10">
-                <p class="text-gray-400 text-sm leading-relaxed mb-8">
-                    Esta es la **Plantilla Maestra Estandarizada**. A partir de ahora, cualquier aviso importante, notificación de servidor, envío de documentación técnica, resultados de métricas hacia clientes o equipo de evaluación, debrá utilizar exactamente este esqueleto visual. 
-                    Su estética oscura transmite profesionalismo, tecnología de punta y la solidez de una agencia inmobiliaria de élite como Atia.
+            <div class="p-10">
+                <p class="text-slate-600 leading-relaxed mb-8">
+                    Este es el cuerpo de la plantilla estandarizada. El diseño utiliza un fondo blanco puro para transmitir transparencia y profesionalismo, con acentos en Naranja Atia para guiar la atención.
                 </p>
 
-                <!-- Bloque de Datos (Opcional - Útil para reportes o pasos a seguir) -->
-                <div class="bg-black/50 border border-gray-800 rounded-2xl p-6 mb-8">
-                    <h3 class="text-white font-bold text-sm uppercase tracking-wide mb-4 flex items-center gap-2">
-                        <svg class="w-4 h-4 text-atia" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-                        Variables Clave de Diseño
-                    </h3>
-                    <ul class="text-sm text-gray-400 space-y-3">
+                <div class="bg-slate-50 border border-slate-100 rounded-2xl p-6 mb-8">
+                    <h3 class="font-bold text-sm uppercase tracking-wide mb-4 text-brand-navy">Bloque de Información</h3>
+                    <ul class="text-xs text-slate-500 space-y-3">
                         <li class="flex items-start gap-3">
-                            <div class="w-2 h-2 rounded-full bg-atia mt-1.5 shadow-[0_0_8px_rgba(255,102,0,0.8)]"></div>
-                            <div>
-                                <strong class="text-white block mb-0.5">Uso de Sombras (Glow)</strong>
-                                Nunca usamos botones planos. Nuestro color Naranja (#FF6600) siempre proyecta un resplandor al 30%.
-                            </div>
+                            <span class="text-atia">●</span>
+                            <span><strong>Alta Legibilidad:</strong> Tipografía Navy sobre fondo blanco.</span>
                         </li>
                         <li class="flex items-start gap-3">
-                            <div class="w-2 h-2 rounded-full bg-blue-500 mt-1.5 shadow-[0_0_8px_rgba(59,130,246,0.8)]"></div>
-                            <div>
-                                <strong class="text-white block mb-0.5">Bordes y Contenedores</strong>
-                                Tarjetas sumamente redondeadas ('rounded-3xl') con bordes ultra-delgados ('border-[#262626]').
-                            </div>
+                            <span class="text-atia">●</span>
+                            <span><strong>Componentes Capsulares:</strong> Botones y tags totalmente redondeados.</span>
                         </li>
                     </ul>
                 </div>
 
-                <div class="text-center bg-gradient-to-br from-[#121212] to-black border border-dark-border rounded-xl p-6">
-                    <h4 class="text-white font-display font-bold text-lg mb-2">Punto de Acción (Call To Action)</h4>
-                    <p class="text-gray-500 text-xs mb-6 max-w-sm mx-auto">
-                        Los botones principales siempre son capsulares ('rounded-full') usando nuestro color base distintivo.
-                    </p>
-                    <a href="#" class="inline-flex items-center justify-center bg-atia hover:opacity-90 text-white font-bold text-sm px-10 py-3 rounded-full transition-opacity shadow-[0_0_20px_rgba(255,102,0,0.3)]">
-                        Botón Principal Requerido
+                <div class="text-center pt-4">
+                    <a href="#" class="inline-block bg-atia text-white font-bold px-12 py-4 rounded-full shadow-lg shadow-atia/20 hover:scale-[1.02] transition-transform">
+                        Botón de Acción
                     </a>
                 </div>
             </div>
 
-            <!-- Footer Corporativo -->
-            <div class="bg-black/90 px-8 py-5 text-center border-t border-dark-border">
-                <p class="text-gray-600 text-[10px] font-mono tracking-widest uppercase mb-1">
-                    Atia Inteligencia Inmobiliaria &bull; Sistema Confidencial
-                </p>
-                <p class="text-gray-700 text-[10px] font-mono">
-                    Protocolo de Comunicaciones Autorizado v2026
-                </p>
+            <div class="bg-slate-50 p-6 text-center border-t border-slate-100">
+                <p class="text-slate-400 text-[10px] font-medium uppercase tracking-widest">Atia Inmobiliaria &bull; Operaciones v2026</p>
             </div>
-
         </div>
     </div>
 </body>

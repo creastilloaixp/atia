@@ -1,10 +1,16 @@
 {
-  "name": "Casto Inmobiliaria",
-  "short_name": "Casto",
-  "description": "Compra y vende propiedades con nosotros",
+  "name": "ATIA - Sana Tu Deuda",
+  "short_name": "ATIA",
+  "description": "Sanamos tu deuda, remodelamos y vendemos tu propiedad al mejor precio.",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#050505",
-  "theme_color": "#002F6C",
-  "icons": []
+  "theme_color": "#F26722",
+  "icons": [
+    {
+      "src": "favicon.ico",
+      "sizes": "64x64 32x32 24x24 16x16",
+      "type": "image/x-icon"
+    }
+  ]
 }

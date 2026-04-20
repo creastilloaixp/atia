@@ -74,14 +74,14 @@ export function SellerHero({ onOpenForm, onOpenCalculator }: Props) {
             </div>
 
             {/* Title with High Contrast */}
-            <h2 className="text-5xl md:text-6xl lg:text-[5.5rem] font-black leading-[0.9] tracking-tighter text-slate-900">
+            <h1 className="text-5xl md:text-6xl lg:text-[5.5rem] font-black leading-[0.9] tracking-tighter text-slate-900">
               Sanamos tu deuda,
               <br />
               <span className="block mt-2" style={{ color: '#F26722' }}>remodelamos y vendemos.</span>
-              <span className="text-slate-500 text-2xl md:text-4xl block mt-8 font-light leading-snug max-w-2xl">
+              <span className="text-slate-600 text-2xl md:text-4xl block mt-8 font-light leading-snug max-w-2xl">
                 No malvendas. Asociate con Atia: inyectamos capital para elevar el valor de tu casa.
               </span>
-            </h2>
+            </h1>
 
             {/* Agitate Paragraph */}
             <p className="text-slate-700 text-lg md:text-xl font-medium leading-relaxed max-w-xl">
@@ -132,16 +132,16 @@ export function SellerHero({ onOpenForm, onOpenCalculator }: Props) {
             </div>
 
             {/* High-Legibility Micro-indicators */}
-            <div className="flex flex-wrap items-center gap-8 text-[11px] text-slate-500 uppercase font-black tracking-[0.2em] pt-6">
-              <span className="flex items-center gap-2">
+            <div className="flex flex-wrap items-center gap-8 text-[11px] text-slate-600 uppercase font-black tracking-[0.2em] pt-6">
+              <span className="flex items-center gap-2" aria-label="Legal: Ante Notario">
                 <ShieldCheck size={14} className="text-emerald-500" />
                 Ante Notario
               </span>
-              <span className="flex items-center gap-2">
+              <span className="flex items-center gap-2" aria-label="Velocidad: 24 Horas">
                 <Clock size={14} className="text-emerald-500" />
                 24 Horas
               </span>
-              <span className="flex items-center gap-2">
+              <span className="flex items-center gap-2" aria-label="Confianza: Sin Compromiso">
                 <Heart size={14} className="text-emerald-500" />
                 Sin Compromiso
               </span>
@@ -174,7 +174,7 @@ export function SellerHero({ onOpenForm, onOpenCalculator }: Props) {
                     </div>
                     <div>
                       <h3 className="text-slate-900 font-bold text-base mb-0.5">{point.label}</h3>
-                      <p className="text-slate-500 text-xs font-semibold">{point.desc}</p>
+                      <p className="text-slate-600 text-xs font-semibold">{point.desc}</p>
                     </div>
                   </motion.div>
                 );

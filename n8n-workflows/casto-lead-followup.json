@@ -58,7 +58,7 @@
     {
       "parameters": {
         "method": "POST",
-        "url": "https://n8n-evolution-api.yxmkwr.easypanel.host/message/sendText/Gen-IA",
+        "url": "https://n8n-evolution-api.yxmkwr.easypanel.host/message/sendText/GRUPOATIA",
         "sendHeaders": true,
         "headerParameters": {
           "parameters": [
@@ -140,7 +140,7 @@
     {
       "parameters": {
         "method": "POST",
-        "url": "https://n8n-evolution-api.yxmkwr.easypanel.host/message/sendText/Gen-IA",
+        "url": "https://n8n-evolution-api.yxmkwr.easypanel.host/message/sendText/GRUPOATIA",
         "sendHeaders": true,
         "headerParameters": {
           "parameters": [

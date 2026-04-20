@@ -1,58 +1,17 @@
-import { motion, AnimatePresence } from 'framer-motion';
-import { X } from 'lucide-react';
-import { useState, useEffect } from 'react';
+import { motion } from 'framer-motion';
+import { trackWhatsAppClick } from '../lib/analytics';
 
 const WHATSAPP_NUMBER = '526674540164';
 const WHATSAPP_MESSAGE = encodeURIComponent('Hola, necesito ayuda con mi casa. Me gustaría recibir una oferta.');
 const WHATSAPP_URL = `https://wa.me/${WHATSAPP_NUMBER}?text=${WHATSAPP_MESSAGE}`;
 
 export function WhatsAppFloat() {
-  const [showTooltip, setShowTooltip] = useState(false);
-  const [dismissed, setDismissed] = useState(false);
-
-  // Show tooltip after 8 seconds
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      if (!dismissed) setShowTooltip(true);
-    }, 8000);
-    return () => clearTimeout(timer);
-  }, [dismissed]);
-
-  // Auto-hide tooltip after 6 seconds
-  useEffect(() => {
-    if (showTooltip) {
-      const timer = setTimeout(() => setShowTooltip(false), 6000);
-      return () => clearTimeout(timer);
-    }
-  }, [showTooltip]);
-
   return (
     <div className="fixed bottom-4 md:bottom-6 right-4 md:right-6 z-[90] flex items-end gap-3">
-      {/* Tooltip */}
-      <AnimatePresence>
-        {showTooltip && !dismissed && (
-          <motion.div
-            initial={{ opacity: 0, x: 20, scale: 0.9 }}
-            animate={{ opacity: 1, x: 0, scale: 1 }}
-            exit={{ opacity: 0, x: 20, scale: 0.9 }}
-            className="glass-panel-elevated rounded-2xl p-4 max-w-[220px] mb-2 relative"
-          >
-            <button
-              onClick={() => { setDismissed(true); setShowTooltip(false); }}
-              className="absolute -top-2 -right-2 w-6 h-6 rounded-full bg-white/10 flex items-center justify-center text-white/40 hover:text-white/80 transition-colors"
-            >
-              <X size={12} />
-            </button>
-            <p className="text-white/80 text-sm font-light leading-relaxed">
-              Tienes dudas sobre tu casa? <span className="text-emerald-400 font-medium">Escribenos por WhatsApp</span> — respuesta en minutos.
-            </p>
-          </motion.div>
-        )}
-      </AnimatePresence>
-
       {/* WhatsApp Button */}
       <motion.a
         href={WHATSAPP_URL}
+        onClick={() => trackWhatsAppClick()}
         target="_blank"
         rel="noopener noreferrer"
         initial={{ scale: 0, opacity: 0 }}

@@ -19,62 +19,62 @@ interface LeadPayload {
 }
 
 /**
- * Motor de envío de leads centralizado — Versión 2.0 "Sistematizada"
- * Implementa la visión estratégica de Castor de respuesta en < 5 minutos.
+ * Motor de envío de leads centralizado — Versión 3.0 "Supabase Edge"
+ * Pipeline: Supabase Edge Function -> Save lead -> WhatsApp welcome -> Zadarma callback
+ * Reemplaza: Vercel api/leads.ts + n8n workflows
  */
 export async function submitLead(payload: LeadPayload) {
-  const endpoint = import.meta.env.VITE_SUPABASE_LEAD_ENDPOINT;
+  const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
+  const supabaseKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
   const orgId = import.meta.env.VITE_SUPABASE_LEAD_ORG_ID;
-  const secret = import.meta.env.VITE_SUPABASE_LEAD_SECRET;
   const vertical = import.meta.env.VITE_SUPABASE_LEAD_VERTICAL || 'inmobiliaria';
-
-  // MAPEÓ IMPECABLE PARA EL CRM GLOBAL
-  const standardizedMetadata = {
-    interes: payload.metadata.situation || payload.metadata.intent || 'venta_directa',
-    presupuesto: payload.metadata.marketValue || payload.metadata.valueRange || 'sin_definir',
-    ubicacion: payload.city || 'Desconocida',
-    urgencia: payload.metadata.urgency || 'normal',
-    adeudos_estimados: payload.metadata.debts || 0,
-    fuente_campana: payload.metadata.campaign || 'directo',
-    proyecto: 'Casto Inmobiliaria',
-    platform: 'Vite React App',
-    // Métrica de Castor: La Cita es la Venta
-    status: payload.metadata.appointment_scheduled ? 'cita_agendada' : 'nuevo_prospecto',
-    tracking_step: 'diagnostico_completado',
-    speed_to_lead_target: '< 5 mins',
-    // Datos de cita
-    cita_fecha: payload.metadata.preferred_date || null,
-    cita_hora: payload.metadata.preferred_time || null,
-    cita_agendada: payload.metadata.appointment_scheduled || false
-  };
 
   const body = {
     org_id: orgId,
-    vertical: vertical,
+    vertical,
     name: payload.name,
-    email: payload.email || '',
     phone: payload.phone,
     city: payload.city,
-    metadata: standardizedMetadata
+    source: 'Landing Atia',
+    campaign: payload.metadata.campaign || 'general',
+    metadata: {
+      interes: payload.metadata.situation || payload.metadata.intent || 'venta_directa',
+      presupuesto: payload.metadata.marketValue || payload.metadata.valueRange || 'sin_definir',
+      ubicacion: payload.city || 'Desconocida',
+      urgencia: payload.metadata.urgency || 'normal',
+      adeudos_estimados: payload.metadata.debts || 0,
+      fuente_campana: payload.metadata.campaign || 'directo',
+      proyecto: 'Atia Inmobiliaria',
+      cita_fecha: payload.metadata.preferred_date || null,
+      cita_hora: payload.metadata.preferred_time || null,
+      cita_agendada: payload.metadata.appointment_scheduled || false,
+    },
+    lead_details: {
+      intent: payload.metadata.intent || payload.metadata.situation || 'general',
+      property_value: payload.metadata.valueRange || payload.metadata.marketValue || 'no_especificado',
+      location: payload.city || 'Sin Ubicación',
+      preferred_date: payload.metadata.preferred_date,
+      preferred_time: payload.metadata.preferred_time,
+      appointment_scheduled: payload.metadata.appointment_scheduled || false,
+    },
   };
 
   try {
-    const response = await fetch(endpoint, {
+    const response = await fetch(`${supabaseUrl}/functions/v1/incoming-lead`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'x-webhook-secret': secret || ''
+        'Authorization': `Bearer ${supabaseKey}`,
       },
-      body: JSON.stringify(body)
+      body: JSON.stringify(body),
     });
 
     if (!response.ok) {
       const errorText = await response.text();
-      throw new Error(`Error CRM (${response.status}): ${errorText}`);
+      throw new Error(`Error (${response.status}): ${errorText}`);
     }
 
     const data = await response.json();
-
     return { success: true, data };
   } catch (error) {
     return { success: false, error: String(error) };

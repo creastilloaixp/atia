@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Calculator } from 'lucide-react';
+import { initAutoTracking, trackCTAClick, trackPhoneClick } from './lib/analytics';
 import { SellerDiagnostic } from './components/SellerDiagnostic';
 import { TrustBar } from './components/TrustBar';
 import { SellerHero } from './components/SellerHero';
@@ -36,14 +37,21 @@ function App() {
     }
     const handleAdmin = () => setAudience('admin');
     window.addEventListener('open-admin', handleAdmin);
-    return () => window.removeEventListener('open-admin', handleAdmin);
+    const cleanupTracking = initAutoTracking();
+    return () => {
+      window.removeEventListener('open-admin', handleAdmin);
+      cleanupTracking();
+    };
   }, []);
 
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }, [audience]);
 
-  const openForm = () => setIsFormOpen(true);
+  const openForm = () => {
+    trackCTAClick('open_form');
+    setIsFormOpen(true);
+  };
 
   const callAdvisor = async (phone?: string) => {
     if (isCalling) return;
@@ -128,25 +136,31 @@ function App() {
           </button>
           <a
             href="tel:+526674540164"
-            className="hidden md:flex items-center gap-2 text-slate-500 hover:text-slate-900 transition-colors text-xs font-bold tracking-wide"
-            aria-label="Llamar ahora"
+            onClick={() => trackPhoneClick()}
+            className="hidden md:flex items-center gap-2 text-slate-600 hover:text-slate-900 transition-colors text-xs font-bold tracking-wide"
+            aria-label="Llamar al asesor: (667) 454-0164"
           >
             <svg viewBox="0 0 24 24" className="w-3.5 h-3.5 fill-current" aria-hidden="true">
               <path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"/>
             </svg>
             (667) 454-0164
           </a>
-          <span className="text-emerald-600 flex items-center gap-2 text-[10px] md:text-xs font-bold tracking-[0.15em] uppercase">
+          <span className="text-emerald-700 flex items-center gap-2 text-[10px] md:text-xs font-bold tracking-[0.15em] uppercase" aria-label="Estado del servicio: Operando">
             <span className="relative flex h-2 w-2">
               <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
               <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-600"></span>
             </span>
             <span className="hidden md:inline">Operando</span>
           </span>
-          <span className="border border-slate-200 px-3 md:px-4 py-2 rounded-full bg-white/70 text-slate-500 hidden sm:flex items-center gap-2 text-[10px] tracking-[0.15em] uppercase font-bold shadow-sm">
+          <a
+            href="https://atiaadministra.vercel.app/admin/login"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="border border-slate-200 px-3 md:px-4 py-2 rounded-full bg-white/70 text-slate-600 hidden sm:flex items-center gap-2 text-[10px] tracking-[0.15em] uppercase font-bold shadow-sm hover:bg-[#FF6600] hover:text-white hover:border-[#FF6600] transition-all cursor-pointer"
+          >
             <span className="w-1.5 h-1.5 rounded-full bg-[#FF6600]"></span>
             ATIA ANALYTICS
-          </span>
+          </a>
         </div>
       </nav>
 
