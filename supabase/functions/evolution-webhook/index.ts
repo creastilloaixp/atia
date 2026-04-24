@@ -38,32 +38,36 @@ function shouldProcess(messageId: string, phone: string, fromMe: boolean): boole
 }
 // ─────────────────────────────────────────────────────────────────────────────
 
-const SYSTEM_PROMPT = `Eres Adriana, asesora inmobiliaria virtual de Atia Inmobiliaria.
-Tu objetivo es ayudar a clientes en Culiacán/Sinaloa a vender, comprar o rentar propiedades.
+const SYSTEM_PROMPT = `Eres Adriana, asesora inmobiliaria de Atia en Culiacán.
 
-CAPACIDADES:
-- Puedes ver fotos de fachadas, interiores o documentos que el cliente te envíe.
-- Puedes escuchar notas de voz y audios. Cuando recibas un audio, escúchalo y responde a lo que el cliente dice en el audio.
-- Tienes acceso al inventario real de propiedades. Usa los datos del INVENTARIO RECOMENDADO.
+FORMATO WHATSAPP (NO NEGOCIABLE):
+- Negritas con *un asterisco*, nunca **dos** ni [texto](url) ni markdown.
+- URLs siempre planas, sin formato.
+- 3-5 líneas por mensaje. Nunca más.
+- Máximo 2 propiedades por mensaje (con 1 línea cada una: tipo, colonia, precio, recámaras).
+- Sin emojis decorativos (máx. 1 cada 5 mensajes si aporta).
 
-REGLAS DE ORO:
-- Sé profesional, empática y directa.
-- Responde en UN solo mensaje completo, no fragmentes la respuesta.
-- Cuando recomiendes propiedades, incluye: tipo, colonia, precio, recámaras, baños.
-- Si el inventario incluye link de fotos, SIEMPRE compártelo al cliente.
-- Si el cliente pide fotos y no hay link disponible, dile que le enviarás las fotos por este medio en breve.
-- Prioriza agendar una visita de diagnóstico gratuito.
-- No cortes tu respuesta a la mitad. Termina siempre con una pregunta o propuesta clara.
+TONO:
+- Directa, cálida, como asesora humana real.
+- Prohibido: "Entiendo perfectamente", "Es un placer", "Excelente", "¡Qué interesante!", "Gracias por contactarnos".
+- No repitas tu nombre ni la empresa en cada mensaje (solo al saludar por primera vez).
+- Habla de tú, en español natural de Sinaloa.
 
-DATOS QUE NECESITAS RECOPILAR (pide naturalmente durante la conversación, NO todo de golpe):
-- Nombre completo
-- Número de teléfono (si el contacto no tiene número real, pídelo: "Para darte mejor atención, ¿me compartes tu número de celular?")
-- Qué busca: comprar, vender o rentar
-- Tipo de propiedad y zona/colonia
-- Presupuesto o rango de precio
-- Forma de pago (Infonavit, crédito bancario, contado)
-- Urgencia (inmediato, 1-3 meses, solo explorando)
-- Si vende: ¿tiene avalúo? ¿predial al corriente? ¿escrituras listas? ¿cuánto tiempo lleva publicada?`;
+FLUJO DE CONVERSACIÓN (crítico, en este orden):
+1. CALIFICAR primero: pregunta 1-2 datos clave antes de recomendar (¿compra/venta/renta? ¿zona? ¿presupuesto?).
+2. RECOMENDAR después: solo si ya tienes intención + zona O presupuesto. Máximo 2 opciones.
+3. La "visita de diagnóstico gratuita" es para CERRAR, no para abrir. Solo mencionarla si ya hay interés concreto en una propiedad o tras 3+ intercambios. Nunca en el primer mensaje, nunca dos veces seguidas.
+
+LECTURA DE CONTEXTO:
+- Si el cliente bromea, está ocupado, dice "estoy en el cine" / "más tarde" / "jajaja" / "ahorita no": responde 1 línea corta, reconoce el momento, cede espacio. NO vendas, NO propongas visitas.
+- Si el mensaje es vago (<10 palabras) y no hay historial de calificación: haz UNA pregunta corta, no des inventario.
+
+INVENTARIO:
+- Si recibes "INVENTARIO RECOMENDADO" en contexto, úsalo solo cuando el cliente ya compartió intención + zona o presupuesto.
+- Si aún no calificaste: IGNORA el inventario y pregunta.
+- Al recomendar, 1 línea por propiedad: tipo en colonia · precio · recámaras/baños. Link de fotos plano al final si existe.
+
+DATOS A RECOPILAR (naturalmente, 1 por turno): nombre, teléfono real si viene por WhatsApp sin número, operación, zona, presupuesto, forma de pago, urgencia.`;
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -141,7 +145,7 @@ async function getMediaBase64(webhookData: any): Promise<{ data: string; mimeTyp
 }
 
 // ── Send property photos via Evolution API sendMedia ─────────────────────────
-async function sendPropertyPhotos(phone: string, properties: any[]): Promise<void> {
+async function sendPropertyPhotos(remoteJid: string, properties: any[]): Promise<void> {
   for (const prop of properties.slice(0, 3)) { // Max 3 photos per response
     const imageUrl = prop.images_url || prop.lamudi_url || prop.tokko_url;
     if (!imageUrl) continue;
@@ -156,13 +160,13 @@ async function sendPropertyPhotos(phone: string, properties: any[]): Promise<voi
         method: "POST",
         headers: { apikey: EVOLUTION_API_KEY, "Content-Type": "application/json" },
         body: JSON.stringify({
-          number: phone,
+          number: remoteJid,
           mediatype: "image",
           media: imageUrl,
           caption,
         }),
       });
-      console.log(`[PHOTO] Sent property image to ${phone}: ${caption}`);
+      console.log(`[PHOTO] Sent property image to ${remoteJid}: ${caption}`);
     } catch (e) {
       console.error(`[PHOTO] Failed to send image:`, e);
     }
@@ -264,6 +268,26 @@ async function getSemanticContext(supabase: any, query: string): Promise<{ text:
 const ORG_ID = "e67404e2-d14c-44ad-9275-9b89372aa57d";
 const leadExtractedPhones = new Set<string>(); // avoid re-extracting same phone in same session
 
+// Clean and normalize display names from WhatsApp pushName or LLM extraction
+function cleanName(raw: string | null | undefined): string {
+  if (!raw) return "";
+  let t = String(raw).trim();
+  if (t.length < 2) return "";
+  if (/^[_\-\.\s]+$/.test(t)) return "";              // only punctuation
+  if (/^\d+$/.test(t)) return "";                      // only digits
+  if (/^[\p{Extended_Pictographic}\p{Emoji_Presentation}\s]+$/u.test(t)) return ""; // only emojis
+  // Strip trailing company/role keywords
+  t = t.replace(/\s+(inmobiliaria|bienes\s*raices|bienes\s*raíces|broker|real\s*estate|inmobiliario|asesor\w*)\b.*/i, "");
+  // Capitalize words (first letter upper, rest lower)
+  return t.split(/\s+/).map(w => w ? w.charAt(0).toUpperCase() + w.slice(1).toLowerCase() : w).join(" ").trim();
+}
+
+// Build a safe fallback display name when we have no good input
+function fallbackName(phone: string, isLid: boolean): string {
+  const last4 = (phone || "").replace(/\D/g, "").slice(-4) || "0000";
+  return isLid ? `Cliente WA ${last4}` : `Cliente ${last4}`;
+}
+
 const EXTRACT_PROMPT = `Analiza la siguiente conversación de WhatsApp entre un cliente y Adriana (asesora inmobiliaria de Atia).
 Extrae los datos del cliente SOLO si hay suficiente información para crear un lead (mínimo: intención clara de comprar, vender o rentar).
 
@@ -350,7 +374,7 @@ async function extractAndSaveLead(
 
     // Use phone from conversation if available, otherwise use WhatsApp ID
     const realPhone = lead.phone_mentioned || (isLid ? null : phone);
-    const leadName = lead.name || userName;
+    const leadName = cleanName(lead.name) || cleanName(userName) || fallbackName(phone, isLid);
     const { data: newLead, error: leadError } = await supabase
       .from("leads")
       .insert({
@@ -358,7 +382,7 @@ async function extractAndSaveLead(
         full_name: leadName,
         name: leadName,
         whatsapp: phone, // Always store the WhatsApp ID (works for messaging even if LID)
-        phone: realPhone || phone, // Prefer real phone, fallback to WhatsApp ID
+        phone: realPhone, // Only store real phone; null for LID without mentioned number (UI will show "WhatsApp ID")
         email: lead.email || null,
         city: lead.city || "Culiacán",
         status: "new",
@@ -488,150 +512,107 @@ async function triggerHandoff(
   }
 }
 
-// ── Main Controller ──────────────────────────────────────────────────────────
+// ── Background Task: Humanized delay + AI Generation + Response ──────────────
 
-Deno.serve(async (req) => {
-  if (req.method === "OPTIONS") return new Response("ok", { headers: corsHeaders });
-
+async function handleBackgroundResponse(
+  supabase: any,
+  data: any,
+  phone: string,
+  remoteJid: string,
+  userName: string,
+  messageId: string,
+  isLid: boolean,
+  userText: string,
+  hasMedia: boolean,
+  msgType: string
+) {
   try {
-    const body = await req.json();
-
-    // Only process new messages
-    if (body.event !== "messages.upsert") {
-      return new Response(JSON.stringify({ status: "ignored", reason: "not_message" }), {
-        status: 200, headers: { ...corsHeaders, "Content-Type": "application/json" },
+    // ── 0. INTENCIÓN DE IMAGEN (Sin delay previo) ──
+    const isImageRequest = /^(genera|hazme|crea|diseña|muéstrame|ponme)\s+(una|un)?\s*(imagen|foto|diseño|dibujo|render|póster|flyer|visual)/i.test(userText.trim().toLowerCase());
+    
+    if (isImageRequest) {
+      console.log(`[ADRIANA] Detectada solicitud de imagen de ${phone}`);
+      
+      // Notificación inmediata
+      await fetch(`${EVOLUTION_API_URL}/message/sendText/${EVOLUTION_INSTANCE}`, {
+        method: "POST",
+        headers: { apikey: EVOLUTION_API_KEY, "Content-Type": "application/json" },
+        body: JSON.stringify({ number: remoteJid, text: "🎨 ¡Entendido! Estoy diseñando ese visual con el estilo de Atia Inmobiliaria. Dame un momento..." }),
       });
-    }
 
-    const data = body.data;
-    if (!data?.key) {
-      return new Response(JSON.stringify({ status: "ignored", reason: "no_key" }), {
-        status: 200, headers: { ...corsHeaders, "Content-Type": "application/json" },
-      });
-    }
-
-    const remoteJid = data.key.remoteJid || "";
-    const messageId = data.key.id || "";
-    const fromMe = data.key.fromMe === true;
-
-    // Ignore group messages
-    if (remoteJid.includes("@g.us") || remoteJid.includes("@broadcast")) {
-      return new Response(JSON.stringify({ status: "ignored", reason: "group" }), {
-        status: 200, headers: { ...corsHeaders, "Content-Type": "application/json" },
-      });
-    }
-
-    // Handle both @s.whatsapp.net (normal) and @lid (WhatsApp Linked ID)
-    const isLid = remoteJid.includes("@lid");
-    const phone = remoteJid.replace("@s.whatsapp.net", "").replace("@lid", "");
-
-    // Anti-loop: dedup + cooldown + fromMe check
-    if (!shouldProcess(messageId, phone, fromMe)) {
-      return new Response(JSON.stringify({ status: "ignored", reason: "dedup_or_cooldown" }), {
-        status: 200, headers: { ...corsHeaders, "Content-Type": "application/json" },
-      });
-    }
-
-    const userName = data.pushName || "Cliente";
-
-    // ── Diagnostic: log message structure for debugging ──
-    const msgKeys = Object.keys(data.message || {});
-    const msgType = data.messageType || "unknown";
-    console.log(`[ADRIANA] Message from ${userName} (${phone}): type=${msgType}, keys=[${msgKeys.join(',')}]`);
-
-    // Parse message content
-    const userText = data.message?.conversation || data.message?.extendedTextMessage?.text || data.message?.imageMessage?.caption || "";
-    let mediaData: any = null;
-
-    // Detect media — check both message object AND messageType field
-    const hasMedia = data.message?.imageMessage
-      || data.message?.audioMessage
-      || data.message?.pttMessage
-      || data.message?.documentMessage
-      || data.message?.documentWithCaptionMessage
-      || data.message?.videoMessage
-      || data.message?.stickerMessage
-      || msgType === "audioMessage"
-      || msgType === "pttMessage";
-
-    if (hasMedia) {
-      console.log(`[ADRIANA] Media detected: audio=${!!data.message?.audioMessage}, ptt=${!!data.message?.pttMessage}, msgType=${msgType}`);
       try {
-        mediaData = await getMediaBase64(data);
-        console.log(`[ADRIANA] Media result: ${mediaData ? 'OK' : 'FAILED'}, type: ${mediaData?.mimeType || 'unknown'}`);
-      } catch (e) {
-        console.error("[ADRIANA] Media download failed:", e);
-      }
-    }
+        const supabaseUrl = Deno.env.get("SUPABASE_URL") ?? "";
+        const serviceKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? "";
+        const genRes = await fetch(`${supabaseUrl}/functions/v1/generate-branded-image`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${serviceKey}`
+          },
+          body: JSON.stringify({ prompt: userText, user_id: phone }),
+        });
 
-    // Skip if no text, no media intent, and no media data
-    if (!userText && !mediaData && !hasMedia) {
-      console.log(`[ADRIANA] Skipping: no content. userText='${userText}', mediaData=${!!mediaData}, hasMedia=${!!hasMedia}`);
-      return new Response(JSON.stringify({ status: "ignored", reason: "no_content" }), {
-        status: 200, headers: { ...corsHeaders, "Content-Type": "application/json" },
-      });
-    }
-
-    console.log(`[ADRIANA] Processing: text='${userText.substring(0, 80)}', hasMedia=${!!hasMedia}, mediaOK=${!!mediaData}`);
-
-    const supabase = createClient(Deno.env.get("SUPABASE_URL") ?? "", Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? "");
-
-    // 0. Check if this lead is handed_off (human advisor took over)
-    // Defense #1: check ai_conversation_context.status
-    // Defense #2: check leads.status directly (fallback if upsert ever failed)
-    try {
-      const { data: existingLead } = await supabase
-        .from("leads")
-        .select("id, status")
-        .eq("whatsapp", phone)
-        .eq("org_id", ORG_ID)
-        .limit(1)
-        .maybeSingle();
-
-      if (existingLead) {
-        const { data: aiCtx } = await supabase
-          .from("ai_conversation_context")
-          .select("status")
-          .eq("lead_id", existingLead.id)
-          .maybeSingle();
-
-        const isHandedOff = aiCtx?.status === "handed_off" || existingLead.status === "handed_off";
-
-        if (isHandedOff) {
-          // Still save message to CRM inbox for advisor visibility
-          await supabase.from("conversations").insert({
-            lead_id: existingLead.id,
-            org_id: ORG_ID,
-            direction: "inbound",
-            content: userText || "[Audio/Media]",
-            is_bot: false,
-            message_id: messageId,
-          }).catch(() => {});
-          console.log(`[ADRIANA] ${phone} is handed_off (lead.status=${existingLead.status}, ctx=${aiCtx?.status}) — CRM saved, bot skipped.`);
-          return new Response(JSON.stringify({ status: "handed_off", reason: "human_advisor_active" }), {
-            status: 200, headers: { ...corsHeaders, "Content-Type": "application/json" },
+        if (genRes.ok) {
+          const { url } = await genRes.json();
+          await fetch(`${EVOLUTION_API_URL}/message/sendMedia/${EVOLUTION_INSTANCE}`, {
+            method: "POST",
+            headers: { apikey: EVOLUTION_API_KEY, "Content-Type": "application/json" },
+            body: JSON.stringify({
+              number: remoteJid,
+              mediatype: "image",
+              media: url,
+              caption: "Aquí tienes el diseño que me pediste. ¿Qué te parece? 🏠✨",
+            }),
+          });
+          console.log(`[ADRIANA] Imagen enviada.`);
+        } else {
+          const errText = await genRes.text();
+          console.error("[ADRIANA] Error en función imagen:", errText);
+          await fetch(`${EVOLUTION_API_URL}/message/sendText/${EVOLUTION_INSTANCE}`, {
+            method: "POST",
+            headers: { apikey: EVOLUTION_API_KEY, "Content-Type": "application/json" },
+            body: JSON.stringify({ number: remoteJid, text: "Tuve un problema técnico con el diseñador de IA. ¿Podrías intentar pedirlo de nuevo?" }),
           });
         }
+      } catch (e) {
+        console.error("[ADRIANA] Exception imagen:", e);
       }
-    } catch (e) {
-      console.error("[ADRIANA] Handoff check failed (continuing):", e);
-      // Don't block — continue to respond normally if check fails
+      return; // Fin para imágenes
     }
 
-    // 1. Memory retrieval
+    // ── 1. Fetch history first (needed for adaptive delay) ──
     const { data: historyData } = await supabase.from("chat_memory").select("role, content").eq("phone", phone).order("created_at", { ascending: false }).limit(6);
-    const history = (historyData || []).reverse().map((m: any) => ({ role: m.role === "user" ? "user" : "model", parts: [{ text: m.content }] }));
+    const history = (historyData || []).reverse().map((m: any) => ({
+      role: m.role === "user" ? "user" : "model",
+      parts: [{ text: m.content }],
+    }));
 
-    // 2. RAG Context (semantic search) — skip for short greetings to save API quota
-    const isShortGreeting = userText && userText.length < 15 && /^(hola|hey|buenas?|buenos?\s|ola|hi|que tal|qué tal)/i.test(userText.trim());
-    const ragResult = isShortGreeting
+    // ── 2. HUMANIZED DELAY (adaptive: long on first contact, short on follow-ups) ──
+    const isFirstTurn = !historyData || historyData.length === 0;
+    const typingDelay = isFirstTurn
+      ? 25000 + Math.random() * 15000   // 25-40s first message (feels human arriving)
+      : 7000 + Math.random() * 8000;    // 7-15s follow-ups (snappy)
+    console.log(`[ADRIANA] Waiting ${Math.round(typingDelay / 1000)}s (firstTurn=${isFirstTurn}) before response to ${phone}...`);
+    await new Promise((r) => setTimeout(r, typingDelay));
+
+    // ── 3. Intent detection — skip RAG for greetings, jokes, unavailability, vague msgs ──
+    const textLower = (userText || "").toLowerCase().trim();
+    const isShortGreeting = userText && userText.length < 15 && /^(hola|hey|buenas?|buenos?\s|ola|hi|que tal|qué tal)/i.test(textLower);
+    const isCasualOrUnavailable = userText && (
+      /^(jaj+|jeje+|jiji+|xd|lol|ok|okay|va|sale|gracias|thx)/i.test(textLower) ||
+      /(estoy en|ahorita no|más tarde|mas tarde|despu[eé]s|luego te|ocupad|cine|trabajando|manejando|conduciendo|no puedo ahor|te hablo|te contacto luego|marcame|márcame)/i.test(textLower)
+    );
+    const isVagueNoIntent = userText && textLower.length < 10 && !historyData?.length;
+    const skipRag = isShortGreeting || isCasualOrUnavailable || isVagueNoIntent;
+    const ragResult = skipRag
       ? { text: "", properties: [] }
       : await getSemanticContext(supabase, userText || "vender casa");
 
-    // 3. Prepare Gemini Request
-    const contents = [...history];
+    // ── 4. Media download (voice notes, images, docs) ──
+    const mediaData = hasMedia ? await getMediaBase64(data) : null;
 
-    // Determine what the user sent
+    // 5. Prepare Gemini Request
+    const contents = [...history];
     const isVoiceNote = !!(data.message?.audioMessage?.ptt || data.message?.pttMessage || msgType === "pttMessage");
     let userMessageText = userText;
     if (!userText && hasMedia && mediaData) {
@@ -645,14 +626,12 @@ Deno.serve(async (req) => {
     }
 
     const currentMessageParts: any[] = [{ text: userMessageText || "hola" }];
-
     if (mediaData) {
       currentMessageParts.push({ inlineData: { data: mediaData.data, mimeType: mediaData.mimeType } });
-      console.log(`[ADRIANA] Sending to Gemini: text + inlineData (${mediaData.mimeType})`);
     }
     contents.push({ role: "user", parts: currentMessageParts });
 
-    // 4. Generate AI response (with retry on 429)
+    // 6. Generate AI response (with retry on 429)
     let aiText: string | null = null;
     for (let attempt = 0; attempt < 3; attempt++) {
       const geminiRes = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${GEMINI_API_KEY}`, {
@@ -661,112 +640,196 @@ Deno.serve(async (req) => {
         body: JSON.stringify({
           systemInstruction: { parts: [{ text: `${SYSTEM_PROMPT}\n\nCliente: ${userName}${ragResult.text}` }] },
           contents,
-          generationConfig: { temperature: 0.7, maxOutputTokens: 2048 }
+          generationConfig: { temperature: 0.7, maxOutputTokens: 1024 },
         }),
       });
 
       if (geminiRes.status === 429) {
-        console.log(`[ADRIANA] Gemini rate limited (attempt ${attempt + 1}/3), waiting...`);
-        await new Promise(r => setTimeout(r, (attempt + 1) * 10000));
+        await new Promise((r) => setTimeout(r, (attempt + 1) * 5000));
         continue;
       }
 
-      if (!geminiRes.ok) {
-        const errorData = await geminiRes.text();
-        console.error(`[ADRIANA] Gemini API error: ${geminiRes.status} - ${errorData.substring(0, 200)}`);
-        break;
-      }
+      if (!geminiRes.ok) break;
 
       const geminiData = await geminiRes.json();
       aiText = geminiData?.candidates?.[0]?.content?.parts?.[0]?.text || null;
       break;
     }
 
-    // Fallback message if Gemini is unavailable
-    if (!aiText) {
-      aiText = `Hola ${userName}, gracias por escribir a Atia Inmobiliaria. En este momento tengo alta demanda. Un asesor te contactara en breve. Mientras tanto, puedes llamarnos al (667) 454-0164.`;
-      console.log(`[ADRIANA] Using fallback message for ${phone}`);
-    }
+    if (!aiText) aiText = `Hola ${userName}, gracias por escribir. En un momento te atiendo con detalle.`;
 
-    // 5. Save memory (legacy)
+    // 7. Save memory
     const memoryContent = userText || (isVoiceNote ? "[Nota de voz]" : "[Media]");
     await supabase.from("chat_memory").insert([
       { phone, role: "user", content: memoryContent },
       { phone, role: "model", content: aiText },
     ]);
 
-    // 6. Send reply + mark cooldown
+    // 8. Send reply via Evolution API
     await fetch(`${EVOLUTION_API_URL}/message/sendText/${EVOLUTION_INSTANCE}`, {
       method: "POST",
       headers: { apikey: EVOLUTION_API_KEY, "Content-Type": "application/json" },
-      body: JSON.stringify({ number: phone, text: aiText }),
+      body: JSON.stringify({ number: remoteJid, text: aiText }),
     });
 
-    // Mark cooldown AFTER sending to prevent double-fire
     phoneCooldowns.set(phone, Date.now());
 
-    // 6b. Send property photos if RAG found matches with images
+    // 9. Send photos if any
     if (ragResult.properties.length > 0) {
-      sendPropertyPhotos(phone, ragResult.properties).catch((e) =>
-        console.error("[PHOTO] Background send failed:", e)
-      );
+      await sendPropertyPhotos(remoteJid, ragResult.properties).catch((e) => console.error("[PHOTO] Error:", e));
     }
 
-    console.log(`[ADRIANA] Reply -> ${phone}: ${aiText.substring(0, 80)}...`);
-
-    // 7. CRM: Extract lead + save conversations (non-blocking)
-    // Only extract lead if conversation has substance (skip for greetings)
-    const messageCount = (historyData?.length || 0) + 1;
-    const hasSubstance = !isShortGreeting || messageCount >= 4;
-
+    // 10. CRM sync
     const allMessages = [
       ...(historyData || []).reverse().map((m: any) => `${m.role === "user" ? "Cliente" : "Adriana"}: ${m.content}`),
       `Cliente: ${userText || "[Audio/Media]"}`,
       `Adriana: ${aiText}`,
     ].join("\n");
 
-    // Fire and forget — don't block the WhatsApp response
-    (async () => {
-      try {
-        // 7a. Extract and save lead if new (skip Gemini call for simple greetings)
-        const leadId = hasSubstance
-          ? await extractAndSaveLead(supabase, phone, userName, allMessages, isLid)
-          : null;
+    const messageCount = (historyData?.length || 0) + 1;
+    const hasSubstance = !skipRag || messageCount >= 4;
 
-        // 7b. Save conversations to CRM Inbox (if we have a lead_id)
-        if (leadId) {
-          await supabase.from("conversations").insert([
-            {
-              lead_id: leadId,
-              org_id: ORG_ID,
-              direction: "inbound",
-              content: userText || "[Audio/Media]",
-              is_bot: false,
-              message_id: messageId,
-            },
-            {
-              lead_id: leadId,
-              org_id: ORG_ID,
-              direction: "outbound",
-              content: aiText,
-              is_bot: true,
-              message_id: `bot_${messageId}`,
-            },
-          ]);
+    const leadId = hasSubstance ? await extractAndSaveLead(supabase, phone, userName, allMessages, isLid) : null;
+    if (leadId) {
+      await supabase.from("conversations").insert([
+        { lead_id: leadId, org_id: ORG_ID, direction: "inbound", content: userText || "[Audio/Media]", is_bot: false, message_id: messageId },
+        { lead_id: leadId, org_id: ORG_ID, direction: "outbound", content: aiText, is_bot: true, message_id: `bot_${messageId}` },
+      ]);
+
+      // Auto-advance pipeline stage based on engagement signals
+      try {
+        const { data: leadRow } = await supabase.from("leads").select("status, metadata").eq("id", leadId).maybeSingle();
+        const currentStatus = leadRow?.status;
+        // Only advance forward, never regress; skip if already past funnel or handed off
+        const advanceable = ["new", "nuevo", "wa_sent", "wa_delivered"];
+        if (currentStatus && advanceable.includes(currentStatus)) {
+          const { count: inboundCount } = await supabase
+            .from("conversations")
+            .select("id", { count: "exact", head: true })
+            .eq("lead_id", leadId)
+            .eq("direction", "inbound");
+          const n = inboundCount || 0;
+          const category = leadRow?.metadata?.ai_category;
+          // B with 3+ inbound msgs or any lead with 5+ msgs → interested
+          // Anyone with ≥1 inbound → in_conversation
+          let nextStatus: string | null = null;
+          if (category === "B" && n >= 3) nextStatus = "interested";
+          else if (n >= 5) nextStatus = "interested";
+          else if (n >= 1) nextStatus = "in_conversation";
+          if (nextStatus && nextStatus !== currentStatus) {
+            await supabase.from("leads").update({ status: nextStatus }).eq("id", leadId);
+            console.log(`[PIPELINE] Lead ${leadId}: ${currentStatus} → ${nextStatus} (inbound=${n}, cat=${category})`);
+          }
         }
       } catch (e) {
-        console.error("[CRM] Background sync failed:", e);
+        console.error("[PIPELINE] Auto-advance error:", e);
       }
-    })();
+    }
 
-    return new Response(JSON.stringify({ status: "success" }), {
-      status: 200, headers: { ...corsHeaders, "Content-Type": "application/json" },
+    console.log(`[ADRIANA] Response sent to ${phone}`);
+  } catch (e) {
+    console.error(`[ADRIANA] Background task error for ${phone}:`, e);
+  }
+}
+
+// ── Main Controller ──────────────────────────────────────────────────────────
+
+Deno.serve(async (req) => {
+  if (req.method === "OPTIONS") return new Response("ok", { headers: corsHeaders });
+
+  try {
+    const body = await req.json();
+
+    if (body.event !== "messages.upsert") {
+      return new Response(JSON.stringify({ status: "ignored", reason: "not_message" }), {
+        status: 200,
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+
+    const data = body.data;
+    if (!data?.key) {
+      return new Response(JSON.stringify({ status: "ignored", reason: "no_key" }), {
+        status: 200,
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+
+    const remoteJid = data.key.remoteJid || "";
+    const messageId = data.key.id || "";
+    const fromMe = data.key.fromMe === true;
+
+    if (remoteJid.includes("@g.us") || remoteJid.includes("@broadcast")) {
+      return new Response(JSON.stringify({ status: "ignored", reason: "group" }), {
+        status: 200,
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+
+    const isLid = remoteJid.includes("@lid");
+    const phone = remoteJid.replace("@s.whatsapp.net", "").replace("@lid", "");
+
+    if (!shouldProcess(messageId, phone, fromMe)) {
+      return new Response(JSON.stringify({ status: "ignored", reason: "dedup_or_cooldown" }), {
+        status: 200,
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+
+    const userName = cleanName(data.pushName) || fallbackName(phone, isLid);
+    const msgType = data.messageType || "unknown";
+    const userText = data.message?.conversation || data.message?.extendedTextMessage?.text || data.message?.imageMessage?.caption || "";
+
+    const hasMedia =
+      data.message?.imageMessage ||
+      data.message?.audioMessage ||
+      data.message?.pttMessage ||
+      data.message?.documentMessage ||
+      data.message?.documentWithCaptionMessage ||
+      data.message?.videoMessage ||
+      data.message?.stickerMessage ||
+      msgType === "audioMessage" ||
+      msgType === "pttMessage";
+
+    if (!userText && !hasMedia) {
+      return new Response(JSON.stringify({ status: "ignored", reason: "no_content" }), {
+        status: 200,
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+
+    const supabase = createClient(Deno.env.get("SUPABASE_URL") ?? "", Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? "");
+
+    // 0. Synchronous Handoff check
+    const { data: existingLead } = await supabase.from("leads").select("id, status").eq("whatsapp", phone).eq("org_id", ORG_ID).limit(1).maybeSingle();
+
+    if (existingLead) {
+      const { data: aiCtx } = await supabase.from("ai_conversation_context").select("status").eq("lead_id", existingLead.id).maybeSingle();
+      if (aiCtx?.status === "handed_off" || existingLead.status === "handed_off") {
+        await supabase
+          .from("conversations")
+          .insert({ lead_id: existingLead.id, org_id: ORG_ID, direction: "inbound", content: userText || "[Audio/Media]", is_bot: false, message_id: messageId })
+          .catch(() => {});
+        return new Response(JSON.stringify({ status: "handed_off", reason: "human_advisor_active" }), {
+          status: 200,
+          headers: { ...corsHeaders, "Content-Type": "application/json" },
+        });
+      }
+    }
+
+    // ── FIRE AND FORGET: Start background processing ──
+    handleBackgroundResponse(supabase, data, phone, remoteJid, userName, messageId, isLid, userText, hasMedia, msgType);
+
+    // Respond immediately to Evolution API to avoid timeout
+    return new Response(JSON.stringify({ status: "processing", message: "Adriana is typing..." }), {
+      status: 200,
+      headers: { ...corsHeaders, "Content-Type": "application/json" },
     });
-
   } catch (err: any) {
     console.error("[ADRIANA Error]", err);
     return new Response(JSON.stringify({ error: err.message }), {
-      status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" },
+      status: 500,
+      headers: { ...corsHeaders, "Content-Type": "application/json" },
     });
   }
 });
