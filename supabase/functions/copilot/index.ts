@@ -90,12 +90,17 @@ async function executeAction(
       // Call the send-voice-note Edge Function (handles TTS + Evolution API)
       const vnRes = await fetch(`${SUPABASE_URL}/functions/v1/send-voice-note`, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${SUPABASE_KEY}`,
+          "apikey": SUPABASE_KEY,
+        },
         body: JSON.stringify({ phone, message: params.message }),
       });
       if (vnRes.ok) {
         const vnData = await vnRes.json();
         await sb.from("conversations").insert({
+          org_id: orgId,
           lead_id: params.lead_id || null,
           direction: "outbound",
           content: `🎙️ [Nota de voz] ${params.message}`,
@@ -103,7 +108,9 @@ async function executeAction(
         }).catch(() => {});
         return { type: "send_voice_note", success: true, detail: `Nota de voz enviada a ${phone} (${vnData.type || "audio"})` };
       }
-      return { type: "send_voice_note", success: false, detail: "Error al generar/enviar nota de voz" };
+      const vnErr = await vnRes.text().catch(() => "");
+      console.error(`[COPILOT] send-voice-note ${vnRes.status}: ${vnErr.slice(0, 200)}`);
+      return { type: "send_voice_note", success: false, detail: `send-voice-note ${vnRes.status}: ${vnErr.slice(0, 150) || "sin detalle"}` };
     }
 
     return { type: action, success: false, detail: "Acción no reconocida" };
