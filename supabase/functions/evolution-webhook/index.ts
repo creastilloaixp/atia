@@ -25,16 +25,21 @@ const SANDBOX_PHONES: string[] = SANDBOX_PHONES_RAW
   .map((p) => normalizePhone(p))
   .filter(Boolean);
 
-// Permite match exacto o por sufijo (tolera variaciones de código país: 521 vs 52, +52 vs 52)
+// Match robusto: compara los últimos 10 dígitos (número local MX) para tolerar
+// variaciones de código país y prefijo móvil: 52 vs 521 vs +52 vs +521.
+// Ej: "526671371218", "5216671371218", "+5216671371218" -> todos matchean si el
+// SANDBOX_PHONES contiene cualquiera de ellos.
+function lastDigits(s: string, n: number): string {
+  return s.length >= n ? s.slice(-n) : s;
+}
+
 function isSandboxAllowed(phone: string): boolean {
   if (!SANDBOX_MODE) return true;
   const normalized = normalizePhone(phone);
   if (!normalized || SANDBOX_PHONES.length === 0) return false;
+  const tail = lastDigits(normalized, 10);
   return SANDBOX_PHONES.some(
-    (allowed) =>
-      allowed === normalized ||
-      normalized.endsWith(allowed) ||
-      allowed.endsWith(normalized)
+    (allowed) => allowed === normalized || lastDigits(allowed, 10) === tail
   );
 }
 
@@ -763,12 +768,16 @@ async function handleBackgroundResponse(
     if (crmLeadId && detectAnger(userText)) {
       console.log(`[ADRIANA] Anger detected from ${phone}, escalating to advisor.`);
       const inboundContent = userText || "[Audio/Media]";
-      await supabase.from("conversations").insert([
-        { lead_id: crmLeadId, org_id: ORG_ID, direction: "inbound", content: inboundContent, is_bot: false, message_id: messageId },
-      ]).catch(() => {});
-      await supabase.from("chat_memory").insert([
-        { phone, role: "user", content: inboundContent },
-      ]).catch(() => {});
+      try {
+        await supabase.from("conversations").insert([
+          { lead_id: crmLeadId, org_id: ORG_ID, direction: "inbound", content: inboundContent, is_bot: false, message_id: messageId },
+        ]);
+      } catch (e: any) { console.error("[ANGER] conv insert:", e?.message); }
+      try {
+        await supabase.from("chat_memory").insert([
+          { phone, role: "user", content: inboundContent },
+        ]);
+      } catch (e: any) { console.error("[ANGER] memory insert:", e?.message); }
       const leadName = cleanName(userName) || fallbackName(phone, isLid);
       await triggerAngerHandoff(supabase, crmLeadId, phone, leadName, userText);
       return;
@@ -869,10 +878,12 @@ async function handleBackgroundResponse(
     // 10. CRM sync — SIEMPRE guardar conversación (incluso si aún no es lead enriquecido)
     const leadId = crmLeadId; // skeleton garantizado desde paso 1.5
     if (leadId) {
-      await supabase.from("conversations").insert([
-        { lead_id: leadId, org_id: ORG_ID, direction: "inbound", content: userText || "[Audio/Media]", is_bot: false, message_id: messageId },
-        { lead_id: leadId, org_id: ORG_ID, direction: "outbound", content: aiText, is_bot: true, message_id: `bot_${messageId}` },
-      ]).catch((e: any) => console.error("[CRM] Conversation insert error:", e?.message));
+      try {
+        await supabase.from("conversations").insert([
+          { lead_id: leadId, org_id: ORG_ID, direction: "inbound", content: userText || "[Audio/Media]", is_bot: false, message_id: messageId },
+          { lead_id: leadId, org_id: ORG_ID, direction: "outbound", content: aiText, is_bot: true, message_id: `bot_${messageId}` },
+        ]);
+      } catch (e: any) { console.error("[CRM] Conversation insert error:", e?.message); }
     }
 
     // Enriquecimiento del lead (extracción AI) cuando hay sustancia conversacional
@@ -999,10 +1010,11 @@ Deno.serve(async (req) => {
     if (existingLead) {
       const { data: aiCtx } = await supabase.from("ai_conversation_context").select("status").eq("lead_id", existingLead.id).maybeSingle();
       if (aiCtx?.status === "handed_off" || existingLead.status === "handed_off") {
-        await supabase
-          .from("conversations")
-          .insert({ lead_id: existingLead.id, org_id: ORG_ID, direction: "inbound", content: userText || "[Audio/Media]", is_bot: false, message_id: messageId })
-          .catch(() => {});
+        try {
+          await supabase
+            .from("conversations")
+            .insert({ lead_id: existingLead.id, org_id: ORG_ID, direction: "inbound", content: userText || "[Audio/Media]", is_bot: false, message_id: messageId });
+        } catch (e: any) { console.error("[HANDOFF] conv insert:", e?.message); }
         return new Response(JSON.stringify({ status: "handed_off", reason: "human_advisor_active" }), {
           status: 200,
           headers: { ...corsHeaders, "Content-Type": "application/json" },
@@ -1017,14 +1029,16 @@ Deno.serve(async (req) => {
       console.log(`[SANDBOX] Phone ${phone} NOT whitelisted, silencing bot + handoff`);
       const sandboxLeadId = await ensureLeadShell(supabase, phone, userName, isLid);
       if (sandboxLeadId) {
-        await supabase.from("conversations").insert({
-          lead_id: sandboxLeadId,
-          org_id: ORG_ID,
-          direction: "inbound",
-          content: userText || "[Audio/Media]",
-          is_bot: false,
-          message_id: messageId,
-        }).catch(() => {});
+        try {
+          await supabase.from("conversations").insert({
+            lead_id: sandboxLeadId,
+            org_id: ORG_ID,
+            direction: "inbound",
+            content: userText || "[Audio/Media]",
+            is_bot: false,
+            message_id: messageId,
+          });
+        } catch (e: any) { console.error("[SANDBOX] conv insert:", e?.message); }
 
         // Marcar handoff y notificar asesor solo la primera vez
         const { data: ctx } = await supabase
