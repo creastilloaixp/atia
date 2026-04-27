@@ -11,6 +11,37 @@ const EVOLUTION_INSTANCE = Deno.env.get("EVOLUTION_INSTANCE") || "GRUPOATIA";
 const GEMINI_API_KEY = Deno.env.get("GEMINI_API_KEY") || "";
 const ADVISOR_PHONE = Deno.env.get("ADVISOR_PHONE") || "526672543464"; // Asesor humano para handoff
 
+// ── Sandbox: si SANDBOX_MODE=true, solo responde a teléfonos en SANDBOX_PHONES ─
+// Los demás números reciben handoff a humano (no se les pierde el mensaje).
+const SANDBOX_MODE = (Deno.env.get("SANDBOX_MODE") || "").toLowerCase() === "true";
+const SANDBOX_PHONES_RAW = Deno.env.get("SANDBOX_PHONES") || "";
+
+function normalizePhone(p: string): string {
+  return (p || "").replace(/\D/g, "");
+}
+
+const SANDBOX_PHONES: string[] = SANDBOX_PHONES_RAW
+  .split(",")
+  .map((p) => normalizePhone(p))
+  .filter(Boolean);
+
+// Permite match exacto o por sufijo (tolera variaciones de código país: 521 vs 52, +52 vs 52)
+function isSandboxAllowed(phone: string): boolean {
+  if (!SANDBOX_MODE) return true;
+  const normalized = normalizePhone(phone);
+  if (!normalized || SANDBOX_PHONES.length === 0) return false;
+  return SANDBOX_PHONES.some(
+    (allowed) =>
+      allowed === normalized ||
+      normalized.endsWith(allowed) ||
+      allowed.endsWith(normalized)
+  );
+}
+
+if (SANDBOX_MODE) {
+  console.log(`[SANDBOX] ENABLED. Whitelist: ${SANDBOX_PHONES.join(", ") || "(empty — bot silenced for ALL)"}`);
+}
+
 // ── Anti-loop: in-memory dedup + cooldown ────────────────────────────────────
 const processedMessages = new Set<string>();
 const phoneCooldowns = new Map<string, number>();
@@ -67,7 +98,13 @@ INVENTARIO:
 - Si aún no calificaste: IGNORA el inventario y pregunta.
 - Al recomendar, 1 línea por propiedad: tipo en colonia · precio · recámaras/baños. Link de fotos plano al final si existe.
 
-DATOS A RECOPILAR (naturalmente, 1 por turno): nombre, teléfono real si viene por WhatsApp sin número, operación, zona, presupuesto, forma de pago, urgencia.`;
+DATOS A RECOPILAR (naturalmente, 1 por turno): nombre, teléfono real si viene por WhatsApp sin número, operación, zona, presupuesto, forma de pago, urgencia.
+
+QUEJAS Y CLIENTES MOLESTOS (crítico):
+- Si el cliente expresa molestia ("pésimo", "no sirven", "no resuelven", "estafa", "lo peor", "qué mal", "cancela", "reclamo"): UNA sola disculpa breve, máximo. NUNCA te disculpes dos mensajes seguidos por el mismo motivo.
+- PROHIBIDO inventar problemas que el cliente no mencionó. Si dice "pésimo servicio" y tú no sabes a qué se refiere, NO hables de "enlaces mal enviados" ni de errores específicos que no fueron mencionados. Pregúntale qué pasó o pásalo a un asesor humano.
+- Si el cliente repite la queja o sigue molesto: deja de disculparte y deriva: "Te paso con un asesor humano para que te atienda directo. Te contacta en breve." Nada más.
+- No uses frases huecas como "Lamento mucho", "Una disculpa sincera", "Tienes toda la razón" repetidas. Una vez es suficiente.`;
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -323,6 +360,109 @@ Reglas de clasificación:
 
 Si la conversación es solo un saludo o no hay intención inmobiliaria clara, responde: {"is_lead": false}`;
 
+// Detector de mensajes de cliente molesto/frustrado
+const ANGER_PATTERNS = /(?:^|\s|[.,!¡?¿])(p[eé]simo|no\s+(?:sirven?|resuelven?|funciona?n?)|estaf|fraude|lo\s+peor|terrible|horrible|qu[eé]\s+mal|muy\s+mal|enga[ñn]|mienten|mentira|robaron|denuncia|demand|hartad?o|harto|tonter[íi]a|pendej|idiot|cancela|ya\s+no\s+quiero|d[eé]jenme|no\s+me\s+molest|molesto|molesta|enojad[ao]|reclam|queja\b)/i;
+
+function detectAnger(text: string): boolean {
+  if (!text) return false;
+  return ANGER_PATTERNS.test(text);
+}
+
+// Crea un lead mínimo (skeleton) si no existe — NO requiere intención inmobiliaria.
+// Esto garantiza que TODA conversación de WhatsApp queda registrada en el CRM,
+// incluso si es solo una queja o un saludo. La extracción enriquecida llega después.
+async function ensureLeadShell(
+  supabase: any,
+  phone: string,
+  userName: string,
+  isLid = false
+): Promise<string | null> {
+  const { data: existing } = await supabase
+    .from("leads")
+    .select("id")
+    .eq("whatsapp", phone)
+    .eq("org_id", ORG_ID)
+    .limit(1)
+    .maybeSingle();
+  if (existing?.id) return existing.id;
+
+  const leadName = cleanName(userName) || fallbackName(phone, isLid);
+  const realPhone = isLid ? null : phone;
+  const { data: newLead, error } = await supabase
+    .from("leads")
+    .insert({
+      org_id: ORG_ID,
+      full_name: leadName,
+      name: leadName,
+      whatsapp: phone,
+      phone: realPhone,
+      city: "Culiacán",
+      status: "new",
+      vertical: "inmobiliaria",
+      source: "whatsapp_adriana",
+      lead_score: 10,
+      metadata: {
+        campaign: "adriana_whatsapp",
+        is_lid: isLid,
+        whatsapp_lid: isLid ? phone : null,
+        skeleton: true,
+      },
+    })
+    .select("id")
+    .single();
+
+  if (error) {
+    console.error("[CRM] Skeleton lead error:", error.message);
+    return null;
+  }
+  console.log(`[CRM] Skeleton lead created: ${leadName} (${phone})`);
+  return newLead?.id || null;
+}
+
+// Handoff por sentimiento negativo: una sola disculpa, escalar a humano y silenciar el bot.
+async function triggerAngerHandoff(
+  supabase: any,
+  leadId: string,
+  phone: string,
+  name: string,
+  userText: string
+): Promise<void> {
+  try {
+    await supabase.from("ai_conversation_context").upsert({
+      lead_id: leadId,
+      org_id: ORG_ID,
+      status: "handed_off",
+      handoff_reason: `Cliente molesto: "${(userText || "").slice(0, 200)}"`,
+      handed_off_at: new Date().toISOString(),
+    }, { onConflict: "lead_id" });
+
+    await supabase.from("leads").update({ status: "handed_off" }).eq("id", leadId);
+
+    const advisorMsg = `CLIENTE MOLESTO — REVISAR\n\n` +
+      `Cliente: ${name}\n` +
+      `Tel: ${phone}\n` +
+      `Mensaje: "${(userText || "").slice(0, 300)}"\n\n` +
+      `Adriana se silenció. Toma el control desde el CRM.`;
+
+    await fetch(`${EVOLUTION_API_URL}/message/sendText/${EVOLUTION_INSTANCE}`, {
+      method: "POST",
+      headers: { apikey: EVOLUTION_API_KEY, "Content-Type": "application/json" },
+      body: JSON.stringify({ number: ADVISOR_PHONE, text: advisorMsg }),
+    });
+
+    const clientMsg = `Te paso con un asesor humano para que revise tu caso directo. Te contacta en breve.`;
+    await fetch(`${EVOLUTION_API_URL}/message/sendText/${EVOLUTION_INSTANCE}`, {
+      method: "POST",
+      headers: { apikey: EVOLUTION_API_KEY, "Content-Type": "application/json" },
+      body: JSON.stringify({ number: phone, text: clientMsg }),
+    });
+
+    console.log(`[HANDOFF-ANGER] ${name} (${phone}) -> Advisor`);
+  } catch (e) {
+    console.error("[HANDOFF-ANGER] Error:", e);
+  }
+}
+
 async function extractAndSaveLead(
   supabase: any,
   phone: string,
@@ -330,22 +470,23 @@ async function extractAndSaveLead(
   conversationHistory: string,
   isLid = false
 ): Promise<string | null> {
-  // Check if lead already exists in DB (check both whatsapp and phone fields)
+  // Check if lead already exists (skeleton or fully enriched)
   const { data: existingLead } = await supabase
     .from("leads")
-    .select("id, phone")
+    .select("id, phone, metadata")
     .eq("whatsapp", phone)
     .eq("org_id", ORG_ID)
     .limit(1)
     .maybeSingle();
 
-  if (existingLead) {
+  // If lead exists and is NOT a skeleton, no enrichment needed
+  if (existingLead && !existingLead.metadata?.skeleton) {
     leadExtractedPhones.add(phone);
-    return existingLead.id; // Return existing lead ID for conversation saving
+    return existingLead.id;
   }
 
   // Don't re-extract for same phone in this function instance lifecycle
-  if (leadExtractedPhones.has(phone)) return null;
+  if (leadExtractedPhones.has(phone)) return existingLead?.id || null;
 
   try {
     const extractRes = await fetch(
@@ -368,57 +509,84 @@ async function extractAndSaveLead(
     const jsonStr = rawText.replace(/```json\n?/g, "").replace(/```\n?/g, "").trim();
     const lead = JSON.parse(jsonStr);
 
-    if (!lead.is_lead) return null;
+    if (!lead.is_lead) {
+      // No es lead aún, pero el skeleton ya existe (si lo había). Marcar como intentado.
+      leadExtractedPhones.add(phone);
+      return existingLead?.id || null;
+    }
 
     console.log(`[CRM] Lead detected: ${userName} (${phone}) — ${lead.operation} ${lead.property_type} — Cat: ${lead.category} — isLid: ${isLid}`);
 
     // Use phone from conversation if available, otherwise use WhatsApp ID
     const realPhone = lead.phone_mentioned || (isLid ? null : phone);
     const leadName = cleanName(lead.name) || cleanName(userName) || fallbackName(phone, isLid);
-    const { data: newLead, error: leadError } = await supabase
-      .from("leads")
-      .insert({
-        org_id: ORG_ID,
-        full_name: leadName,
-        name: leadName,
-        whatsapp: phone, // Always store the WhatsApp ID (works for messaging even if LID)
-        phone: realPhone, // Only store real phone; null for LID without mentioned number (UI will show "WhatsApp ID")
-        email: lead.email || null,
-        city: lead.city || "Culiacán",
-        status: "new",
-        vertical: "inmobiliaria",
-        source: "whatsapp_adriana",
-        coverage_type: lead.operation || null,
-        value_estimate: lead.budget_value || null,
-        lead_score: lead.category === "A" ? 80 : lead.category === "B" ? 50 : 20,
-        metadata: {
-          intent: lead.operation?.toLowerCase() || "general",
-          property_type: lead.property_type || null,
-          property_value: lead.budget || "no_especificado",
-          campaign: "adriana_whatsapp",
-          location: lead.city || "Culiacán",
-          sector: lead.sector || null,
-          urgency: lead.urgency,
-          ai_category: lead.category,
-          ai_details: lead.details,
-          bedrooms: lead.bedrooms || null,
-          bathrooms: lead.bathrooms || null,
-          payment_method: lead.payment_method || null,
-          property_status: lead.property_status || null,
-          has_debts: lead.has_debts ?? null,
-          has_appraisal: lead.has_appraisal ?? null,
-          time_on_market: lead.time_on_market || null,
-          has_other_agency: lead.has_other_agency ?? null,
-          is_lid: isLid,
-          whatsapp_lid: isLid ? phone : null,
-        },
-      })
-      .select("id")
-      .single();
+    const leadFields = {
+      full_name: leadName,
+      name: leadName,
+      phone: realPhone,
+      email: lead.email || null,
+      city: lead.city || "Culiacán",
+      coverage_type: lead.operation || null,
+      value_estimate: lead.budget_value || null,
+      lead_score: lead.category === "A" ? 80 : lead.category === "B" ? 50 : 20,
+      metadata: {
+        intent: lead.operation?.toLowerCase() || "general",
+        property_type: lead.property_type || null,
+        property_value: lead.budget || "no_especificado",
+        campaign: "adriana_whatsapp",
+        location: lead.city || "Culiacán",
+        sector: lead.sector || null,
+        urgency: lead.urgency,
+        ai_category: lead.category,
+        ai_details: lead.details,
+        bedrooms: lead.bedrooms || null,
+        bathrooms: lead.bathrooms || null,
+        payment_method: lead.payment_method || null,
+        property_status: lead.property_status || null,
+        has_debts: lead.has_debts ?? null,
+        has_appraisal: lead.has_appraisal ?? null,
+        time_on_market: lead.time_on_market || null,
+        has_other_agency: lead.has_other_agency ?? null,
+        is_lid: isLid,
+        whatsapp_lid: isLid ? phone : null,
+        skeleton: false,
+      },
+    };
 
-    if (leadError) {
-      console.error("[CRM] Lead insert error:", leadError.message);
-      return null;
+    let newLead: { id: string } | null = null;
+    if (existingLead?.id) {
+      // Enriquecer skeleton existente
+      const { data: updated, error: updErr } = await supabase
+        .from("leads")
+        .update(leadFields)
+        .eq("id", existingLead.id)
+        .select("id")
+        .single();
+      if (updErr) {
+        console.error("[CRM] Lead enrich error:", updErr.message);
+        return existingLead.id;
+      }
+      newLead = updated;
+      console.log(`[CRM] Skeleton enriched: ${existingLead.id}`);
+    } else {
+      // Sin skeleton (caso raro): insertar lead completo
+      const { data: inserted, error: leadError } = await supabase
+        .from("leads")
+        .insert({
+          org_id: ORG_ID,
+          whatsapp: phone,
+          status: "new",
+          vertical: "inmobiliaria",
+          source: "whatsapp_adriana",
+          ...leadFields,
+        })
+        .select("id")
+        .single();
+      if (leadError) {
+        console.error("[CRM] Lead insert error:", leadError.message);
+        return null;
+      }
+      newLead = inserted;
     }
 
     // Insert corretaje_request
@@ -587,6 +755,25 @@ async function handleBackgroundResponse(
       parts: [{ text: m.content }],
     }));
 
+    // ── 1.5. CRM SHELL: garantiza que el lead exista en CRM desde el primer mensaje ──
+    // Esto fija el bug donde clientes que solo se quejaban nunca aparecían registrados.
+    const crmLeadId = await ensureLeadShell(supabase, phone, userName, isLid);
+
+    // ── 1.6. ANGER HANDOFF: cliente molesto -> una sola disculpa + asesor humano ──
+    if (crmLeadId && detectAnger(userText)) {
+      console.log(`[ADRIANA] Anger detected from ${phone}, escalating to advisor.`);
+      const inboundContent = userText || "[Audio/Media]";
+      await supabase.from("conversations").insert([
+        { lead_id: crmLeadId, org_id: ORG_ID, direction: "inbound", content: inboundContent, is_bot: false, message_id: messageId },
+      ]).catch(() => {});
+      await supabase.from("chat_memory").insert([
+        { phone, role: "user", content: inboundContent },
+      ]).catch(() => {});
+      const leadName = cleanName(userName) || fallbackName(phone, isLid);
+      await triggerAngerHandoff(supabase, crmLeadId, phone, leadName, userText);
+      return;
+    }
+
     // ── 2. HUMANIZED DELAY (adaptive: long on first contact, short on follow-ups) ──
     const isFirstTurn = !historyData || historyData.length === 0;
     const typingDelay = isFirstTurn
@@ -679,7 +866,16 @@ async function handleBackgroundResponse(
       await sendPropertyPhotos(remoteJid, ragResult.properties).catch((e) => console.error("[PHOTO] Error:", e));
     }
 
-    // 10. CRM sync
+    // 10. CRM sync — SIEMPRE guardar conversación (incluso si aún no es lead enriquecido)
+    const leadId = crmLeadId; // skeleton garantizado desde paso 1.5
+    if (leadId) {
+      await supabase.from("conversations").insert([
+        { lead_id: leadId, org_id: ORG_ID, direction: "inbound", content: userText || "[Audio/Media]", is_bot: false, message_id: messageId },
+        { lead_id: leadId, org_id: ORG_ID, direction: "outbound", content: aiText, is_bot: true, message_id: `bot_${messageId}` },
+      ]).catch((e: any) => console.error("[CRM] Conversation insert error:", e?.message));
+    }
+
+    // Enriquecimiento del lead (extracción AI) cuando hay sustancia conversacional
     const allMessages = [
       ...(historyData || []).reverse().map((m: any) => `${m.role === "user" ? "Cliente" : "Adriana"}: ${m.content}`),
       `Cliente: ${userText || "[Audio/Media]"}`,
@@ -688,14 +884,11 @@ async function handleBackgroundResponse(
 
     const messageCount = (historyData?.length || 0) + 1;
     const hasSubstance = !skipRag || messageCount >= 4;
+    if (hasSubstance) {
+      await extractAndSaveLead(supabase, phone, userName, allMessages, isLid);
+    }
 
-    const leadId = hasSubstance ? await extractAndSaveLead(supabase, phone, userName, allMessages, isLid) : null;
     if (leadId) {
-      await supabase.from("conversations").insert([
-        { lead_id: leadId, org_id: ORG_ID, direction: "inbound", content: userText || "[Audio/Media]", is_bot: false, message_id: messageId },
-        { lead_id: leadId, org_id: ORG_ID, direction: "outbound", content: aiText, is_bot: true, message_id: `bot_${messageId}` },
-      ]);
-
       // Auto-advance pipeline stage based on engagement signals
       try {
         const { data: leadRow } = await supabase.from("leads").select("status, metadata").eq("id", leadId).maybeSingle();
@@ -815,6 +1008,61 @@ Deno.serve(async (req) => {
           headers: { ...corsHeaders, "Content-Type": "application/json" },
         });
       }
+    }
+
+    // 0.5. SANDBOX MODE: si activo, solo responde a teléfonos en whitelist.
+    // Los demás se silencian (bot no responde) pero su lead + mensaje se guardan
+    // en CRM y se notifica al asesor humano UNA vez (al primer mensaje).
+    if (!isSandboxAllowed(phone)) {
+      console.log(`[SANDBOX] Phone ${phone} NOT whitelisted, silencing bot + handoff`);
+      const sandboxLeadId = await ensureLeadShell(supabase, phone, userName, isLid);
+      if (sandboxLeadId) {
+        await supabase.from("conversations").insert({
+          lead_id: sandboxLeadId,
+          org_id: ORG_ID,
+          direction: "inbound",
+          content: userText || "[Audio/Media]",
+          is_bot: false,
+          message_id: messageId,
+        }).catch(() => {});
+
+        // Marcar handoff y notificar asesor solo la primera vez
+        const { data: ctx } = await supabase
+          .from("ai_conversation_context")
+          .select("status")
+          .eq("lead_id", sandboxLeadId)
+          .maybeSingle();
+
+        if (ctx?.status !== "handed_off") {
+          await supabase.from("ai_conversation_context").upsert({
+            lead_id: sandboxLeadId,
+            org_id: ORG_ID,
+            status: "handed_off",
+            handoff_reason: `Sandbox mode: ${phone} no está en whitelist`,
+            handed_off_at: new Date().toISOString(),
+          }, { onConflict: "lead_id" });
+
+          await supabase.from("leads").update({ status: "handed_off" }).eq("id", sandboxLeadId);
+
+          const leadName = cleanName(userName) || fallbackName(phone, isLid);
+          const advisorMsg = `🧪 SANDBOX MODE — bot en pruebas\n\n` +
+            `Cliente: ${leadName}\n` +
+            `Tel: ${phone}\n` +
+            `Mensaje: "${(userText || "[Media]").slice(0, 300)}"\n\n` +
+            `Adriana NO va a responder. Atiende manual desde el CRM.`;
+
+          await fetch(`${EVOLUTION_API_URL}/message/sendText/${EVOLUTION_INSTANCE}`, {
+            method: "POST",
+            headers: { apikey: EVOLUTION_API_KEY, "Content-Type": "application/json" },
+            body: JSON.stringify({ number: ADVISOR_PHONE, text: advisorMsg }),
+          }).catch(() => {});
+        }
+      }
+
+      return new Response(JSON.stringify({ status: "sandbox_blocked", phone }), {
+        status: 200,
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
     }
 
     // ── FIRE AND FORGET: Start background processing ──
