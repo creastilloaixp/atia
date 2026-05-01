@@ -14,12 +14,27 @@ const GITHUB_WEBHOOK_SECRET = Deno.env.get("GITHUB_WEBHOOK_SECRET") || "";
 
 // Extraer el "topic" del nombre del archivo
 // Ej: "Ventas/Requisitos.md" -> "Ventas"
+// Ej: "knowledge/Ventas/Embudo.md" -> "Ventas" (strips "knowledge" prefix)
 // Ej: "Rentas.md" -> "Rentas"
+// Ej: "README.md" -> "General"
 function extractTopic(filePath: string): string {
-  const parts = filePath.replace(/\.md$/i, "").split("/");
-  // Si tiene subcarpetas, usa la primera carpeta como topic
-  // Si es un archivo raíz, usa el nombre del archivo
-  return parts.length > 1 ? parts[0] : parts[0];
+  let parts = filePath.replace(/\.md$/i, "").split("/");
+  
+  // Strip common prefix folders that aren't actual topics
+  const prefixesToSkip = ["knowledge", "docs", "obsidian", "vault"];
+  while (parts.length > 1 && prefixesToSkip.includes(parts[0].toLowerCase())) {
+    parts = parts.slice(1);
+  }
+  
+  // If it's a root file (no subfolder), categorize it
+  if (parts.length === 1) {
+    const name = parts[0].toLowerCase();
+    if (name === "readme" || name === "index") return "General";
+    return parts[0]; // Use filename as topic
+  }
+  
+  // Use the first real folder as topic (Ventas, Rentas, etc.)
+  return parts[0];
 }
 
 // Verificar la firma del webhook de GitHub (HMAC SHA-256)
