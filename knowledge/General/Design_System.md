@@ -44,14 +44,22 @@
 - Texto: `#0F172A`
 - Acentos: `#F26722`
 
-### Modo Oscuro (CRM / Dashboard / Sana tu Deuda)
+### Modo Oscuro (CRM / Analytics / Opcional)
 - Fondo general: `#0F172A`
 - Fondo Overlays/Modals: `#050505`/95 con `backdrop-blur-xl`
-- Superficies (Tarjetas/Calculadoras): `#0a0a0a`/90 con `backdrop-blur-3xl`
+- Superficies: `#0a0a0a`/90 con `backdrop-blur-3xl`
 - Texto: `#FFFFFF`
 - Acentos: `#F26722` / `#F59E0B`
 - Glassmorphism UI: `bg-white/5` con border `border-white/10` y shadows pronunciados `shadow-[0_32px_64px_-16px_rgba(0,0,0,0.5)]`
 - Gradientes Premium: `linear-gradient(135deg, #F26722, #d94e0d)`
+
+### Modo Claro Principal (Landing & Sana tu Deuda)
+- Fondo general: `#FFFFFF` (o blurs sobre `bg-white/40`)
+- Modals/Tarjetas: `bg-white` con `border-slate-100` y `shadow-sm` (hasta `shadow-xl`)
+- Esquinas: Ultra-redondeadas (`rounded-[2.5rem]` o `rounded-3xl`)
+- Texto Principal: `#0F172A` / `#1E293B`
+- Micro-textos: `text-slate-500`
+- Controles/Inputs: `bg-white border-slate-200`
 
 ---
 

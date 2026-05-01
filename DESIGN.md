@@ -34,11 +34,11 @@ Use these precise Hex values for all styling:
 
 ## 3. UI Patterns & Components
 
-### The "Glassmorphism" Treatment & Dark Mode Modals (Sana tu Deuda Aesthetic)
-*   **Backgrounds:** Deep dark backgrounds using `#050505`/95 with `backdrop-blur-xl` for overlays.
-*   **Modals & Cards:** Ultra-rounded corners (`rounded-[2.5rem]`), `bg-[#0a0a0a]/90`, `backdrop-blur-3xl`, subtle white borders (`border-white/10`), and deep shadows (`shadow-[0_32px_64px_-16px_rgba(0,0,0,0.5)]`).
-*   **Inputs & Fields:** Minimalist translucent inputs: `bg-white/5 border border-white/10 rounded-2xl`. Focus state shifts border to `amber-500/40` or `white/20`.
-*   **Micro-Typography (Labels):** Ultra-small, highly legible tags: `text-[10px] uppercase tracking-[0.2em] font-bold text-slate-400`.
+### The "Glassmorphism" Treatment & White UI (Sana tu Deuda Aesthetic)
+*   **Backgrounds:** Fondos claros y limpios (`#FFFFFF` o `bg-white/40` con blurs decorativos).
+*   **Modals & Cards:** Esquinas ultra-redondeadas (`rounded-[2.5rem]` o `rounded-3xl`), fondos blancos (`bg-white`), bordes sutiles (`border-slate-100` o `border-slate-200`) y sombras ligeras (`shadow-sm` o `shadow-xl` al hacer hover).
+*   **Inputs & Fields:** Minimalistas sobre fondo claro: `bg-white border border-slate-200 rounded-2xl`. Estado de foco con bordes `amber-500/40`.
+*   **Micro-Typography (Labels):** Ultra-pequeñas y altamente legibles: `text-[10px] uppercase tracking-[0.2em] font-bold text-slate-500`.
 
 ### Buttons & CTAs
 *   **Primary CTA:** Solid gradient background (`linear-gradient(135deg, #F26722, #d94e0d)`), rounded corners (e.g., `rounded-2xl` or `rounded-full`), bold text. Must include a drop shadow (`shadow-xl shadow-amber-500/20`) and a hover effect (`hover:shadow-amber-500/40`).
