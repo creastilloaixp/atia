@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cerebro ATIA - Adriana IA Multimodal</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brand: { DEFAULT: '#F26722', dark: '#d94e0d', light: '#FF8A47' },
+                        ui: { blue: '#1d4ed8', bluelight: '#2563eb' }
+                    },
+                    animation: {
+                        'pulse-ring': 'pulseRing 2s cubic-bezier(0.215, 0.61, 0.355, 1) infinite',
+                    },
+                    keyframes: {
+                        pulseRing: {
+                            '0%': { transform: 'scale(0.8)', opacity: '0.5' },
+                            '100%': { transform: 'scale(1.5)', opacity: '0' },
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
+        .glass-panel { background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(10px); }
+        .tab-content { display: none; animation: fadeIn 0.4s ease-in-out; }
+        .tab-content.active { display: block; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+    </style>
+</head>
+<body class="bg-slate-50 min-h-screen text-slate-800 font-sans flex">
+
+    <!-- Sidebar -->
+    <aside class="w-64 bg-[#0F172A] text-white fixed h-full flex flex-col shadow-xl z-20">
+        <div class="p-6 border-b border-slate-700/50">
+            <h1 class="text-xl font-bold tracking-tight text-white flex items-center gap-2">
+                <span class="text-brand"><i class="fas fa-brain"></i></span> Cerebro ATIA
+            </h1>
+            <p class="text-xs text-slate-400 mt-1 uppercase tracking-widest font-bold">Knowledge Base</p>
+        </div>
+        
+        <nav class="flex-1 p-4 space-y-2">
+            <button onclick="switchTab('calificacion')" id="tab-btn-calificacion" class="w-full flex items-center gap-3 px-4 py-3 bg-white/10 text-white rounded-xl text-sm font-medium transition-all text-left">
+                <i class="fas fa-filter text-brand"></i> Calificación de Leads
+            </button>
+            <button onclick="switchTab('captacion')" id="tab-btn-captacion" class="w-full flex items-center gap-3 px-4 py-3 text-slate-400 hover:bg-white/5 hover:text-white rounded-xl text-sm font-medium transition-all text-left">
+                <i class="fas fa-users text-emerald-400"></i> Captación Perfiles
+            </button>
+        </nav>
+
+        <div class="p-4 m-4 bg-slate-800/50 rounded-xl border border-slate-700">
+            <div class="flex items-center gap-3 mb-2">
+                <div class="relative">
+                    <img src="https://ui-avatars.com/api/?name=Adriana+IA&background=F26722&color=fff" class="w-8 h-8 rounded-full">
+                    <div class="absolute -bottom-1 -right-1 w-3 h-3 bg-emerald-500 rounded-full border-2 border-slate-800 animate-pulse"></div>
+                </div>
+                <div>
+                    <p class="text-xs font-bold text-white">Adriana IA</p>
+                    <p class="text-[10px] text-emerald-400">Sistema Activo</p>
+                </div>
+            </div>
+        </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="ml-64 flex-1 p-8 pb-32">
+        <header class="mb-10">
+            <h2 class="text-3xl font-bold text-slate-900" id="page-title">Documentos del Cerebro</h2>
+            <p class="text-slate-500 mt-2" id="page-subtitle">Estos son los archivos .md que Adriana utiliza para tomar decisiones.</p>
+        </header>
+
+        <!-- CONTENT 1: Calificacion Leads -->
+        <div id="content-calificacion" class="tab-content active space-y-8">
+            <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-8">
+                <h3 class="text-2xl font-bold text-brand mb-6 border-b pb-4">1. Embudo Completo Inmobiliario — Calificación</h3>
+                
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+                    <div class="bg-slate-50 p-5 rounded-xl border border-slate-100">
+                        <h4 class="font-bold text-slate-800 mb-3"><i class="fas fa-bullseye text-blue-500 mr-2"></i>Intención</h4>
+                        <ul class="space-y-2 text-sm text-slate-600">
+                            <li>🏠 <strong>COMPRAR</strong> — Busca adquirir</li>
+                            <li>🔑 <strong>RENTAR</strong> — Busca rentar</li>
+                            <li>💰 <strong>VENDER</strong> — Quiere vender</li>
+                        </ul>
+                    </div>
+                    <div class="bg-slate-50 p-5 rounded-xl border border-slate-100">
+                        <h4 class="font-bold text-slate-800 mb-3"><i class="fas fa-clock text-amber-500 mr-2"></i>Tiempo</h4>
+                        <ul class="space-y-2 text-sm text-slate-600">
+                            <li>⚡ <strong>0 a 30 días</strong> → Urgente</li>
+                            <li>📅 <strong>1 a 3 meses</strong> → Mediano plazo</li>
+                            <li>👀 <strong>Explorando</strong> → Sin prisa</li>
+                        </ul>
+                    </div>
+                    <div class="bg-slate-50 p-5 rounded-xl border border-slate-100">
+                        <h4 class="font-bold text-slate-800 mb-3"><i class="fas fa-money-check-alt text-emerald-500 mr-2"></i>Perfil Financiero</h4>
+                        <ul class="space-y-2 text-sm text-slate-600">
+                            <li>✅ Aprobado / Listo → <span class="bg-emerald-100 text-emerald-700 px-2 py-0.5 rounded text-xs font-bold">VIP</span></li>
+                            <li>🟡 En trámite → <span class="bg-amber-100 text-amber-700 px-2 py-0.5 rounded text-xs font-bold">Trámite</span></li>
+                            <li>❌ Sin crédito → <span class="bg-red-100 text-red-700 px-2 py-0.5 rounded text-xs font-bold">Filtro</span></li>
+                        </ul>
+                    </div>
+                </div>
+
+                <h4 class="text-xl font-bold text-slate-800 mb-4">Categorías de Lead y Acción Automática</h4>
+                <div class="space-y-4">
+                    <!-- VIP -->
+                    <div class="flex flex-col md:flex-row gap-4 p-4 rounded-xl border border-emerald-200 bg-emerald-50/50">
+                        <div class="w-12 h-12 rounded-full bg-emerald-100 flex items-center justify-center text-emerald-600 text-xl shrink-0">🥇</div>
+                        <div>
+                            <h5 class="font-bold text-slate-900">CLIENTE VIP (Oro Puro)</h5>
+                            <p class="text-xs font-medium text-slate-500 mb-2">Compra/Renta + 0-30 días + Crédito listo</p>
+                            <p class="text-sm text-slate-700"><strong>Acción:</strong> Llamada inmediata + Agendar cita</p>
+                            <div class="mt-2 bg-white p-3 rounded-lg border border-slate-100 text-sm italic text-slate-600">
+                                "Perfecto 🎉 ya con todo listo podemos avanzar muy rápido. Te contacto en este momento..."
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- VENDEDOR LISTO -->
+                    <div class="flex flex-col md:flex-row gap-4 p-4 rounded-xl border border-brand/20 bg-brand/5">
+                        <div class="w-12 h-12 rounded-full bg-brand/10 flex items-center justify-center text-brand text-xl shrink-0">💰</div>
+                        <div>
+                            <h5 class="font-bold text-slate-900">VENDEDOR LISTO (Urgencia)</h5>
+                            <p class="text-xs font-medium text-slate-500 mb-2">Vender + 0-30 días + Propiedad lista</p>
+                            <p class="text-sm text-slate-700"><strong>Acción:</strong> Llamada inmediata</p>
+                            <div class="mt-2 bg-white p-3 rounded-lg border border-slate-100 text-sm italic text-slate-600">
+                                "Perfecto 👍 podemos comenzar de inmediato con la estrategia de venta..."
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- REGLA ORO -->
+                    <div class="mt-8 bg-slate-900 text-white p-6 rounded-xl text-center shadow-lg">
+                        <p class="text-[10px] text-brand uppercase tracking-[0.3em] font-bold mb-2">Regla de Oro de Adriana</p>
+                        <p class="text-lg font-medium">"El lead más rápido en tu respuesta, es el más probable de convertirse en tu cliente. VELOCIDAD = VENTAS 🚀"</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- CONTENT 2: Captacion Perfiles -->
+        <div id="content-captacion" class="tab-content space-y-8">
+            <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-8">
+                <h3 class="text-2xl font-bold text-emerald-600 mb-6 border-b pb-4">2. Embudo de Captación Inmobiliaria</h3>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <!-- Practicantes -->
+                    <div class="border border-slate-200 p-5 rounded-xl hover:border-emerald-300 transition-colors">
+                        <h4 class="font-bold text-lg mb-2 flex items-center gap-2"><span class="text-2xl">👶</span> Practicantes</h4>
+                        <ul class="text-sm text-slate-600 space-y-1 mb-4">
+                            <li><strong>Objetivo:</strong> Aprender, Crecimiento</li>
+                            <li><strong>Disponibilidad:</strong> Media jornada, Fines de semana</li>
+                        </ul>
+                        <div class="bg-slate-50 p-3 rounded text-xs">
+                            <strong>Acción AI:</strong> "Un asesor te guiará por el mejor camino para ti" (Llamada)
+                        </div>
+                    </div>
+
+                    <!-- Asesores -->
+                    <div class="border border-slate-200 p-5 rounded-xl hover:border-emerald-300 transition-colors">
+                        <h4 class="font-bold text-lg mb-2 flex items-center gap-2"><span class="text-2xl">🏢</span> Asesores Freelance</h4>
+                        <ul class="text-sm text-slate-600 space-y-1 mb-4">
+                            <li><strong>Comisiones:</strong> Tecnología, Marca, Acompañamiento</li>
+                            <li><strong>Leads:</strong> Buscan calificados y reconocimiento</li>
+                        </ul>
+                        <div class="bg-slate-50 p-3 rounded text-xs">
+                            <strong>Acción AI:</strong> "Te conectamos con un especialista para impulsar tus resultados"
+                        </div>
+                    </div>
+
+                    <!-- Reclutamiento -->
+                    <div class="border border-slate-200 p-5 rounded-xl hover:border-emerald-300 transition-colors md:col-span-2">
+                        <h4 class="font-bold text-lg mb-2 flex items-center gap-2"><span class="text-2xl">🏛️</span> Reclutamiento Interno</h4>
+                        <ul class="text-sm text-slate-600 space-y-1 mb-4">
+                            <li><strong>Área actual:</strong> Ventas, Marketing, Operaciones</li>
+                            <li><strong>Motivación:</strong> Crecimiento, Nuevos retos, Independencia</li>
+                        </ul>
+                        <div class="bg-slate-50 p-3 rounded text-xs">
+                            <strong>Acción AI:</strong> "Te conectamos con un área de desarrollo para aplicar tu crecimiento"
+                        </div>
+                    </div>
+                </div>
+
+                <h4 class="text-xl font-bold text-slate-800 mt-10 mb-4">Matriz de Acciones Automáticas</h4>
+                <div class="overflow-x-auto">
+                    <table class="w-full text-sm text-left">
+                        <thead class="text-xs text-slate-500 uppercase bg-slate-50">
+                            <tr>
+                                <th class="px-6 py-3">Categoría</th>
+                                <th class="px-6 py-3">Acción</th>
+                                <th class="px-6 py-3">Criterios de Activación</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr class="bg-white border-b">
+                                <td class="px-6 py-4 font-bold text-slate-900">🥇 Cliente VIP</td>
+                                <td class="px-6 py-4 text-emerald-600 font-medium">Llamada inmediata + Cita</td>
+                                <td class="px-6 py-4">Compra/Renta + 0-30 días + Crédito listo</td>
+                            </tr>
+                            <tr class="bg-slate-50 border-b">
+                                <td class="px-6 py-4 font-bold text-slate-900">💰 Vendedor Listo</td>
+                                <td class="px-6 py-4 text-brand font-medium">Llamada inmediata</td>
+                                <td class="px-6 py-4">Vender + 0-30 días + Propiedad lista</td>
+                            </tr>
+                            <tr class="bg-white border-b">
+                                <td class="px-6 py-4 font-bold text-slate-900">🟠 Sin Crédito</td>
+                                <td class="px-6 py-4 text-slate-600 font-medium">Agenda filtro</td>
+                                <td class="px-6 py-4">No tiene crédito</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- ADRIANA WIDGET SYSTEM -->
+
+    <!-- Floating Tooltip Notification -->
+    <div id="adriana-tooltip" class="fixed bottom-24 right-6 bg-white rounded-2xl p-4 shadow-2xl flex items-center gap-3 w-72 transition-all duration-500 transform translate-y-0 opacity-100 z-40 cursor-pointer border border-slate-100" onclick="toggleWidget()">
+        <img src="https://ui-avatars.com/api/?name=Adriana+IA&background=F26722&color=fff" alt="Adriana" class="w-10 h-10 rounded-full border-2 border-brand shadow-md">
+        <div class="flex-1">
+            <p class="text-sm text-slate-700 leading-tight"><span class="text-xl">🤩</span> ¡Hola! <span class="text-brand"><i class="fas fa-phone-alt"></i></span> Llama a <strong>Adriana IA</strong> para procesar estos leads...</p>
+        </div>
+        <button onclick="event.stopPropagation(); closeTooltip()" class="text-slate-400 hover:text-slate-600 absolute top-2 right-2">
+            <i class="fas fa-times text-xs"></i>
+        </button>
+        <div class="absolute -bottom-2 right-6 w-4 h-4 bg-white rotate-45 border-b border-r border-slate-100"></div>
+    </div>
+
+    <!-- Floating Action Button -->
+    <div class="fixed bottom-6 right-6 z-50">
+        <div class="absolute inset-0 bg-ui-bluelight rounded-full animate-pulse-ring"></div>
+        <button id="fab-button" onclick="toggleWidget()" class="relative w-14 h-14 bg-ui-bluelight hover:bg-ui-blue text-white rounded-full shadow-[0_10px_20px_rgba(37,99,235,0.4)] flex items-center justify-center text-xl transition-transform hover:scale-110 z-10">
+            <i id="fab-icon" class="fas fa-phone-alt"></i>
+        </button>
+    </div>
+
+    <!-- Main Widget Modal -->
+    <div id="adriana-widget" class="fixed bottom-24 right-6 w-[360px] bg-white rounded-[1.5rem] shadow-[0_30px_60px_-15px_rgba(0,0,0,0.4)] overflow-hidden transition-all duration-300 origin-bottom-right transform scale-0 opacity-0 z-50 border border-slate-200 flex flex-col" style="height: 580px;">
+        
+        <!-- Header -->
+        <div class="bg-ui-bluelight text-white px-5 py-4 flex items-center justify-between shadow-md relative z-10 cursor-pointer" onclick="toggleWidget()">
+            <div class="flex items-center gap-3">
+                <img src="https://ui-avatars.com/api/?name=Adriana+IA&background=F26722&color=fff" alt="Adriana" class="w-8 h-8 rounded-full border border-white/30">
+                <div class="flex items-center gap-2">
+                    <div class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></div>
+                    <span class="font-semibold text-sm">Llamar a Adriana IA</span>
+                </div>
+            </div>
+            <button class="text-white hover:text-blue-200 transition-colors">
+                <i class="fas fa-chevron-down"></i>
+            </button>
+        </div>
+
+        <!-- Call Interface (Default State) -->
+        <div id="call-intro" class="flex-1 flex flex-col items-center pt-10 px-6 text-center relative bg-white overflow-y-auto">
+            
+            <div class="relative mb-4">
+                <div class="absolute inset-0 bg-blue-50 rounded-full scale-[1.3] z-0"></div>
+                <div class="absolute inset-0 bg-slate-50 rounded-full scale-[1.6] z-0"></div>
+                <!-- Persona photo representation -->
+                <img src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&q=80&w=200&h=200" alt="Adriana Avatar" class="w-28 h-28 rounded-full object-cover relative z-10 shadow-lg border-4 border-white">
+            </div>
+
+            <div class="flex items-center justify-center gap-2 mb-2 mt-4">
+                <h2 class="text-xl font-bold text-slate-800">Adriana - Agente IA</h2>
+                <span class="bg-slate-100 border border-slate-200 text-slate-600 text-[10px] font-bold px-2 py-0.5 rounded-md">AI</span>
+            </div>
+
+            <p class="text-[13px] text-slate-600 leading-relaxed mb-6">
+                Inicia una llamada, de inmediato te atenderá nuestro Agente IA. Adriana usa los archivos <strong>Embudo_Calificacion_Leads.md</strong> y <strong>Embudo_Captacion_Perfiles.md</strong> en tiempo real.
+            </p>
+
+            <button onclick="startCall()" class="w-full flex items-center justify-center gap-2 py-3.5 rounded-xl border-2 border-ui-bluelight text-ui-bluelight font-bold hover:bg-blue-50 transition-colors active:scale-95 text-sm mb-6">
+                <i class="fas fa-wave-square"></i> Iniciar llamada IA Multimodal
+            </button>
+            
+            <div class="bg-slate-50 border border-slate-100 rounded-lg p-3 w-full text-left">
+                <p class="text-[10px] font-bold text-slate-400 uppercase mb-1">Cerebro Conectado:</p>
+                <div class="flex items-center gap-2 text-xs text-emerald-600 font-medium">
+                    <i class="fas fa-check-circle"></i> Reglas de Calificación
+                </div>
+                <div class="flex items-center gap-2 text-xs text-emerald-600 font-medium mt-1">
+                    <i class="fas fa-check-circle"></i> Matrices de Captación
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Active Call Interface -->
+        <div id="active-call" class="hidden flex-1 flex-col items-center pt-10 px-6 text-center bg-slate-900 text-white relative">
+            <h3 class="text-slate-400 font-medium text-[11px] uppercase tracking-widest mb-10">Conectada al Conocimiento...</h3>
+            
+            <!-- Voice Visualizer Ring -->
+            <div class="relative w-28 h-28 mb-10">
+                <div class="absolute inset-0 border-4 border-ui-bluelight rounded-full animate-ping opacity-20"></div>
+                <div class="absolute inset-0 border-4 border-ui-bluelight rounded-full animate-pulse opacity-40 scale-110"></div>
+                <img src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&q=80&w=200&h=200" alt="Adriana Avatar" class="w-full h-full rounded-full object-cover border-2 border-ui-bluelight shadow-[0_0_30px_rgba(37,99,235,0.5)]">
+            </div>
+
+            <h2 class="text-xl font-bold mb-2">Adriana (Multimodal)</h2>
+            <div class="h-20 flex items-center justify-center w-full px-4">
+                <p id="transcript-text" class="text-emerald-400 font-medium text-sm leading-relaxed">Escuchando voz o recibiendo imagen...</p>
+            </div>
+
+            <!-- Modality switchers -->
+            <div class="flex gap-4 mt-2 mb-6">
+                <div class="text-slate-500 hover:text-white cursor-pointer transition-colors"><i class="fas fa-camera"></i></div>
+                <div class="text-slate-500 hover:text-white cursor-pointer transition-colors"><i class="fas fa-keyboard"></i></div>
+                <div class="text-ui-bluelight cursor-pointer"><i class="fas fa-microphone"></i></div>
+            </div>
+
+            <div class="mt-auto mb-8 flex gap-6">
+                <button class="w-12 h-12 rounded-full bg-slate-700 hover:bg-slate-600 flex items-center justify-center text-lg transition-colors">
+                    <i class="fas fa-microphone-slash"></i>
+                </button>
+                <button onclick="endCall()" class="w-12 h-12 rounded-full bg-red-500 hover:bg-red-600 flex items-center justify-center text-lg shadow-lg shadow-red-500/30 transition-transform hover:scale-105">
+                    <i class="fas fa-phone-slash"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <div class="bg-white border-t border-slate-100 py-3 text-center z-10 mt-auto shrink-0">
+            <p class="text-[11px] text-slate-500">
+                Atia Analytics™ <span class="mx-1">|</span> <span class="text-ui-bluelight font-medium flex items-center justify-center gap-1 inline-flex"><div class="w-1.5 h-1.5 bg-ui-bluelight rounded-full"></div> Demo Activo</span>
+            </p>
+        </div>
+    </div>
+
+    <script>
+        // Tabs Logic
+        let currentTab = 'calificacion';
+        function switchTab(tabId) {
+            document.getElementById(`content-${currentTab}`).classList.remove('active');
+            document.getElementById(`tab-btn-${currentTab}`).classList.remove('bg-white/10', 'text-white');
+            document.getElementById(`tab-btn-${currentTab}`).classList.add('text-slate-400');
+            
+            currentTab = tabId;
+            
+            document.getElementById(`content-${currentTab}`).classList.add('active');
+            document.getElementById(`tab-btn-${currentTab}`).classList.remove('text-slate-400');
+            document.getElementById(`tab-btn-${currentTab}`).classList.add('bg-white/10', 'text-white');
+
+            const title = tabId === 'calificacion' ? 'Documentos del Cerebro' : 'Captación de Perfiles';
+            document.getElementById('page-title').innerText = title;
+        }
+
+        // Widget Logic
+        let isWidgetOpen = false;
+        const tooltip = document.getElementById('adriana-tooltip');
+        const widget = document.getElementById('adriana-widget');
+        const fabIcon = document.getElementById('fab-icon');
+        const callIntro = document.getElementById('call-intro');
+        const activeCall = document.getElementById('active-call');
+        const transcriptText = document.getElementById('transcript-text');
+
+        function toggleWidget() {
+            isWidgetOpen = !isWidgetOpen;
+            
+            if(isWidgetOpen) {
+                widget.classList.remove('scale-0', 'opacity-0');
+                widget.classList.add('scale-100', 'opacity-100');
+                fabIcon.classList.remove('fa-phone-alt');
+                fabIcon.classList.add('fa-times');
+                closeTooltip();
+            } else {
+                widget.classList.remove('scale-100', 'opacity-100');
+                widget.classList.add('scale-0', 'opacity-0');
+                setTimeout(endCall, 300);
+                fabIcon.classList.remove('fa-times');
+                fabIcon.classList.add('fa-phone-alt');
+            }
+        }
+
+        function closeTooltip() {
+            tooltip.style.opacity = '0';
+            setTimeout(() => tooltip.style.display = 'none', 300);
+        }
+
+        // Simulate Multimodal Call AI Process
+        let transcriptTimer;
+        function startCall() {
+            callIntro.classList.add('hidden');
+            activeCall.classList.remove('hidden');
+            activeCall.classList.add('flex');
+            
+            // Dynamic text based on current tab viewed by user
+            const speeches = currentTab === 'calificacion' ? [
+                "¡Hola! Soy Adriana. Estoy leyendo el archivo de Calificación de Leads.",
+                "Veo que si el cliente tiene crédito listo y urge comprar (0-30 días)...",
+                "¡Es un Cliente VIP Oro Puro! Agendaré una cita inmediata.",
+                "¿Deseas que active el mensaje automático de 'Perfecto, ya con todo listo'?"
+            ] : [
+                "¡Hola! Soy Adriana. Analizando el archivo de Captación de Perfiles.",
+                "He detectado un Asesor Freelance buscando comisiones de Tecnología.",
+                "La acción automática es agendar llamada inmediata con especialista.",
+                "Procesando ingreso a la base de datos..."
+            ];
+            
+            let i = 0;
+            transcriptText.innerHTML = `<span class="text-white opacity-80">Adriana:</span> "${speeches[0]}"`;
+            
+            transcriptTimer = setInterval(() => {
+                i++;
+                if(i < speeches.length) {
+                    transcriptText.innerHTML = `<span class="text-white opacity-80">Adriana:</span> "${speeches[i]}"`;
+                } else {
+                    transcriptText.innerHTML = "Escuchando o analizando imagen...";
+                    i = -1;
+                }
+            }, 4000);
+        }
+
+        function endCall() {
+            clearInterval(transcriptTimer);
+            activeCall.classList.add('hidden');
+            activeCall.classList.remove('flex');
+            callIntro.classList.remove('hidden');
+            transcriptText.innerText = "Escuchando...";
+        }
+
+        setTimeout(() => {
+            if(!isWidgetOpen) closeTooltip();
+        }, 12000);
+    </script>
+</body>
+</html>
