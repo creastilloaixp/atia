@@ -827,14 +827,29 @@ async function handleBackgroundResponse(
     }
     contents.push({ role: "user", parts: currentMessageParts });
 
-    // 6. Generate AI response (with retry on 429)
+    // 6. Fetch Obsidian knowledge base (synced via obsidian-sync Edge Function)
+    let kbContext = "";
+    try {
+      const { data: kbData } = await supabase
+        .from("knowledge_base")
+        .select("topic, content")
+        .order("topic", { ascending: true });
+      if (kbData && kbData.length > 0) {
+        kbContext = "\n\n=== BASE DE CONOCIMIENTO ATIA ===\n" +
+          kbData.map((k: any) => `## ${k.topic}\n${k.content}`).join("\n\n");
+      }
+    } catch (kbErr) {
+      console.error("[KB] Error fetching knowledge_base:", kbErr);
+    }
+
+    // 7. Generate AI response (with retry on 429)
     let aiText: string | null = null;
     for (let attempt = 0; attempt < 3; attempt++) {
       const geminiRes = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${GEMINI_API_KEY}`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          systemInstruction: { parts: [{ text: `${SYSTEM_PROMPT}\n\nCliente: ${userName}${ragResult.text}` }] },
+          systemInstruction: { parts: [{ text: `${SYSTEM_PROMPT}${kbContext}\n\nCliente: ${userName}${ragResult.text}` }] },
           contents,
           generationConfig: { temperature: 0.7, maxOutputTokens: 1024 },
         }),

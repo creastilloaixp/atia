@@ -178,6 +178,21 @@ ${leadConvos.slice(0, 8).map((c: any) => `  [${c.direction}] ${c.content?.slice(
 `;
     }
 
+    // Fetch Obsidian knowledge base (synced via obsidian-sync Edge Function)
+    let kbContext = "";
+    try {
+      const { data: kbData } = await sb
+        .from("knowledge_base")
+        .select("topic, content")
+        .order("topic", { ascending: true });
+      if (kbData && kbData.length > 0) {
+        kbContext = "\n\n=== BASE DE CONOCIMIENTO ATIA (Obsidian) ===\n" +
+          kbData.map((k: any) => `## ${k.topic}\n${k.content}`).join("\n\n");
+      }
+    } catch (kbErr) {
+      console.error("[COPILOT-KB] Error:", kbErr);
+    }
+
     const systemPrompt = `Eres ADRIANA, la asistente IA omnicanal de Atia Inmobiliaria en Culiacán, Sinaloa.
 Eres la misma Adriana que atiende WhatsApp — ahora también estás dentro del CRM como copiloto del equipo.
 
@@ -197,7 +212,7 @@ DATOS ACTUALES DEL CRM:
 - Últimas conversaciones: ${conversations.slice(0, 6).map((c: any) => `[${c.direction}/${c.is_bot ? "bot" : "human"}] ${c.content?.slice(0, 60)}`).join(" | ")}
 ${leadCtx}
 PÁGINA ACTUAL: ${context?.currentPage || "desconocida"}
-
+${kbContext}
 CAPACIDADES DE ACCIÓN:
 Puedes EJECUTAR acciones reales. Cuando el usuario te pida una acción, responde con tu mensaje normal Y agrega un bloque JSON al final en este formato exacto:
 
