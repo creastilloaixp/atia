@@ -34,13 +34,15 @@ Use these precise Hex values for all styling:
 
 ## 3. UI Patterns & Components
 
-### The "Glassmorphism" Treatment
-*   Used heavily in the CRM Dashboard and dark mode elements.
-*   **Implementation:** `background: rgba(255, 255, 255, 0.05); backdrop-filter: blur(16px); border: 1px solid rgba(255, 255, 255, 0.1);`
+### The "Glassmorphism" Treatment & Dark Mode Modals (Sana tu Deuda Aesthetic)
+*   **Backgrounds:** Deep dark backgrounds using `#050505`/95 with `backdrop-blur-xl` for overlays.
+*   **Modals & Cards:** Ultra-rounded corners (`rounded-[2.5rem]`), `bg-[#0a0a0a]/90`, `backdrop-blur-3xl`, subtle white borders (`border-white/10`), and deep shadows (`shadow-[0_32px_64px_-16px_rgba(0,0,0,0.5)]`).
+*   **Inputs & Fields:** Minimalist translucent inputs: `bg-white/5 border border-white/10 rounded-2xl`. Focus state shifts border to `amber-500/40` or `white/20`.
+*   **Micro-Typography (Labels):** Ultra-small, highly legible tags: `text-[10px] uppercase tracking-[0.2em] font-bold text-slate-400`.
 
 ### Buttons & CTAs
-*   **Primary CTA:** Solid background (`--color-atia`), rounded corners (e.g., `rounded-lg` or `rounded-full`), bold text. Must include a subtle hover effect (scale up 1.05 or background shift to `--color-atia-light`).
-*   **WhatsApp Floating Button:** Always present on landing pages, bottom-right. Must use a slow pulse animation (`animate-pulse-slow`).
+*   **Primary CTA:** Solid gradient background (`linear-gradient(135deg, #F26722, #d94e0d)`), rounded corners (e.g., `rounded-2xl` or `rounded-full`), bold text. Must include a drop shadow (`shadow-xl shadow-amber-500/20`) and a hover effect (`hover:shadow-amber-500/40`).
+*   **WhatsApp / Validation Buttons:** Emerald accents for trust-building actions (`bg-emerald-500/20 border-emerald-500/30 text-emerald-400`).
 
 ### Landing Page Structure (The Funnel)
 *   **Hero:** Full-bleed dark image or cinematic video background. High contrast white text. Single, high-contrast primary CTA.
