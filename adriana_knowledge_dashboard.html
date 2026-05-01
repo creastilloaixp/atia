@@ -7,6 +7,8 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800;900&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Markdown parser for Gemini response -->
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
     <script>
         tailwind.config = {
             theme: {
@@ -16,16 +18,8 @@
                         heading: ['Montserrat', 'sans-serif'],
                     },
                     colors: {
-                        brand: { 
-                            DEFAULT: '#F26722', 
-                            dark: '#C94E0F', 
-                            light: '#FF8A47' 
-                        },
-                        tb: { 
-                            blue: '#002F6C', 
-                            dark: '#0F172A',
-                            accent: '#F59E0B'
-                        }
+                        brand: { DEFAULT: '#F26722', dark: '#C94E0F', light: '#FF8A47' },
+                        tb: { blue: '#002F6C', dark: '#0F172A', accent: '#F59E0B' }
                     },
                     animation: {
                         'pulse-ring': 'pulseRing 2s cubic-bezier(0.215, 0.61, 0.355, 1) infinite',
@@ -58,7 +52,6 @@
                 radial-gradient(at 100% 0%, rgba(0, 47, 108, 0.03) 0px, transparent 50%);
         }
         
-        /* ATIA Glassmorphism specifically for the Widget */
         .glass-widget {
             background: rgba(10, 10, 10, 0.95);
             backdrop-filter: blur(24px);
@@ -68,291 +61,275 @@
 
         .btn-gradient {
             background: linear-gradient(135deg, #F26722, #C94E0F);
-            box-shadow: 0 16px 32px -8px rgba(242,103,34,0.35);
+            box-shadow: 0 8px 16px -4px rgba(242,103,34,0.35);
         }
 
         .tab-content { display: none; opacity: 0; transition: opacity 0.3s ease; }
         .tab-content.active { display: block; opacity: 1; }
+        
+        .widget-hidden {
+            transform: scale(0);
+            opacity: 0;
+            pointer-events: none;
+        }
+        .widget-visible {
+            transform: scale(1);
+            opacity: 1;
+            pointer-events: auto;
+        }
     </style>
 </head>
 <body class="bg-mesh-gradient min-h-screen text-slate-800 font-sans flex overflow-x-hidden">
 
     <!-- Sidebar Dashboard -->
-    <aside class="w-72 bg-tb-dark text-white fixed h-full flex flex-col shadow-2xl z-20 border-r border-white/5">
-        <div class="p-8 border-b border-white/10 relative overflow-hidden">
-            <!-- Brand Glow -->
-            <div class="absolute -top-10 -right-10 w-32 h-32 bg-brand blur-[60px] opacity-30 rounded-full"></div>
-            
-            <h1 class="text-2xl font-heading font-black tracking-tighter text-white flex items-center gap-3 relative z-10">
-                <span class="text-brand text-3xl"><i class="fas fa-brain"></i></span> ATIA
+    <aside class="w-64 bg-tb-dark text-white fixed h-full flex flex-col shadow-2xl z-20 border-r border-white/5">
+        <div class="p-6 border-b border-white/10 relative overflow-hidden">
+            <div class="absolute -top-10 -right-10 w-24 h-24 bg-brand blur-[50px] opacity-30 rounded-full"></div>
+            <h1 class="text-xl font-heading font-black tracking-tighter text-white flex items-center gap-2 relative z-10">
+                <span class="text-brand text-2xl"><i class="fas fa-brain"></i></span> ATIA
             </h1>
-            <p class="text-[10px] text-brand mt-1 uppercase tracking-[0.3em] font-bold relative z-10">Knowledge Center</p>
+            <p class="text-[9px] text-brand mt-1 uppercase tracking-[0.3em] font-bold relative z-10">Knowledge Center</p>
         </div>
         
-        <nav class="flex-1 p-5 space-y-3">
-            <p class="text-[10px] uppercase tracking-widest text-slate-500 font-bold mb-4 px-2">Embudos de IA</p>
+        <nav class="flex-1 p-4 space-y-2">
+            <p class="text-[9px] uppercase tracking-widest text-slate-500 font-bold mb-3 px-2">Embudos de IA</p>
             
-            <button onclick="switchTab('calificacion')" id="tab-btn-calificacion" class="w-full flex items-center gap-3 px-4 py-3 bg-white/10 border border-white/10 text-white rounded-2xl text-sm font-semibold transition-all text-left">
-                <div class="w-8 h-8 rounded-full bg-brand/20 flex items-center justify-center text-brand"><i class="fas fa-filter"></i></div> 
+            <button onclick="switchTab('calificacion')" id="tab-btn-calificacion" class="w-full flex items-center gap-3 px-3 py-2.5 bg-white/10 border border-white/10 text-white rounded-xl text-sm font-semibold transition-all text-left">
+                <div class="w-7 h-7 rounded-full bg-brand/20 flex items-center justify-center text-brand text-xs"><i class="fas fa-filter"></i></div> 
                 Calificación
             </button>
-            <button onclick="switchTab('captacion')" id="tab-btn-captacion" class="w-full flex items-center gap-3 px-4 py-3 text-slate-400 hover:bg-white/5 hover:text-white border border-transparent rounded-2xl text-sm font-semibold transition-all text-left">
-                <div class="w-8 h-8 rounded-full bg-slate-800 flex items-center justify-center text-emerald-400"><i class="fas fa-users"></i></div>
+            <button onclick="switchTab('captacion')" id="tab-btn-captacion" class="w-full flex items-center gap-3 px-3 py-2.5 text-slate-400 hover:bg-white/5 hover:text-white border border-transparent rounded-xl text-sm font-semibold transition-all text-left">
+                <div class="w-7 h-7 rounded-full bg-slate-800 flex items-center justify-center text-emerald-400 text-xs"><i class="fas fa-users"></i></div>
                 Captación
             </button>
         </nav>
 
-        <div class="p-5 m-5 bg-black/40 rounded-[2rem] border border-white/5 backdrop-blur-md">
-            <div class="flex items-center gap-4">
+        <div class="p-4 m-4 bg-black/40 rounded-2xl border border-white/5 backdrop-blur-md">
+            <div class="flex items-center gap-3">
                 <div class="relative">
-                    <img src="https://ui-avatars.com/api/?name=Ad&background=F26722&color=fff&font-size=0.4" class="w-10 h-10 rounded-full border border-white/20">
-                    <div class="absolute -bottom-1 -right-1 w-3 h-3 bg-emerald-500 rounded-full border-2 border-black animate-pulse"></div>
+                    <img src="https://ui-avatars.com/api/?name=Ad&background=F26722&color=fff&font-size=0.4" class="w-8 h-8 rounded-full border border-white/20">
+                    <div class="absolute -bottom-1 -right-1 w-2.5 h-2.5 bg-emerald-500 rounded-full border-2 border-black animate-pulse"></div>
                 </div>
                 <div>
-                    <p class="text-xs font-bold text-white tracking-wide">Adriana IA</p>
-                    <p class="text-[9px] text-emerald-400 uppercase tracking-widest font-bold mt-0.5">En Línea</p>
+                    <p class="text-[11px] font-bold text-white tracking-wide">Adriana IA</p>
+                    <p class="text-[8px] text-emerald-400 uppercase tracking-widest font-bold mt-0.5">En Línea</p>
                 </div>
             </div>
         </div>
     </aside>
 
     <!-- Main Content -->
-    <main class="ml-72 flex-1 p-10 pb-32">
-        <header class="mb-12 border-b border-slate-200 pb-6">
-            <h2 class="text-4xl font-heading font-black text-tb-dark tracking-tight" id="page-title">Sistema de Calificación</h2>
-            <p class="text-slate-500 mt-3 text-lg" id="page-subtitle">El motor de reglas de Adriana conectado en tiempo real.</p>
+    <main class="ml-64 flex-1 p-8 pb-32">
+        <header class="mb-10 border-b border-slate-200 pb-4">
+            <h2 class="text-3xl font-heading font-black text-tb-dark tracking-tight" id="page-title">Sistema de Calificación</h2>
+            <p class="text-slate-500 mt-2 text-sm" id="page-subtitle">El motor de reglas de Adriana conectado en tiempo real.</p>
         </header>
 
         <!-- CONTENT 1: Calificacion Leads -->
-        <div id="content-calificacion" class="tab-content active space-y-8">
-            <div class="bg-white rounded-[2.5rem] shadow-xl shadow-slate-200/50 border border-slate-100 p-10">
-                <h3 class="text-2xl font-heading font-bold text-tb-dark mb-8">Embudo Completo Inmobiliario</h3>
+        <div id="content-calificacion" class="tab-content active space-y-6">
+            <div class="bg-white rounded-[2rem] shadow-lg shadow-slate-200/50 border border-slate-100 p-8">
+                <h3 class="text-xl font-heading font-bold text-tb-dark mb-6">Embudo Completo Inmobiliario</h3>
                 
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
-                    <!-- Cards with ATIA aesthetic -->
-                    <div class="bg-white p-6 rounded-3xl border border-slate-200 hover:border-brand/30 hover:shadow-lg transition-all group">
-                        <div class="w-12 h-12 rounded-2xl bg-slate-50 flex items-center justify-center text-tb-blue mb-4 group-hover:bg-tb-blue group-hover:text-white transition-colors">
-                            <i class="fas fa-bullseye text-xl"></i>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-5 mb-8">
+                    <div class="bg-white p-5 rounded-2xl border border-slate-200 hover:border-brand/30 transition-all group">
+                        <div class="w-10 h-10 rounded-xl bg-slate-50 flex items-center justify-center text-tb-blue mb-3 group-hover:bg-tb-blue group-hover:text-white transition-colors">
+                            <i class="fas fa-bullseye text-lg"></i>
                         </div>
-                        <h4 class="font-bold text-tb-dark mb-3">Intención</h4>
-                        <ul class="space-y-2 text-sm text-slate-600 font-medium">
+                        <h4 class="font-bold text-tb-dark text-sm mb-2">Intención</h4>
+                        <ul class="space-y-1.5 text-[13px] text-slate-600 font-medium">
                             <li><span class="mr-2">🏠</span> <strong>COMPRAR</strong> — Busca adquirir</li>
                             <li><span class="mr-2">🔑</span> <strong>RENTAR</strong> — Busca rentar</li>
                             <li><span class="mr-2">💰</span> <strong>VENDER</strong> — Quiere vender</li>
                         </ul>
                     </div>
-
-                    <div class="bg-white p-6 rounded-3xl border border-slate-200 hover:border-brand/30 hover:shadow-lg transition-all group">
-                        <div class="w-12 h-12 rounded-2xl bg-slate-50 flex items-center justify-center text-amber-500 mb-4 group-hover:bg-amber-500 group-hover:text-white transition-colors">
-                            <i class="fas fa-clock text-xl"></i>
+                    <div class="bg-white p-5 rounded-2xl border border-slate-200 hover:border-brand/30 transition-all group">
+                        <div class="w-10 h-10 rounded-xl bg-slate-50 flex items-center justify-center text-amber-500 mb-3 group-hover:bg-amber-500 group-hover:text-white transition-colors">
+                            <i class="fas fa-clock text-lg"></i>
                         </div>
-                        <h4 class="font-bold text-tb-dark mb-3">Tiempo</h4>
-                        <ul class="space-y-2 text-sm text-slate-600 font-medium">
+                        <h4 class="font-bold text-tb-dark text-sm mb-2">Tiempo</h4>
+                        <ul class="space-y-1.5 text-[13px] text-slate-600 font-medium">
                             <li><span class="text-brand mr-2">⚡</span> <strong>0 a 30 días</strong> → Urgente</li>
                             <li><span class="text-slate-400 mr-2">📅</span> <strong>1 a 3 meses</strong> → Mediano</li>
                             <li><span class="text-slate-300 mr-2">👀</span> <strong>Explorando</strong> → Sin prisa</li>
                         </ul>
                     </div>
-
-                    <div class="bg-white p-6 rounded-3xl border border-slate-200 hover:border-brand/30 hover:shadow-lg transition-all group">
-                        <div class="w-12 h-12 rounded-2xl bg-slate-50 flex items-center justify-center text-emerald-500 mb-4 group-hover:bg-emerald-500 group-hover:text-white transition-colors">
-                            <i class="fas fa-money-check-alt text-xl"></i>
+                    <div class="bg-white p-5 rounded-2xl border border-slate-200 hover:border-brand/30 transition-all group">
+                        <div class="w-10 h-10 rounded-xl bg-slate-50 flex items-center justify-center text-emerald-500 mb-3 group-hover:bg-emerald-500 group-hover:text-white transition-colors">
+                            <i class="fas fa-money-check-alt text-lg"></i>
                         </div>
-                        <h4 class="font-bold text-tb-dark mb-3">Financiero</h4>
-                        <ul class="space-y-3 text-sm text-slate-600">
+                        <h4 class="font-bold text-tb-dark text-sm mb-2">Financiero</h4>
+                        <ul class="space-y-2 text-[13px] text-slate-600">
                             <li class="flex items-center justify-between">
                                 <span class="font-medium">Aprobado / Listo</span> 
-                                <span class="bg-emerald-100 text-emerald-700 px-3 py-1 rounded-full text-[10px] uppercase font-black tracking-wider">VIP</span>
+                                <span class="bg-emerald-100 text-emerald-700 px-2 py-0.5 rounded text-[9px] uppercase font-black tracking-wider">VIP</span>
                             </li>
                             <li class="flex items-center justify-between">
                                 <span class="font-medium">En trámite</span> 
-                                <span class="bg-amber-100 text-amber-700 px-3 py-1 rounded-full text-[10px] uppercase font-black tracking-wider">Trámite</span>
+                                <span class="bg-amber-100 text-amber-700 px-2 py-0.5 rounded text-[9px] uppercase font-black tracking-wider">Trámite</span>
                             </li>
                             <li class="flex items-center justify-between">
                                 <span class="font-medium">Sin crédito</span> 
-                                <span class="bg-slate-100 text-slate-500 px-3 py-1 rounded-full text-[10px] uppercase font-black tracking-wider">Filtro</span>
+                                <span class="bg-slate-100 text-slate-500 px-2 py-0.5 rounded text-[9px] uppercase font-black tracking-wider">Filtro</span>
                             </li>
                         </ul>
                     </div>
                 </div>
 
-                <div class="mt-8 relative rounded-[3rem] p-10 bg-tb-dark text-white shadow-2xl overflow-hidden">
-                    <!-- ATIA Dark Glows -->
-                    <div class="absolute -right-20 -top-20 w-64 h-64 bg-brand/20 blur-[100px] rounded-full"></div>
-                    <div class="absolute -left-10 -bottom-10 w-40 h-40 bg-tb-blue/30 blur-[70px] rounded-full"></div>
-
-                    <div class="relative z-10">
-                        <p class="text-[10px] text-brand uppercase tracking-[0.3em] font-black mb-6 border border-white/10 bg-white/5 inline-block px-4 py-2 rounded-full">Regla de Oro ATIA</p>
-                        <p class="text-3xl font-heading font-light leading-snug">
-                            "El lead más rápido en tu respuesta, es el más probable de convertirse en tu cliente. <br>
-                            <span class="text-brand font-black mt-2 inline-block">VELOCIDAD = VENTAS 🚀</span>"
-                        </p>
-                    </div>
+                <!-- Hidden Knowledge for Gemini Prompt -->
+                <div id="kb-calificacion" class="hidden">
+                    REGLAS DE CALIFICACIÓN DE LEADS:
+                    1. Si el lead quiere COMPRAR o RENTAR, para mudarse en 0-30 días, y tiene CRÉDITO APROBADO: Es un CLIENTE VIP. La acción es "Agendar Cita Inmediata".
+                    2. Si el lead quiere VENDER, en 0-30 días y tiene la PROPIEDAD LISTA: Es un VENDEDOR LISTO. La acción es "Llamada de captación inmediata".
+                    3. Si el lead quiere COMPRAR pero NO TIENE CRÉDITO: Es categoría FILTRO. La acción es "Agendar cita con broker hipotecario".
+                    Tono: Eres Adriana, asistente de IA de ATIA Inmobiliaria. Eres muy amable, profesional, respondes de forma concisa y rápida, enfocada en ventas y calificación. Usa emojis discretos.
                 </div>
             </div>
         </div>
 
         <!-- CONTENT 2: Captacion Perfiles -->
-        <div id="content-captacion" class="tab-content space-y-8">
-            <div class="bg-white rounded-[2.5rem] shadow-xl shadow-slate-200/50 border border-slate-100 p-10">
-                <h3 class="text-2xl font-heading font-bold text-tb-dark mb-8">Embudo de Captación Inmobiliaria</h3>
+        <div id="content-captacion" class="tab-content space-y-6">
+            <div class="bg-white rounded-[2rem] shadow-lg shadow-slate-200/50 border border-slate-100 p-8">
+                <h3 class="text-xl font-heading font-bold text-tb-dark mb-6">Embudo de Captación Inmobiliaria</h3>
                 
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <!-- Perfil Cards -->
-                    <div class="border border-slate-200 p-8 rounded-3xl hover:shadow-xl hover:shadow-emerald-500/5 transition-all">
-                        <h4 class="font-heading font-black text-xl mb-4 text-tb-dark flex items-center gap-3">
-                            <div class="w-10 h-10 rounded-full bg-emerald-50 flex items-center justify-center text-emerald-500">👶</div> 
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                    <div class="border border-slate-200 p-6 rounded-2xl hover:shadow-lg transition-all">
+                        <h4 class="font-heading font-black text-lg mb-3 text-tb-dark flex items-center gap-2">
+                            <div class="w-8 h-8 rounded-full bg-emerald-50 flex items-center justify-center text-emerald-500 text-sm">👶</div> 
                             Practicantes
                         </h4>
-                        <ul class="text-sm text-slate-600 font-medium space-y-2 mb-6">
+                        <ul class="text-[13px] text-slate-600 font-medium space-y-1.5 mb-4">
                             <li><strong>Objetivo:</strong> Aprender, Crecimiento</li>
                             <li><strong>Disponibilidad:</strong> Media jornada, Fines de semana</li>
                         </ul>
-                        <div class="bg-slate-50 p-4 rounded-2xl border border-slate-100 text-xs">
-                            <span class="text-[10px] uppercase font-black text-slate-400 tracking-widest block mb-1">Respuesta Adriana IA:</span>
-                            <span class="text-tb-dark font-medium italic">"Un asesor te guiará por el mejor camino para ti."</span>
-                        </div>
                     </div>
 
-                    <div class="border border-slate-200 p-8 rounded-3xl hover:shadow-xl hover:shadow-tb-blue/5 transition-all">
-                        <h4 class="font-heading font-black text-xl mb-4 text-tb-dark flex items-center gap-3">
-                            <div class="w-10 h-10 rounded-full bg-blue-50 flex items-center justify-center text-tb-blue">🏢</div> 
+                    <div class="border border-slate-200 p-6 rounded-2xl hover:shadow-lg transition-all">
+                        <h4 class="font-heading font-black text-lg mb-3 text-tb-dark flex items-center gap-2">
+                            <div class="w-8 h-8 rounded-full bg-blue-50 flex items-center justify-center text-tb-blue text-sm">🏢</div> 
                             Asesores Freelance
                         </h4>
-                        <ul class="text-sm text-slate-600 font-medium space-y-2 mb-6">
+                        <ul class="text-[13px] text-slate-600 font-medium space-y-1.5 mb-4">
                             <li><strong>Búsqueda:</strong> Tecnología, Marca, Acompañamiento</li>
                             <li><strong>Leads:</strong> Perfiles calificados y reconocimiento</li>
                         </ul>
-                        <div class="bg-slate-50 p-4 rounded-2xl border border-slate-100 text-xs">
-                            <span class="text-[10px] uppercase font-black text-slate-400 tracking-widest block mb-1">Respuesta Adriana IA:</span>
-                            <span class="text-tb-dark font-medium italic">"Te conectamos con un especialista para impulsar tus resultados."</span>
-                        </div>
                     </div>
+                </div>
+
+                <!-- Hidden Knowledge for Gemini Prompt -->
+                <div id="kb-captacion" class="hidden">
+                    REGLAS DE CAPTACIÓN DE TALENTO INMOBILIARIO:
+                    1. Si el prospecto es PRACTICANTE (sin experiencia, busca aprender): Ofrece "Entrenamiento inicial y asignación a un asesor senior".
+                    2. Si el prospecto es ASESOR FREELANCE (busca marca y tecnología): Ofrece "Acceso a nuestro CRM ATIA, comisiones preferenciales y plataforma tecnológica".
+                    3. Si el prospecto es para RECLUTAMIENTO INTERNO (marketing, ventas): Ofrece "Plan de carrera corporativo".
+                    Tono: Eres Adriana, reclutadora IA de ATIA Inmobiliaria. Tu objetivo es atraer talento, sonando muy corporativa pero cálida y accesible. Respuestas cortas.
                 </div>
             </div>
         </div>
     </main>
 
     <!-- ADRIANA ATIA WIDGET SYSTEM -->
-
     <!-- Tooltip -->
-    <div id="adriana-tooltip" class="fixed bottom-32 right-8 bg-white rounded-3xl p-5 shadow-2xl flex items-center gap-4 w-80 transition-all duration-500 transform translate-y-0 opacity-100 z-40 border border-slate-100 cursor-pointer hover:shadow-brand/10 hover:border-brand/20" onclick="abrirWidget()">
-        <img src="https://ui-avatars.com/api/?name=Ad&background=F26722&color=fff&font-size=0.4" class="w-12 h-12 rounded-full border-2 border-brand shadow-md">
+    <div id="adriana-tooltip" class="fixed bottom-24 right-6 bg-white rounded-2xl p-4 shadow-xl flex items-center gap-3 w-64 transition-all duration-300 z-40 border border-slate-100 cursor-pointer hover:border-brand/20" onclick="abrirWidget()">
+        <img src="https://ui-avatars.com/api/?name=Ad&background=F26722&color=fff&font-size=0.4" class="w-10 h-10 rounded-full border border-brand shadow-sm">
         <div class="flex-1">
-            <p class="text-[13px] text-tb-dark font-medium leading-snug"><span class="text-brand"><i class="fas fa-sparkles"></i></span> Hola, soy <strong>Adriana</strong>. Toca aquí para ver mi cerebro en acción.</p>
+            <p class="text-[11px] text-tb-dark font-medium leading-snug"><span class="text-brand">✨</span> Toca aquí para conectar mi inteligencia.</p>
         </div>
-        <button onclick="event.stopPropagation(); cerrarTooltip()" class="absolute top-3 right-4 text-slate-300 hover:text-slate-500">
-            <i class="fas fa-times text-xs"></i>
+        <button onclick="event.stopPropagation(); cerrarTooltip()" class="absolute top-2 right-2 text-slate-300 hover:text-slate-500">
+            <i class="fas fa-times text-[10px]"></i>
         </button>
-        <!-- Triangle pointer -->
-        <div class="absolute -bottom-2 right-8 w-5 h-5 bg-white rotate-45 border-b border-r border-slate-100"></div>
     </div>
 
     <!-- Floating Action Button (FAB) -->
-    <div class="fixed bottom-10 right-10 z-50">
-        <!-- Pulse ring ATIA -->
+    <div class="fixed bottom-6 right-6 z-50">
         <div class="absolute inset-0 bg-brand rounded-full animate-pulse-ring"></div>
-        <button id="fab-button" onclick="toggleWidgetState()" class="relative w-16 h-16 bg-brand hover:bg-brand-dark text-white rounded-full shadow-[0_16px_32px_-8px_rgba(242,103,34,0.5)] flex items-center justify-center text-2xl transition-all duration-300 hover:scale-110 z-10 border border-white/20">
+        <button id="fab-button" onclick="toggleWidgetState()" class="relative w-14 h-14 bg-brand hover:bg-brand-dark text-white rounded-full shadow-lg flex items-center justify-center text-xl transition-all duration-300 hover:scale-105 z-10 border border-white/20">
             <i id="fab-icon" class="fas fa-phone-alt"></i>
         </button>
     </div>
 
-    <!-- ATIA Multimodal Widget Modal -->
-    <div id="adriana-widget" class="fixed bottom-32 right-10 w-[380px] h-[640px] glass-widget rounded-[2.5rem] overflow-hidden transition-all duration-500 origin-bottom-right transform scale-0 opacity-0 z-50 flex flex-col pointer-events-none">
+    <!-- WIDGET 25% SMALLER (w-280px h-480px) -->
+    <div id="adriana-widget" class="fixed bottom-24 right-6 w-[280px] h-[480px] glass-widget rounded-[2rem] transition-all duration-300 origin-bottom-right widget-hidden z-50 flex flex-col">
         
         <!-- Premium Header -->
-        <div class="px-6 py-5 flex items-center justify-between border-b border-white/10 relative z-10 bg-white/5">
-            <div class="flex items-center gap-4">
+        <div class="px-5 py-4 flex items-center justify-between border-b border-white/10 relative z-10 bg-white/5">
+            <div class="flex items-center gap-3">
                 <div class="relative">
-                    <img src="https://ui-avatars.com/api/?name=Ad&background=F26722&color=fff&font-size=0.4" class="w-10 h-10 rounded-full border border-white/20">
-                    <div class="absolute -bottom-1 -right-1 w-3 h-3 bg-emerald-500 rounded-full border-2 border-[#0a0a0a]"></div>
+                    <img src="https://ui-avatars.com/api/?name=Ad&background=F26722&color=fff&font-size=0.4" class="w-8 h-8 rounded-full border border-white/20">
+                    <div class="absolute -bottom-1 -right-1 w-2 h-2 bg-emerald-500 rounded-full border border-[#0a0a0a]"></div>
                 </div>
                 <div>
-                    <h3 class="text-white font-heading font-bold text-sm tracking-wide">Adriana Copilot</h3>
-                    <p class="text-[10px] text-emerald-400 uppercase tracking-widest font-black mt-0.5 flex items-center gap-1">
+                    <h3 class="text-white font-heading font-bold text-xs tracking-wide">Adriana Copilot</h3>
+                    <p class="text-[8px] text-emerald-400 uppercase tracking-widest font-black flex items-center gap-1 mt-0.5">
                         <span class="w-1.5 h-1.5 bg-emerald-400 rounded-full animate-pulse"></span> Cerebro Conectado
                     </p>
                 </div>
             </div>
-            <button onclick="cerrarWidget()" class="w-8 h-8 rounded-full bg-white/5 hover:bg-white/10 flex items-center justify-center text-white/50 hover:text-white transition-colors">
-                <i class="fas fa-times text-sm"></i>
+            <button onclick="cerrarWidget()" class="text-white/50 hover:text-white transition-colors">
+                <i class="fas fa-times text-xs"></i>
             </button>
         </div>
 
         <!-- Initial State: Call to Action -->
-        <div id="widget-intro" class="flex-1 flex flex-col items-center justify-center px-8 text-center relative z-10">
-            <div class="relative mb-8 group animate-float">
-                <div class="absolute inset-0 bg-brand/20 blur-[40px] rounded-full scale-[1.5] group-hover:scale-[1.8] transition-transform duration-700"></div>
-                <img src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&q=80&w=200&h=200" alt="Adriana Avatar" class="w-32 h-32 rounded-full object-cover relative z-10 border-4 border-white/10 shadow-[0_0_40px_rgba(242,103,34,0.3)]">
+        <div id="widget-intro" class="flex-1 flex flex-col items-center justify-center px-6 text-center relative z-10">
+            <div class="relative mb-5 group animate-float">
+                <div class="absolute inset-0 bg-brand/20 blur-[20px] rounded-full scale-[1.3]"></div>
+                <img src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&q=80&w=200&h=200" alt="Adriana Avatar" class="w-20 h-20 rounded-full object-cover relative z-10 border-[3px] border-white/10 shadow-lg">
             </div>
 
-            <h2 class="text-2xl font-heading font-black text-white mb-3 tracking-tight">Iniciar Sesión IA</h2>
-            <p class="text-[13px] text-slate-400 font-medium leading-relaxed mb-8">
-                Hablemos. Estoy conectada a la base de datos de ATIA y lista para ejecutar el <span class="text-white font-bold" id="context-name">Embudo de Calificación</span>.
+            <h2 class="text-lg font-heading font-black text-white mb-2">Iniciar Chat IA</h2>
+            <p class="text-[11px] text-slate-400 font-medium leading-relaxed mb-6">
+                Conectada a la base de datos de ATIA. Contexto activo: <span class="text-white font-bold" id="context-name">Calificación</span>.
             </p>
 
-            <button onclick="iniciarLlamada()" class="w-full btn-gradient py-4 rounded-2xl text-white font-bold flex items-center justify-center gap-3 transition-transform active:scale-95 group">
-                <i class="fas fa-wave-square group-hover:animate-pulse"></i> 
-                Comenzar Interacción
+            <button onclick="iniciarLlamada()" class="w-full btn-gradient py-3 rounded-xl text-white text-sm font-bold flex items-center justify-center gap-2 transition-transform active:scale-95">
+                <i class="fas fa-comment-dots"></i> Iniciar
             </button>
         </div>
 
-        <!-- Active Call / Multimodal Interface -->
-        <div id="widget-active" class="hidden flex-1 flex-col items-center pt-8 px-6 text-center relative z-10 h-full">
-            <span class="bg-brand/20 border border-brand/30 text-brand text-[10px] font-black uppercase tracking-[0.2em] px-3 py-1 rounded-full mb-8">
-                Análisis en Tiempo Real
-            </span>
+        <!-- Active Chat / Multimodal Interface -->
+        <div id="widget-active" class="hidden flex-1 flex-col pt-4 px-4 relative z-10 h-full">
             
-            <div class="relative w-32 h-32 mb-10">
-                <div class="absolute inset-0 border-2 border-brand rounded-full animate-ping opacity-30"></div>
-                <div class="absolute inset-0 border-[6px] border-brand/40 rounded-full animate-pulse scale-110"></div>
-                <img src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&q=80&w=200&h=200" alt="Adriana" class="w-full h-full rounded-full object-cover relative z-10">
+            <div class="flex justify-center mb-4">
+                <span class="bg-brand/20 border border-brand/30 text-brand text-[8px] font-black uppercase tracking-widest px-2 py-0.5 rounded-full">
+                    Gemini API Activa
+                </span>
             </div>
 
-            <div class="w-full bg-white/5 border border-white/10 rounded-2xl p-4 h-28 flex items-center justify-center mb-8 shadow-inner">
-                <p id="transcript-text" class="text-emerald-400 font-medium text-sm leading-relaxed">
-                    Escuchando contexto...
-                </p>
+            <!-- Chat Area -->
+            <div id="chat-container" class="flex-1 overflow-y-auto mb-4 space-y-3 pr-1 text-xs">
+                <!-- Chat messages will be injected here -->
             </div>
 
-            <!-- Modality Controls -->
-            <div class="flex gap-4 mb-auto">
-                <button class="w-12 h-12 rounded-full bg-white/5 border border-white/10 text-slate-400 hover:text-white hover:bg-white/10 flex items-center justify-center transition-all">
-                    <i class="fas fa-camera"></i>
-                </button>
-                <button class="w-12 h-12 rounded-full bg-white/5 border border-white/10 text-slate-400 hover:text-white hover:bg-white/10 flex items-center justify-center transition-all">
-                    <i class="fas fa-keyboard"></i>
-                </button>
-            </div>
-
-            <!-- Hang up -->
-            <div class="w-full border-t border-white/10 pt-4 pb-6 mt-auto">
-                <button onclick="finalizarLlamada()" class="w-16 h-16 rounded-full bg-red-500 hover:bg-red-600 text-white shadow-lg shadow-red-500/30 flex items-center justify-center text-xl mx-auto transition-transform hover:scale-105 active:scale-95">
-                    <i class="fas fa-phone-slash"></i>
+            <!-- Input Area -->
+            <div class="mt-auto border-t border-white/10 pt-3 pb-3 flex items-center gap-2">
+                <input type="text" id="user-input" placeholder="Pregunta a Adriana..." class="flex-1 bg-white/5 border border-white/10 rounded-xl px-3 py-2 text-white text-xs focus:outline-none focus:border-brand/50 placeholder-slate-500" onkeypress="handleKeyPress(event)">
+                <button onclick="sendMessage()" class="w-8 h-8 rounded-xl bg-brand hover:bg-brand-dark text-white flex items-center justify-center transition-colors shrink-0">
+                    <i class="fas fa-paper-plane text-[10px]"></i>
                 </button>
             </div>
         </div>
     </div>
 
     <script>
-        // DOM Elements
+        // GLOBALS
+        const GEMINI_API_KEY = "AIzaSyCSOOyI0QWaulpV3eMCXyycDC88EWuCEUA";
+        let isWidgetOpen = false;
+        let currentTab = 'calificacion';
+        
+        // DOM
         const tooltip = document.getElementById('adriana-tooltip');
         const widget = document.getElementById('adriana-widget');
         const fabIcon = document.getElementById('fab-icon');
         const widgetIntro = document.getElementById('widget-intro');
         const widgetActive = document.getElementById('widget-active');
-        const transcriptText = document.getElementById('transcript-text');
         const contextName = document.getElementById('context-name');
-        
-        let isWidgetOpen = false;
-        let currentTab = 'calificacion';
-        let transcriptInterval;
+        const chatContainer = document.getElementById('chat-container');
+        const userInput = document.getElementById('user-input');
 
-        // TABS LOGIC
+        // TAB SWITCHING
         function switchTab(tabId) {
             document.getElementById(`content-${currentTab}`).classList.remove('active');
             
-            // Unstyle old tab
             const oldTabBtn = document.getElementById(`tab-btn-${currentTab}`);
             oldTabBtn.classList.remove('bg-white/10', 'border-white/10', 'text-white');
             oldTabBtn.classList.add('text-slate-400', 'border-transparent');
@@ -361,7 +338,6 @@
             
             currentTab = tabId;
             
-            // Style new tab
             const newTabBtn = document.getElementById(`tab-btn-${currentTab}`);
             document.getElementById(`content-${currentTab}`).classList.add('active');
             newTabBtn.classList.remove('text-slate-400', 'border-transparent');
@@ -370,12 +346,10 @@
             newTabBtn.querySelector('div').classList.add('bg-brand/20', 'text-brand');
 
             document.getElementById('page-title').innerText = tabId === 'calificacion' ? 'Sistema de Calificación' : 'Sistema de Captación';
-            document.getElementById('page-subtitle').innerText = tabId === 'calificacion' ? 'El motor de reglas de Adriana conectado en tiempo real.' : 'Las matrices de decisión para captar nuevos talentos.';
-            
-            contextName.innerText = tabId === 'calificacion' ? 'Embudo de Calificación' : 'Embudo de Captación';
+            contextName.innerText = tabId === 'calificacion' ? 'Calificación' : 'Captación';
         }
 
-        // WIDGET TOGGLE LOGIC
+        // WIDGET TOGGLE
         function toggleWidgetState() {
             if(isWidgetOpen) cerrarWidget();
             else abrirWidget();
@@ -383,8 +357,8 @@
 
         function abrirWidget() {
             isWidgetOpen = true;
-            widget.classList.remove('scale-0', 'opacity-0', 'pointer-events-none');
-            widget.classList.add('scale-100', 'opacity-100', 'pointer-events-auto');
+            widget.classList.remove('widget-hidden');
+            widget.classList.add('widget-visible');
             fabIcon.classList.remove('fa-phone-alt');
             fabIcon.classList.add('fa-times');
             cerrarTooltip();
@@ -392,65 +366,109 @@
 
         function cerrarWidget() {
             isWidgetOpen = false;
-            widget.classList.remove('scale-100', 'opacity-100', 'pointer-events-auto');
-            widget.classList.add('scale-0', 'opacity-0', 'pointer-events-none');
+            widget.classList.add('widget-hidden');
+            widget.classList.remove('widget-visible');
             fabIcon.classList.remove('fa-times');
             fabIcon.classList.add('fa-phone-alt');
-            finalizarLlamada();
         }
 
         function cerrarTooltip() {
             tooltip.style.opacity = '0';
-            tooltip.style.transform = 'translateY(10px) scale(0.95)';
-            setTimeout(() => tooltip.style.display = 'none', 300);
+            tooltip.style.pointerEvents = 'none';
         }
+        setTimeout(cerrarTooltip, 8000); // Auto hide
 
-        // AI CALL SIMULATION
+        // CHAT LOGIC (GEMINI INTEGRATION)
         function iniciarLlamada() {
             widgetIntro.classList.add('hidden');
             widgetActive.classList.remove('hidden');
             widgetActive.classList.add('flex');
             
-            const dialogos = currentTab === 'calificacion' 
-                ? [
-                    "Identificando lead en el sistema...",
-                    "Perfil: Compra + Urgente (0 a 30 días).",
-                    "¡Es un Cliente VIP Oro Puro!",
-                    "Preparando guion de llamada inmediata y enlace de citas."
-                  ] 
-                : [
-                    "Analizando intención del prospecto...",
-                    "Perfil detectado: Asesor Independiente (Freelance).",
-                    "Buscando comisiones de Tecnología y Marca.",
-                    "Preparando asignación con especialista en desarrollo."
-                  ];
+            chatContainer.innerHTML = '';
+            appendMessage("Adriana", `¡Hola! Estoy conectada al flujo de ${currentTab === 'calificacion' ? 'Calificación de Leads' : 'Captación de Perfiles'}. ¿Cómo te ayudo?`);
+        }
+
+        function handleKeyPress(e) {
+            if(e.key === 'Enter') sendMessage();
+        }
+
+        async function sendMessage() {
+            const text = userInput.value.trim();
+            if(!text) return;
             
-            let counter = 0;
-            transcriptText.innerHTML = `<span class="text-white">Adriana:</span> "${dialogos[0]}"`;
+            appendMessage("Tú", text);
+            userInput.value = '';
             
-            transcriptInterval = setInterval(() => {
-                counter++;
-                if(counter < dialogos.length) {
-                    transcriptText.innerHTML = `<span class="text-white opacity-80">Adriana:</span> "${dialogos[counter]}"`;
+            // Show typing indicator
+            const typingId = "typing-" + Date.now();
+            chatContainer.innerHTML += `
+                <div id="${typingId}" class="flex gap-2">
+                    <img src="https://ui-avatars.com/api/?name=Ad&background=F26722&color=fff&font-size=0.4" class="w-6 h-6 rounded-full shrink-0">
+                    <div class="bg-white/10 rounded-xl rounded-tl-none p-2 text-slate-300 text-xs flex items-center gap-1">
+                        <span class="w-1 h-1 bg-brand rounded-full animate-pulse"></span>
+                        <span class="w-1 h-1 bg-brand rounded-full animate-pulse" style="animation-delay: 0.2s"></span>
+                        <span class="w-1 h-1 bg-brand rounded-full animate-pulse" style="animation-delay: 0.4s"></span>
+                    </div>
+                </div>
+            `;
+            scrollToBottom();
+
+            // Fetch Gemini
+            const contextText = document.getElementById(`kb-${currentTab}`).innerText;
+            const prompt = `${contextText}\n\nUsuario: ${text}\nAdriana:`;
+
+            try {
+                const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${GEMINI_API_KEY}`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        contents: [{ parts: [{ text: prompt }] }],
+                        generationConfig: { maxOutputTokens: 150, temperature: 0.3 }
+                    })
+                });
+                
+                const data = await response.json();
+                document.getElementById(typingId).remove();
+                
+                if(data.candidates && data.candidates[0]) {
+                    const aiResponse = data.candidates[0].content.parts[0].text;
+                    appendMessage("Adriana", aiResponse, true);
                 } else {
-                    transcriptText.innerHTML = '<span class="text-brand">Escuchando...</span> <i class="fas fa-microphone text-brand/50 ml-2 animate-pulse"></i>';
-                    counter = -1;
+                    appendMessage("Adriana", "Lo siento, tuve un problema de conexión al procesar eso.");
                 }
-            }, 3500);
+            } catch(error) {
+                document.getElementById(typingId).remove();
+                appendMessage("Adriana", "Error de red con el servidor de IA.");
+                console.error(error);
+            }
         }
 
-        function finalizarLlamada() {
-            clearInterval(transcriptInterval);
-            widgetActive.classList.add('hidden');
-            widgetActive.classList.remove('flex');
-            widgetIntro.classList.remove('hidden');
-            transcriptText.innerHTML = "Escuchando contexto...";
+        function appendMessage(sender, text, isMarkdown = false) {
+            const isAI = sender === "Adriana";
+            const bubbleClasses = isAI 
+                ? "bg-white/10 text-slate-200 rounded-tl-none" 
+                : "bg-brand text-white rounded-tr-none ml-auto";
+            
+            const avatarHtml = isAI 
+                ? `<img src="https://ui-avatars.com/api/?name=Ad&background=F26722&color=fff&font-size=0.4" class="w-6 h-6 rounded-full shrink-0">` 
+                : '';
+
+            const contentHtml = isMarkdown && isAI ? marked.parse(text) : text;
+
+            chatContainer.innerHTML += `
+                <div class="flex gap-2 ${isAI ? '' : 'justify-end'}">
+                    ${avatarHtml}
+                    <div class="${bubbleClasses} rounded-xl p-2.5 text-xs max-w-[85%]">
+                        ${contentHtml}
+                    </div>
+                </div>
+            `;
+            scrollToBottom();
         }
 
-        // Auto hide tooltip
-        setTimeout(() => {
-            if(!isWidgetOpen) cerrarTooltip();
-        }, 8000);
+        function scrollToBottom() {
+            chatContainer.scrollTop = chatContainer.scrollHeight;
+        }
     </script>
 </body>
 </html>
