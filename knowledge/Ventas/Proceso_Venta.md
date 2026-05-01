@@ -31,3 +31,9 @@
 - Propiedad limpia y presentable (home staging básico)
 - Documentación completa desde el inicio
 - Flexibilidad en horarios de visita
+
+## Preguntas Frecuentes (FAQ)
+- **¿Puedo vender si aún debo la hipoteca?** — Sí, se puede. El saldo se liquida con el producto de la venta en la notaría.
+- **¿Cuánto tarda el trámite completo?** — Desde la oferta aceptada hasta escrituración: 30-45 días hábiles.
+- **¿Necesito desocupar la casa antes de vender?** — No necesariamente. Se puede mostrar habitada, pero se vende más rápido vacía.
+- **¿Qué pasa si no tengo escrituras?** — Podemos ayudarte con el trámite de regularización. Toma 2-4 meses extra.
