@@ -394,24 +394,25 @@
         let isWidgetOpen = false;
         let currentTab = 'calificacion';
         let currentRole = 'capacitadora';
+        let chatHistory = [];
         
         const rolesConfig = {
             'capacitadora': {
                 name: 'Entrenadora ATIA',
                 icon: 'https://api.dicebear.com/7.x/pixel-art/svg?seed=Teacher&background=%23F26722',
-                prompt: 'Eres Adriana, Entrenadora de ATIA. Tu rol es capacitar al staff interno sobre los embudos. Responde dudas del equipo basándote SOLO en la base de conocimiento provista. Tono didáctico, claro y paciente.',
+                prompt: 'Eres Adriana, Entrenadora Interna de ATIA. Capacitas al staff sobre los embudos. REGLA 1: NUNCA saludes repetidamente. REGLA 2: Basa tus respuestas ESTRICTAMENTE en la Base de Conocimiento provista. REGLA 3: Sé concisa y directa.',
                 badge: 'Modo: Entrenamiento'
             },
             'vendedora': {
                 name: 'Agente Inmobiliario',
                 icon: 'https://api.dicebear.com/7.x/pixel-art/svg?seed=Agent&background=%23002F6C',
-                prompt: 'Eres Adriana, Agente IA Inmobiliario de ATIA. Tu rol es perfilar a los clientes (Leads) que quieren comprar, rentar o vender. Usa la base de conocimiento para asignar la categoría correcta y definir la acción a tomar. Tono persuasivo, rápido y enfocado a ventas.',
+                prompt: 'Eres Adriana, Agente IA Inmobiliario. REGLA 1: NUNCA saludes repetidamente. REGLA 2: Tu objetivo es evaluar leads según la Base de Conocimiento y decir qué "Acción Automática" o "Categoría" aplica. REGLA 3: Respuestas cortas y al grano.',
                 badge: 'Modo: Operación Ventas'
             },
             'reclutadora': {
                 name: 'Reclutadora',
                 icon: 'https://api.dicebear.com/7.x/pixel-art/svg?seed=Recruiter&background=%2310B981',
-                prompt: 'Eres Adriana, Reclutadora IA de ATIA. Tu rol es entrevistar y perfilar a practicantes, asesores freelance o staff interno. Usa la base de conocimiento de captación para ofrecerles lo correcto. Tono corporativo pero cálido.',
+                prompt: 'Eres Adriana, Reclutadora IA. REGLA 1: NUNCA saludes repetidamente. REGLA 2: Entrevista y perfila talento según la Base de Captación. REGLA 3: Ve directo a la oferta de valor.',
                 badge: 'Modo: RRHH / Captación'
             }
         };
@@ -451,11 +452,12 @@
 
             document.getElementById('page-title').innerText = tabId === 'calificacion' ? 'Embudo de Calificación de Leads' : 'Embudo de Captación de Perfiles';
             document.getElementById('page-subtitle').innerText = `Información completa extraída de: Embudo_${tabId === 'calificacion' ? 'Calificacion_Leads' : 'Captacion_Perfiles'}.md`;
+            
+            resetChat(); // Reset memory on tab switch
         }
 
         // ROLE SWITCHING
         function setRole(role) {
-            // Update UI buttons
             document.querySelectorAll('.role-btn').forEach(btn => {
                 btn.classList.remove('border-brand', 'bg-brand/20', 'text-brand');
                 btn.classList.add('border-white/10', 'text-slate-400');
@@ -466,7 +468,6 @@
 
             currentRole = role;
             
-            // Update Headers
             avatarHeader.src = rolesConfig[role].icon;
             widgetTitle.innerHTML = `${rolesConfig[role].name} <span class="font-mono text-[10px] text-brand ml-1">[LAB]</span>`;
             roleBadge.innerText = rolesConfig[role].badge;
@@ -499,7 +500,8 @@
         // CHAT LOGIC
         function resetChat() {
             chatContainer.innerHTML = '';
-            appendMessage("Adriana", `¡Hola! Soy tu **${rolesConfig[currentRole].name}**. Estoy conectada a los documentos base de ATIA. ¿Qué duda tienes sobre el embudo actual?`, true);
+            chatHistory = [];
+            appendMessage("Adriana", `¡Hola! Soy tu **${rolesConfig[currentRole].name}**. Estoy conectada al documento actual. Dime, ¿qué necesitas consultar?`, true);
         }
 
         function handleKeyPress(e) {
@@ -512,6 +514,8 @@
             
             appendMessage("Tú", text);
             userInput.value = '';
+            
+            chatHistory.push(`Usuario: ${text}`);
             
             const typingId = "typing-" + Date.now();
             chatContainer.innerHTML += `
@@ -526,18 +530,20 @@
             `;
             scrollToBottom();
 
-            // Construct Prompt
             const contextTextCalificacion = document.getElementById('raw-kb-calificacion').innerText;
             const contextTextCaptacion = document.getElementById('raw-kb-captacion').innerText;
             const systemPrompt = rolesConfig[currentRole].prompt;
+            const historyContext = chatHistory.slice(-8).join('\n'); // keep last 8 lines
             
             const prompt = `
+            INSTRUCCIONES DEL SISTEMA:
             ${systemPrompt}
             
-            BASE DE CONOCIMIENTO ATIA:
+            BASE DE CONOCIMIENTO OBLIGATORIA A USAR:
             ${currentTab === 'calificacion' ? contextTextCalificacion : contextTextCaptacion}
             
-            Usuario: ${text}
+            HISTORIAL RECIENTE:
+            ${historyContext}
             Adriana:`;
 
             try {
@@ -546,7 +552,7 @@
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
                         contents: [{ parts: [{ text: prompt }] }],
-                        generationConfig: { maxOutputTokens: 250, temperature: 0.2 } // Low temp for accurate DB answers
+                        generationConfig: { maxOutputTokens: 800, temperature: 0.1 } // High token limit, low temp for logic
                     })
                 });
                 
@@ -555,6 +561,7 @@
                 
                 if(data.candidates && data.candidates[0]) {
                     const aiResponse = data.candidates[0].content.parts[0].text;
+                    chatHistory.push(`Adriana: ${aiResponse}`);
                     appendMessage("Adriana", aiResponse, true);
                 } else if (data.error) {
                     appendMessage("Adriana", `⚠️ Error API: ${data.error.message}`);
@@ -565,7 +572,7 @@
                 if (document.getElementById(typingId)) {
                     document.getElementById(typingId).remove();
                 }
-                appendMessage("Adriana", `⚠️ Error de Red: ${error.message}. ¿Quizás un problema de CORS o conexión?`);
+                appendMessage("Adriana", `⚠️ Error de Red: ${error.message}`);
             }
         }
 
@@ -590,7 +597,6 @@
                 </div>
             `;
             
-            // Format marked.js links/bolding if needed inside the container
             const newMsg = chatContainer.lastElementChild;
             newMsg.querySelectorAll('p').forEach(p => p.classList.add('mb-1'));
             newMsg.querySelectorAll('strong').forEach(s => s.classList.add('text-brand', 'font-bold'));
