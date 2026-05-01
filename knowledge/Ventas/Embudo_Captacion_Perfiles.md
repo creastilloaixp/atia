@@ -72,3 +72,5 @@
 | 🟠 Sin Crédito (Filtro) | Agenda filtro (horarios limitados) | No tiene crédito |
 | 💰 Vendedor Listo | Llamada inmediata | Vender + 0-30 días + Propiedad lista |
 | 📋 Vendedor No Urgente | Agendar cita normal | Vender + explorando/preparando |
+
+

@@ -23,3 +23,5 @@ knowledge/
 - Un archivo por tema específico
 - Nombra las carpetas según el servicio/tema
 - Adriana usará esta información para responder a clientes en WhatsApp y en la web
+
+

@@ -23,3 +23,5 @@
 4. Número de recámaras y baños
 5. Estacionamiento y amenidades
 6. Situación legal (libre de gravamen, escrituras al corriente)
+
+

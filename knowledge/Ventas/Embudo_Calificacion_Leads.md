@@ -105,3 +105,5 @@
 
 ## REGLA DE ORO
 > **El lead más rápido en tu respuesta, es el más probable de convertirse en tu cliente. VELOCIDAD = VENTAS 🚀**
+
+

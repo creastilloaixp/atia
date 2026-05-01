@@ -191,3 +191,5 @@ CastoProject/
 | Citas agendadas / lead | > 30% |
 | Costo por cita | Tracking por ciudad |
 | NPS del cliente | > 8.5 |
+
+
